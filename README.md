@@ -27,8 +27,8 @@ The package is distributed in 6 text files and must be integrated into an Excel 
  6. Assign the NewSheet macro to the button.
  7. Click the button to generate the ScienSolar interface.
  8. To load a sample project, select it from the list and click the +Vector button.
- 9. To add objects to projects (such as Excel 3D models, equations, etc.) place them into a new sheet named 3DModels.
-     (to download objects file for some example projects go to https://sciensolar.com/wp-content/uploads/2024/06/3DModels.xlsx and
+ 9. To add objects to projects (such as Excel 3D models, equations, etc.) place them into a new sheet named 3DModels
+     (to download the objects file for some example projects go to https://sciensolar.com/wp-content/uploads/2024/06/3DModels.xlsx and
     open the file, then move the 3DModels sheet to the workbook where the code is installed. Another option is to copy the code to the 3DModels file.)
  11. Save the file in your desired folder, save it as Macro-Enabled Workbook (*. xlsm).
  12. Visit www.sciensolar.com to download updates and documentation.
