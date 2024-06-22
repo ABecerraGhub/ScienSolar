@@ -1535,16 +1535,16 @@ split:
                 Dim Comm As String
                 Comm = Cells(m, n + 9).Comment.Text
                 Comm = Replace(Comm, "     ", "", 1)
-                Comm = Replace(Comm, "·", """ & ChrW(225) & """, 1) ' reemplazala a tilde por su caracter especial
-                Comm = Replace(Comm, "È", """ & ChrW(233) & """, 1) ' reemplazala e tilde por su caracter especial
-                Comm = Replace(Comm, "Ì", """ & ChrW(237) & """, 1) ' reemplazala i tilde por su caracter especial
-                Comm = Replace(Comm, "Û", """ & ChrW(243) & """, 1) ' reemplazala o tilde por su caracter especial
-                Comm = Replace(Comm, "˙", """ & ChrW(250) & """, 1) ' reemplazala u tilde por su caracter especial
-                Comm = Replace(Comm, "¡", """ & ChrW(193) & """, 1) ' reemplazala A tilde por su caracter especiall
-                Comm = Replace(Comm, "…", """ & ChrW(201) & """, 1) ' reemplazala E tilde por su caracter especial
-                Comm = Replace(Comm, "Õ", """ & ChrW(205) & """, 1) ' reemplazala I tilde por su caracter especiall
-                Comm = Replace(Comm, "”", """ & ChrW(211) & """, 1) ' reemplazala O tilde por su caracter especial
-                Comm = Replace(Comm, "⁄", """ & ChrW(218) & """, 1) ' reemplazala U tilde por su caracter especial
+                Comm = Replace(Comm, "á", """ & ChrW(225) & """, 1) ' reemplazala a tilde por su caracter especial
+                Comm = Replace(Comm, "é", """ & ChrW(233) & """, 1) ' reemplazala e tilde por su caracter especial
+                Comm = Replace(Comm, "í", """ & ChrW(237) & """, 1) ' reemplazala i tilde por su caracter especial
+                Comm = Replace(Comm, "ó", """ & ChrW(243) & """, 1) ' reemplazala o tilde por su caracter especial
+                Comm = Replace(Comm, "ú", """ & ChrW(250) & """, 1) ' reemplazala u tilde por su caracter especial
+                Comm = Replace(Comm, "Á", """ & ChrW(193) & """, 1) ' reemplazala A tilde por su caracter especiall
+                Comm = Replace(Comm, "É", """ & ChrW(201) & """, 1) ' reemplazala E tilde por su caracter especial
+                Comm = Replace(Comm, "Í", """ & ChrW(205) & """, 1) ' reemplazala I tilde por su caracter especiall
+                Comm = Replace(Comm, "Ó", """ & ChrW(211) & """, 1) ' reemplazala O tilde por su caracter especial
+                Comm = Replace(Comm, "Ú", """ & ChrW(218) & """, 1) ' reemplazala U tilde por su caracter especial
                 Comm = Replace(Comm, Chr(10), """" & " & Chr(10)  & _ " & vbNewLine & """     ", 1)
                 Print #oFile, "       Dim HELPtxt as String"
                 Print #oFile, "       HELPtxt = """ & Comm & """"
@@ -1577,16 +1577,16 @@ split:
                     If Cells(m + i, n + j).FormulaR1C1 <> "" Then ' lee todas las celdas de cada vector y escribe su formula
                         On Error Resume Next
                         CellValue = Replace(Cells(m + i, n + j).FormulaR1C1, """", """""") 'reemplaza una comilla por dos comillas para que el codigo generado quede sin errores.
-                        CellValue = Replace(CellValue, "·", """ & ChrW(225) & """, 1) ' reemplazala a tilde por su caracter especial
-                        CellValue = Replace(CellValue, "È", """ & ChrW(233) & """, 1) ' reemplazala e tilde por su caracter especial
-                        CellValue = Replace(CellValue, "Ì", """ & ChrW(237) & """, 1) ' reemplazala i tilde por su caracter especial
-                        CellValue = Replace(CellValue, "Û", """ & ChrW(243) & """, 1) ' reemplazala o tilde por su caracter especial
-                        CellValue = Replace(CellValue, "˙", """ & ChrW(250) & """, 1) ' reemplazala u tilde por su caracter especial
-                        CellValue = Replace(CellValue, "¡", """ & ChrW(193) & """, 1) ' reemplazala A tilde por su caracter especiall
-                        CellValue = Replace(CellValue, "…", """ & ChrW(201) & """, 1) ' reemplazala E tilde por su caracter especial
-                        CellValue = Replace(CellValue, "Õ", """ & ChrW(205) & """, 1) ' reemplazala I tilde por su caracter especiall
-                        CellValue = Replace(CellValue, "”", """ & ChrW(211) & """, 1) ' reemplazala O tilde por su caracter especial
-                        CellValue = Replace(CellValue, "⁄", """ & ChrW(218) & """, 1) ' reemplazala U tilde por su caracter especial
+                        CellValue = Replace(CellValue, "á", """ & ChrW(225) & """, 1) ' reemplazala a tilde por su caracter especial
+                        CellValue = Replace(CellValue, "é", """ & ChrW(233) & """, 1) ' reemplazala e tilde por su caracter especial
+                        CellValue = Replace(CellValue, "í", """ & ChrW(237) & """, 1) ' reemplazala i tilde por su caracter especial
+                        CellValue = Replace(CellValue, "ó", """ & ChrW(243) & """, 1) ' reemplazala o tilde por su caracter especial
+                        CellValue = Replace(CellValue, "ú", """ & ChrW(250) & """, 1) ' reemplazala u tilde por su caracter especial
+                        CellValue = Replace(CellValue, "Á", """ & ChrW(193) & """, 1) ' reemplazala A tilde por su caracter especiall
+                        CellValue = Replace(CellValue, "É", """ & ChrW(201) & """, 1) ' reemplazala E tilde por su caracter especial
+                        CellValue = Replace(CellValue, "Í", """ & ChrW(205) & """, 1) ' reemplazala I tilde por su caracter especiall
+                        CellValue = Replace(CellValue, "Ó", """ & ChrW(211) & """, 1) ' reemplazala O tilde por su caracter especial
+                        CellValue = Replace(CellValue, "Ú", """ & ChrW(218) & """, 1) ' reemplazala U tilde por su caracter especial
                         Print #oFile, "            Cells(m + " & i & ", n + " & j & ").FormulaR1C1 =" & """" & CellValue & """"
                     End If
                 Next j
@@ -1651,16 +1651,16 @@ split:
                     If Cells(m + i, n + j).FormulaR1C1 <> "" Then ' lee todas las celdas de cada vector y escribe su formula
                         On Error Resume Next
                         CellValue = Replace(Cells(m + i, n + j).FormulaR1C1, """", """""") 'reemplaza una comilla por dos comillas para que el codigo generado quede sin errores.
-                        CellValue = Replace(CellValue, "·", """ & ChrW(225) & """, 1) ' reemplazala a tilde por su caracter especial
-                        CellValue = Replace(CellValue, "È", """ & ChrW(233) & """, 1) ' reemplazala e tilde por su caracter especial
-                        CellValue = Replace(CellValue, "Ì", """ & ChrW(237) & """, 1) ' reemplazala i tilde por su caracter especial
-                        CellValue = Replace(CellValue, "Û", """ & ChrW(243) & """, 1) ' reemplazala o tilde por su caracter especial
-                        CellValue = Replace(CellValue, "˙", """ & ChrW(250) & """, 1) ' reemplazala u tilde por su caracter especial
-                        CellValue = Replace(CellValue, "¡", """ & ChrW(193) & """, 1) ' reemplazala A tilde por su caracter especiall
-                        CellValue = Replace(CellValue, "…", """ & ChrW(201) & """, 1) ' reemplazala E tilde por su caracter especial
-                        CellValue = Replace(CellValue, "Õ", """ & ChrW(205) & """, 1) ' reemplazala I tilde por su caracter especiall
-                        CellValue = Replace(CellValue, "”", """ & ChrW(211) & """, 1) ' reemplazala O tilde por su caracter especial
-                        CellValue = Replace(CellValue, "⁄", """ & ChrW(218) & """, 1) ' reemplazala U tilde por su caracter especial
+                        CellValue = Replace(CellValue, "á", """ & ChrW(225) & """, 1) ' reemplazala a tilde por su caracter especial
+                        CellValue = Replace(CellValue, "é", """ & ChrW(233) & """, 1) ' reemplazala e tilde por su caracter especial
+                        CellValue = Replace(CellValue, "í", """ & ChrW(237) & """, 1) ' reemplazala i tilde por su caracter especial
+                        CellValue = Replace(CellValue, "ó", """ & ChrW(243) & """, 1) ' reemplazala o tilde por su caracter especial
+                        CellValue = Replace(CellValue, "ú", """ & ChrW(250) & """, 1) ' reemplazala u tilde por su caracter especial
+                        CellValue = Replace(CellValue, "Á", """ & ChrW(193) & """, 1) ' reemplazala A tilde por su caracter especiall
+                        CellValue = Replace(CellValue, "É", """ & ChrW(201) & """, 1) ' reemplazala E tilde por su caracter especial
+                        CellValue = Replace(CellValue, "Í", """ & ChrW(205) & """, 1) ' reemplazala I tilde por su caracter especiall
+                        CellValue = Replace(CellValue, "Ó", """ & ChrW(211) & """, 1) ' reemplazala O tilde por su caracter especial
+                        CellValue = Replace(CellValue, "Ú", """ & ChrW(218) & """, 1) ' reemplazala U tilde por su caracter especial
                         Print #oFile, "            Cells(m + " & i + 9 & ", n + " & j & ").FormulaR1C1 =" & """" & CellValue & """"
                     End If
                 Next j
@@ -1765,16 +1765,16 @@ splitPC:
             If Not Cells(m, n + 9).Comment Is Nothing Then
                 Comm = Cells(m, n + 9).Comment.Text
                 Comm = Replace(Comm, "     ", "", 1)
-                Comm = Replace(Comm, "·", """ & ChrW(225) & """, 1) ' reemplazala a tilde por su caracter especial
-                Comm = Replace(Comm, "È", """ & ChrW(233) & """, 1) ' reemplazala e tilde por su caracter especial
-                Comm = Replace(Comm, "Ì", """ & ChrW(237) & """, 1) ' reemplazala i tilde por su caracter especial
-                Comm = Replace(Comm, "Û", """ & ChrW(243) & """, 1) ' reemplazala o tilde por su caracter especial
-                Comm = Replace(Comm, "˙", """ & ChrW(250) & """, 1) ' reemplazala u tilde por su caracter especial
-                Comm = Replace(Comm, "¡", """ & ChrW(193) & """, 1) ' reemplazala A tilde por su caracter especiall
-                Comm = Replace(Comm, "…", """ & ChrW(201) & """, 1) ' reemplazala E tilde por su caracter especial
-                Comm = Replace(Comm, "Õ", """ & ChrW(205) & """, 1) ' reemplazala I tilde por su caracter especiall
-                Comm = Replace(Comm, "”", """ & ChrW(211) & """, 1) ' reemplazala O tilde por su caracter especial
-                Comm = Replace(Comm, "⁄", """ & ChrW(218) & """, 1) ' reemplazala U tilde por su caracter especial
+                Comm = Replace(Comm, "á", """ & ChrW(225) & """, 1) ' reemplazala a tilde por su caracter especial
+                Comm = Replace(Comm, "é", """ & ChrW(233) & """, 1) ' reemplazala e tilde por su caracter especial
+                Comm = Replace(Comm, "í", """ & ChrW(237) & """, 1) ' reemplazala i tilde por su caracter especial
+                Comm = Replace(Comm, "ó", """ & ChrW(243) & """, 1) ' reemplazala o tilde por su caracter especial
+                Comm = Replace(Comm, "ú", """ & ChrW(250) & """, 1) ' reemplazala u tilde por su caracter especial
+                Comm = Replace(Comm, "Á", """ & ChrW(193) & """, 1) ' reemplazala A tilde por su caracter especiall
+                Comm = Replace(Comm, "É", """ & ChrW(201) & """, 1) ' reemplazala E tilde por su caracter especial
+                Comm = Replace(Comm, "Í", """ & ChrW(205) & """, 1) ' reemplazala I tilde por su caracter especiall
+                Comm = Replace(Comm, "Ó", """ & ChrW(211) & """, 1) ' reemplazala O tilde por su caracter especial
+                Comm = Replace(Comm, "Ú", """ & ChrW(218) & """, 1) ' reemplazala U tilde por su caracter especial
                 Comm = Replace(Comm, Chr(10), """" & " & Chr(10)  & _ " & vbNewLine & """     ", 1)
                 oFile.writeline "       Dim HELPtxt as String"
                 oFile.writeline "       HELPtxt = """ & Comm & """"
@@ -1808,16 +1808,16 @@ splitPC:
                     If Cells(m + i, n + j).Value <> "" Then ' lee todas las celdas de cada vector y escribe su formula
                         On Error Resume Next
                         CellValue = Replace(Cells(m + i, n + j).FormulaR1C1, """", """""") 'reemplaza una comilla por dos comillas para que el cãdigo generado quede sin errores.
-                        CellValue = Replace(CellValue, "·", """ & ChrW(225) & """, 1) ' reemplazala a tilde por su caracter especial
-                        CellValue = Replace(CellValue, "È", """ & ChrW(233) & """, 1) ' reemplazala e tilde por su caracter especial
-                        CellValue = Replace(CellValue, "Ì", """ & ChrW(237) & """, 1) ' reemplazala i tilde por su caracter especial
-                        CellValue = Replace(CellValue, "Û", """ & ChrW(243) & """, 1) ' reemplazala o tilde por su caracter especial
-                        CellValue = Replace(CellValue, "˙", """ & ChrW(250) & """, 1) ' reemplazala u tilde por su caracter especial
-                        CellValue = Replace(CellValue, "¡", """ & ChrW(193) & """, 1) ' reemplazala A tilde por su caracter especiall
-                        CellValue = Replace(CellValue, "…", """ & ChrW(201) & """, 1) ' reemplazala E tilde por su caracter especial
-                        CellValue = Replace(CellValue, "Õ", """ & ChrW(205) & """, 1) ' reemplazala I tilde por su caracter especiall
-                        CellValue = Replace(CellValue, "”", """ & ChrW(211) & """, 1) ' reemplazala O tilde por su caracter especial
-                        CellValue = Replace(CellValue, "⁄", """ & ChrW(218) & """, 1) ' reemplazala U tilde por su caracter especial
+                        CellValue = Replace(CellValue, "á", """ & ChrW(225) & """, 1) ' reemplazala a tilde por su caracter especial
+                        CellValue = Replace(CellValue, "é", """ & ChrW(233) & """, 1) ' reemplazala e tilde por su caracter especial
+                        CellValue = Replace(CellValue, "í", """ & ChrW(237) & """, 1) ' reemplazala i tilde por su caracter especial
+                        CellValue = Replace(CellValue, "ó", """ & ChrW(243) & """, 1) ' reemplazala o tilde por su caracter especial
+                        CellValue = Replace(CellValue, "ú", """ & ChrW(250) & """, 1) ' reemplazala u tilde por su caracter especial
+                        CellValue = Replace(CellValue, "Á", """ & ChrW(193) & """, 1) ' reemplazala A tilde por su caracter especiall
+                        CellValue = Replace(CellValue, "É", """ & ChrW(201) & """, 1) ' reemplazala E tilde por su caracter especial
+                        CellValue = Replace(CellValue, "Í", """ & ChrW(205) & """, 1) ' reemplazala I tilde por su caracter especiall
+                        CellValue = Replace(CellValue, "Ó", """ & ChrW(211) & """, 1) ' reemplazala O tilde por su caracter especial
+                        CellValue = Replace(CellValue, "Ú", """ & ChrW(218) & """, 1) ' reemplazala U tilde por su caracter especial
                         oFile.writeline "            Cells(m + " & i & ", n + " & j & ").FormulaR1C1 =" & """" & CellValue & """"
                     End If
                 Next j
@@ -1882,16 +1882,16 @@ splitPC:
                     If Cells(m + i, n + j).FormulaR1C1 <> "" Then ' lee todas las celdas de cada vector y escribe su formula
                         On Error Resume Next
                         CellValue = Replace(Cells(m + i, n + j).FormulaR1C1, """", """""") 'reemplaza una comilla por dos comillas para que el codigo generado quede sin errores.
-                        CellValue = Replace(CellValue, "·", """ & ChrW(225) & """, 1) ' reemplazala a tilde por su caracter especial
-                        CellValue = Replace(CellValue, "È", """ & ChrW(233) & """, 1) ' reemplazala e tilde por su caracter especial
-                        CellValue = Replace(CellValue, "Ì", """ & ChrW(237) & """, 1) ' reemplazala i tilde por su caracter especial
-                        CellValue = Replace(CellValue, "Û", """ & ChrW(243) & """, 1) ' reemplazala o tilde por su caracter especial
-                        CellValue = Replace(CellValue, "˙", """ & ChrW(250) & """, 1) ' reemplazala u tilde por su caracter especial
-                        CellValue = Replace(CellValue, "¡", """ & ChrW(193) & """, 1) ' reemplazala A tilde por su caracter especiall
-                        CellValue = Replace(CellValue, "…", """ & ChrW(201) & """, 1) ' reemplazala E tilde por su caracter especial
-                        CellValue = Replace(CellValue, "Õ", """ & ChrW(205) & """, 1) ' reemplazala I tilde por su caracter especiall
-                        CellValue = Replace(CellValue, "”", """ & ChrW(211) & """, 1) ' reemplazala O tilde por su caracter especial
-                        CellValue = Replace(CellValue, "⁄", """ & ChrW(218) & """, 1) ' reemplazala U tilde por su caracter especial
+                        CellValue = Replace(CellValue, "á", """ & ChrW(225) & """, 1) ' reemplazala a tilde por su caracter especial
+                        CellValue = Replace(CellValue, "é", """ & ChrW(233) & """, 1) ' reemplazala e tilde por su caracter especial
+                        CellValue = Replace(CellValue, "í", """ & ChrW(237) & """, 1) ' reemplazala i tilde por su caracter especial
+                        CellValue = Replace(CellValue, "ó", """ & ChrW(243) & """, 1) ' reemplazala o tilde por su caracter especial
+                        CellValue = Replace(CellValue, "ú", """ & ChrW(250) & """, 1) ' reemplazala u tilde por su caracter especial
+                        CellValue = Replace(CellValue, "Á", """ & ChrW(193) & """, 1) ' reemplazala A tilde por su caracter especiall
+                        CellValue = Replace(CellValue, "É", """ & ChrW(201) & """, 1) ' reemplazala E tilde por su caracter especial
+                        CellValue = Replace(CellValue, "Í", """ & ChrW(205) & """, 1) ' reemplazala I tilde por su caracter especiall
+                        CellValue = Replace(CellValue, "Ó", """ & ChrW(211) & """, 1) ' reemplazala O tilde por su caracter especial
+                        CellValue = Replace(CellValue, "Ú", """ & ChrW(218) & """, 1) ' reemplazala U tilde por su caracter especial
                         oFile.writeline "            Cells(m + " & i + 9 & ", n + " & j & ").FormulaR1C1 =" & """" & CellValue & """"
                     End If
                 Next j
