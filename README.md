@@ -17,7 +17,6 @@ The package is distributed in 6 text files and must be integrated into an Excel 
 	4. 1_4MODULE_4.txt - Models as samples. 
 	5. 1_4MODULE_5.txt - Models as samples. 
 	6. 1_4MODULE_6.txt - Models as samples. 
-
 	
  TO MAKE IT WORK:
  1. Open a New MS Excel file, open the VBA Editor (Alt + F11 in Windows or Fn + Option + F11 in macOS).
@@ -29,7 +28,9 @@ The package is distributed in 6 text files and must be integrated into an Excel 
  7. Click the button to generate the ScienSolar interface.
  8. To load a sample project, select it from the list and click the +Vector button.
  9. To add objects to projects (such as Excel 3D models, equations, etc.) place them into a new sheet named 3DModels.
- 10. Save the file in your desired folder, save it as Macro-Enabled Workbook (*. xlsm).
- 11. Visit www.sciensolar.com to download updates and documentation.
+     (to download objects file for some example projects go to https://sciensolar.com/wp-content/uploads/2024/06/3DModels.xlsx and
+    open the file, then move the 3DModels sheet to the workbook where the code is installed. Another option is to copy the code to the 3DModels file.)
+ 11. Save the file in your desired folder, save it as Macro-Enabled Workbook (*. xlsm).
+ 12. Visit www.sciensolar.com to download updates and documentation.
 
 ''////////////////////////////////////  ((((((()))))))  \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
