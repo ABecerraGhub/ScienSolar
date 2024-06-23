@@ -11,12 +11,12 @@ INSTALATION:
 The package is distributed in 6 text files and must be integrated into an Excel file. The content of the files is as follows:
 
 
-	1. 1_4MODULE_1.TXT - main code for ScienSolar to work properly.
-	2. 1_4MODULE_2.txt - main code 2 for ScienSolar to work properly
-	3. 1_4MODULE_3.txt - Models as samples. 
-	4. 1_4MODULE_4.txt - Models as samples. 
-	5. 1_4MODULE_5.txt - Models as samples. 
-	6. 1_4MODULE_6.txt - Models as samples. 
+	1. 1_5MODULE_1.TXT - main code for ScienSolar to work properly.
+	2. 1_5MODULE_2.txt - main code 2 for ScienSolar to work properly
+	3. 1_5MODULE_3.txt - Models as samples. 
+	4. 1_5MODULE_4.txt - Models as samples. 
+	5. 1_5MODULE_5.txt - Models as samples. 
+	6. 1_5MODULE_6.txt - Models as samples. 
 	
  TO MAKE IT WORK:
  1. Open a New MS Excel file, open the VBA Editor (Alt + F11 in Windows or Fn + Option + F11 in macOS).
