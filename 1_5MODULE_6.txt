@@ -669,15 +669,15 @@ Sub Project_26_EN(ByVal VecType, m, n, m1, n1 As Integer) ' 26_Magnetic Force_EN
 End Sub
 Sub Project_27_ES(ByVal VecType, m, n, m1, n1 As Integer) ' 27_Espira en un campo magnetico_ES
 
-   ' Updated: 7/04/24
+   ' Updated: 12/08/24
    ' Created by: Ariel R. Becerra (21/11/23)
    ' Modified by: _________________
    ' This is the code of your new project.
    ' Steps to embed the code to ScienSolar:
    ' Note 1: The number 27 in the name of this function must match the one in the list of the CONFIG sheet for this project. If not, please correct it.
-   ' Note 2: This code will be integrated into the main code to automate the download of the project.
-   ' Note 3: The formulas and cell values generated here correspond only to the first 30 columns from INICIO to the right in the sheet. All your formulas and values are recommended to be written in these columns.
-   ' Step 1. Go to the CONFIG sheet and add a short name and the number of your new project to the last row in the projects list.
+   ' Note 2: This code will be integrated into the main code (into the VBA editor) to automate the download of the project.
+   ' Note 3: The formulas and cell values generated here correspond only to the first 30 columns in the sheet. All your formulas and values are recommended to be written in these columns.
+   ' Step 1. Go to the CONFIG sheet (at the end of column C) and add the number of your new project to the last row in the projects list, and a short name in the corresponding langage column.
    ' Step 2. Make sure that the list of projects in CONFIG sheet has the correct ascending numbering.
    ' Step 4. Open the VBA editor (Alt + F11 in Windows or Fn + Option + F11 in macOS). To avoid mistakes, make sure you only have one workbook open.
    ' Step 5. On the left, in the project explorer, select a non full module (or add a new one).
@@ -699,6 +699,7 @@ Sub Project_27_ES(ByVal VecType, m, n, m1, n1 As Integer) ' 27_Espira en un camp
             Cells(m1 + 1, n1 + 5).FormulaR1C1 = "0"
             Cells(m1 + 1, n1 + 6).FormulaR1C1 = "=CONFIG!R4C8"
             Cells(m1 + 1, n1 + 7).FormulaR1C1 = "45"
+            Cells(m1 + 2, n1 + 0).FormulaR1C1 = "t = 0,15625 s."
             Cells(m1 + 2, n1 + 2).FormulaR1C1 = "=CONFIG!R5C4"
             Cells(m1 + 2, n1 + 3).FormulaR1C1 = "40"
             Cells(m1 + 2, n1 + 4).FormulaR1C1 = "y"
@@ -709,7 +710,7 @@ Sub Project_27_ES(ByVal VecType, m, n, m1, n1 As Integer) ' 27_Espira en un camp
             Cells(m1 + 3, n1 + 2).FormulaR1C1 = "=CONFIG!R6C4"
             Cells(m1 + 3, n1 + 3).FormulaR1C1 = "200"
             Cells(m1 + 3, n1 + 4).FormulaR1C1 = "z"
-            Cells(m1 + 3, n1 + 5).FormulaR1C1 = "735"
+            Cells(m1 + 3, n1 + 5).FormulaR1C1 = "375"
        Cells(m1, n1 + 9).FormulaR1C1 = "HELP"
        Dim HELPtxt As String
        HELPtxt = "ESPIRA RECTANGULAR CON CORRIENTE EN UN CAMPO MAGN" & ChrW(201) & "TICO EXTERNO" & Chr(10) & _
@@ -726,6 +727,7 @@ Sub Project_27_ES(ByVal VecType, m, n, m1, n1 As Integer) ' 27_Espira en un camp
 "     If a rectangular closed wire with current is composed of 4 rectilinear parts, then each part experiences a different force in a different direction depending on the mutual orientation of the current element and the external field, where the current element is called the product of the current and the rectilinear cable element: IL and is a vector that goes in the direction of the current." & Chr(10) & _
 "     In the model, in cell E9 the magnitude and direction of the current can be modified, in E11, E12, E13 the position of the loop in space; in E17, E18 and E19 the components of the external magnetic field, in E23 the size of the loop. With the 1 By 1 button you can change the orientation of the loop with respect to the magnetic field and observe the behavior of the magnetic forces on the segments of the loop." & Chr(10) & _
 "     With the Run button, you can rotate the loop 360 degrees and watch the changes in forces. The Set to Zero button returns the loop to the starting position."
+       On Error Resume Next
        Cells(m1, n1 + 9).Comment.Text Text:=HELPtxt
 
 
@@ -735,7 +737,7 @@ Sub Project_27_ES(ByVal VecType, m, n, m1, n1 As Integer) ' 27_Espira en un camp
             Cells(m + 3, n + 2).FormulaR1C1 = "=CONFIG!R6C4"
             Cells(m + 3, n + 3).FormulaR1C1 = "200"
             Cells(m + 3, n + 4).FormulaR1C1 = "z"
-            Cells(m + 3, n + 5).FormulaR1C1 = "735"
+            Cells(m + 3, n + 5).FormulaR1C1 = "375"
             Cells(m + 4, n + -1).FormulaR1C1 = "1"
             Cells(m + 4, n + 0).FormulaR1C1 = "183"
             Cells(m + 4, n + 2).FormulaR1C1 = "Espira en un campo magn" & ChrW(233) & "tico"
@@ -753,15 +755,18 @@ Sub Project_27_ES(ByVal VecType, m, n, m1, n1 As Integer) ' 27_Espira en un camp
             Cells(m + 7, n + 5).FormulaR1C1 = "-1"
             Cells(m + 8, n + -1).FormulaR1C1 = "=SIN(RADIANS(R[-6]C[8]))"
             Cells(m + 8, n + 0).FormulaR1C1 = "=1-COS(RADIANS(R[-6]C[7]))"
+            Cells(m + 8, n + 2).FormulaR1C1 = "=IF(R[-4]C[-1]>1,"" <-- Variable coordinates"","""")"
             Cells(m + 8, n + 21).FormulaR1C1 = "La fuerza que experimenta un vector elemento de corriente IL por parte de un campo magn" & ChrW(233) & "tico "
             Cells(m + 9, n + -1).FormulaR1C1 = "=R20C7*R[9]C"
             Cells(m + 9, n + 0).FormulaR1C1 = "=R20C7*R[9]C"
             Cells(m + 9, n + 1).FormulaR1C1 = "=R20C7*R[9]C"
+            Cells(m + 9, n + 2).FormulaR1C1 = "=IF(R[-5]C[-1]>1,"" <-- Field formulae"","""")"
             Cells(m + 9, n + 4).FormulaR1C1 = "Campo magn" & ChrW(233) & "tico:"
             Cells(m + 9, n + 21).FormulaR1C1 = "externo se expresa por la ecuaci" & ChrW(243) & "n vectorial:"
             Cells(m + 10, n + -1).FormulaR1C1 = "1"
             Cells(m + 10, n + 0).FormulaR1C1 = "0"
             Cells(m + 10, n + 1).FormulaR1C1 = "1"
+            Cells(m + 10, n + 4).FormulaR1C1 = "=IF(RC[-4]>0,""       For aditional formula (FA),"","""")"
             Cells(m + 11, n + -1).FormulaR1C1 = "1"
             Cells(m + 11, n + 0).FormulaR1C1 = "0"
             Cells(m + 11, n + 1).FormulaR1C1 = "1"
@@ -799,11 +804,13 @@ Sub Project_27_ES(ByVal VecType, m, n, m1, n1 As Integer) ' 27_Espira en un camp
             Cells(m + 8, n + -1).FormulaR1C1 = "1"
             Cells(m + 8, n + 0).FormulaR1C1 = "1"
             Cells(m + 8, n + 1).FormulaR1C1 = "1"
+            Cells(m + 8, n + 2).FormulaR1C1 = "=IF(R[-4]C[-1]>1,"" <-- Variable coordinates"","""")"
             Cells(m + 8, n + 4).FormulaR1C1 = "    r           ="
             Cells(m + 8, n + 5).FormulaR1C1 = "2"
             Cells(m + 9, n + -1).FormulaR1C1 = "=COS(RADIANS(RC[6]))*SIN(RADIANS(R[1]C[6]))"
             Cells(m + 9, n + 0).FormulaR1C1 = "=SIN(RADIANS(RC[5]))*SIN(RADIANS(R[1]C[5]))"
             Cells(m + 9, n + 1).FormulaR1C1 = "=COS(RADIANS(R[1]C[4]))"
+            Cells(m + 9, n + 2).FormulaR1C1 = "=IF(R[-5]C[-1]>1,"" <-- Field formulae"","""")"
             Cells(m + 9, n + 4).FormulaR1C1 = "    phi      ="
             Cells(m + 9, n + 5).FormulaR1C1 = "90"
             Cells(m + 9, n + 21).FormulaR1C1 = "El modelo permite analizar cualitativamente las direcciones de los vectores que intervienen en el fen" & ChrW(243) & "meno,"
@@ -816,6 +823,7 @@ Sub Project_27_ES(ByVal VecType, m, n, m1, n1 As Integer) ' 27_Espira en un camp
             Cells(m + 11, n + -1).FormulaR1C1 = "2"
             Cells(m + 11, n + 0).FormulaR1C1 = "0"
             Cells(m + 11, n + 1).FormulaR1C1 = "1,5"
+            Cells(m + 11, n + 4).FormulaR1C1 = "=IF(R[-1]C[-4]>0,""<--  use these cells."","""")"
             Cells(m + 11, n + 21).FormulaR1C1 = "la orientaci" & ChrW(243) & "n  de la espira en el espacio; en G14, G15 y G16 las componentes del campo magn" & ChrW(233) & "tico externo,"
             Cells(m + 3, n + 1).Interior.Color = "16777075"
             Cells(m + 3, n + 1).Font.Size = "11"
@@ -841,18 +849,26 @@ Sub Project_27_ES(ByVal VecType, m, n, m1, n1 As Integer) ' 27_Espira en un camp
             Cells(m + 7, n + -1).FormulaR1C1 = "=R[-9]C"
             Cells(m + 7, n + 0).FormulaR1C1 = "=R[-9]C"
             Cells(m + 7, n + 1).FormulaR1C1 = "=R[-9]C"
+            Cells(m + 7, n + 4).FormulaR1C1 = "Magnitud de las fuerzas:"
             Cells(m + 7, n + 21).FormulaR1C1 = "XYZ, YZ, XZ, XY."
+            Cells(m + 8, n + 2).FormulaR1C1 = "=IF(R[-4]C[-1]>1,"" <-- Variable coordinates"","""")"
             Cells(m + 9, n + -1).FormulaR1C1 = "=-SIN(RADIANS(R[-9]C[6]))"
             Cells(m + 9, n + 0).FormulaR1C1 = "=COS(RADIANS(R[-9]C[5]))"
             Cells(m + 9, n + 1).FormulaR1C1 = "0"
             Cells(m + 9, n + 2).FormulaR1C1 = "=IF(R[-5]C[-1]>1,"" <-- Field formulae"","""")"
+            Cells(m + 9, n + 4).FormulaR1C1 = "F1="
+            Cells(m + 9, n + 5).FormulaR1C1 = "=SQRT(R[117]C[-6]^2+R[117]C[-5]^2+R[117]C[-4]^2)"
             Cells(m + 9, n + 21).FormulaR1C1 = "Ejercicio:"
             Cells(m + 10, n + -1).FormulaR1C1 = "1"
             Cells(m + 10, n + 0).FormulaR1C1 = "0"
             Cells(m + 10, n + 1).FormulaR1C1 = "1"
+            Cells(m + 10, n + 4).FormulaR1C1 = "F2="
+            Cells(m + 10, n + 5).FormulaR1C1 = "=SQRT(R[134]C[-6]^2+R[134]C[-5]^2+R[134]C[-4]^2)"
             Cells(m + 11, n + -1).FormulaR1C1 = "2"
             Cells(m + 11, n + 0).FormulaR1C1 = "0"
             Cells(m + 11, n + 1).FormulaR1C1 = "1,5"
+            Cells(m + 11, n + 4).FormulaR1C1 = "F3="
+            Cells(m + 11, n + 5).FormulaR1C1 = "=SQRT(R[124]C[-6]^2+R[124]C[-5]^2+R[124]C[-4]^2)"
             Cells(m + 11, n + 21).FormulaR1C1 = "1. Identifique cualitativamente la posici" & ChrW(243) & "nn de la espira m" & ChrW(225) & "s estable y la menos estable con respecto al "
             Cells(m + 3, n + 1).Interior.Color = "65535"
             Cells(m + 3, n + 1).Font.Size = "11"
@@ -864,6 +880,8 @@ Sub Project_27_ES(ByVal VecType, m, n, m1, n1 As Integer) ' 27_Espira en un camp
       If m = m1 + 27 Then ' vector 16
             Cells(m + 3, n + -1).FormulaR1C1 = "0"
             Cells(m + 3, n + 0).FormulaR1C1 = "theta"
+            Cells(m + 3, n + 4).FormulaR1C1 = "F4="
+            Cells(m + 3, n + 5).FormulaR1C1 = "=SQRT(R[141]C[-6]^2+R[141]C[-5]^2+R[141]C[-4]^2)"
             Cells(m + 3, n + 22).FormulaR1C1 = "campo magn" & ChrW(233) & "tico."
             Cells(m + 4, n + -1).FormulaR1C1 = "1"
             Cells(m + 4, n + 0).FormulaR1C1 = "183"
@@ -1229,15 +1247,15 @@ Sub Project_27_ES(ByVal VecType, m, n, m1, n1 As Integer) ' 27_Espira en un camp
             Cells(m + 3, n + 0).FormulaR1C1 = "B"
             Cells(m + 4, n + -1).FormulaR1C1 = "1"
             Cells(m + 4, n + 0).FormulaR1C1 = "183"
-            Cells(m + 4, n + 1).FormulaR1C1 = "o[0,2]x=[-2;2]o2[0,2]y=[0;4]o3[1]z=[0;0]color=[0]origin[cart.]=[0;0;0]tfactor=0,002790179s"
-            Cells(m + 5, n + -1).FormulaR1C1 = "21"
+            Cells(m + 4, n + 1).FormulaR1C1 = "o[1]x=[-2;2]o2[1]y=[0;4]o3[1]z=[0;0]color=[0]origin[cart.]=[0;0;0]tfactor=0,001802885s"
+            Cells(m + 5, n + -1).FormulaR1C1 = "26"
             Cells(m + 5, n + 0).FormulaR1C1 = "3"
             Cells(m + 5, n + 1).FormulaR1C1 = "0"
             Cells(m + 7, n + -1).FormulaR1C1 = "=R[1]C"
             Cells(m + 7, n + 0).FormulaR1C1 = "=R[1]C"
             Cells(m + 7, n + 1).FormulaR1C1 = "=R[1]C"
             Cells(m + 8, n + -1).FormulaR1C1 = "2"
-            Cells(m + 8, n + 0).FormulaR1C1 = "3.6"
+            Cells(m + 8, n + 0).FormulaR1C1 = "4"
             Cells(m + 8, n + 1).FormulaR1C1 = "0"
             Cells(m + 8, n + 2).FormulaR1C1 = "=IF(R[-4]C[-1]>1,"" <-- Magnetic field position"","""")"
             Cells(m + 9, n + -1).FormulaR1C1 = "=R[-124]C[6]"
@@ -1396,15 +1414,15 @@ Sub Project_27_ES(ByVal VecType, m, n, m1, n1 As Integer) ' 27_Espira en un camp
 End Sub
 Sub Project_27_EN(ByVal VecType, m, n, m1, n1 As Integer) ' 27_Loop in a Magnetic Field_EN
 
-   ' Updated: 7/04/24
+   ' Updated: 12/08/24
    ' Created by: Ariel R. Becerra (21/11/23)
    ' Modified by: _________________
    ' This is the code of your new project.
    ' Steps to embed the code to ScienSolar:
    ' Note 1: The number 27 in the name of this function must match the one in the list of the CONFIG sheet for this project. If not, please correct it.
-   ' Note 2: This code will be integrated into the main code to automate the download of the project.
-   ' Note 3: The formulas and cell values generated here correspond only to the first 30 columns from INICIO to the right in the sheet. All your formulas and values are recommended to be written in these columns.
-   ' Step 1. Go to the CONFIG sheet and add a short name and the number of your new project to the last row in the projects list.
+   ' Note 2: This code will be integrated into the main code (into the VBA editor) to automate the download of the project.
+   ' Note 3: The formulas and cell values generated here correspond only to the first 30 columns in the sheet. All your formulas and values are recommended to be written in these columns.
+   ' Step 1. Go to the CONFIG sheet (at the end of column C) and add the number of your new project to the last row in the projects list, and a short name in the corresponding langage column.
    ' Step 2. Make sure that the list of projects in CONFIG sheet has the correct ascending numbering.
    ' Step 4. Open the VBA editor (Alt + F11 in Windows or Fn + Option + F11 in macOS). To avoid mistakes, make sure you only have one workbook open.
    ' Step 5. On the left, in the project explorer, select a non full module (or add a new one).
@@ -1426,6 +1444,7 @@ Sub Project_27_EN(ByVal VecType, m, n, m1, n1 As Integer) ' 27_Loop in a Magneti
             Cells(m1 + 1, n1 + 5).FormulaR1C1 = "0"
             Cells(m1 + 1, n1 + 6).FormulaR1C1 = "=CONFIG!R4C8"
             Cells(m1 + 1, n1 + 7).FormulaR1C1 = "45"
+            Cells(m1 + 2, n1 + 0).FormulaR1C1 = "t = 1,160156 s."
             Cells(m1 + 2, n1 + 2).FormulaR1C1 = "=CONFIG!R5C4"
             Cells(m1 + 2, n1 + 3).FormulaR1C1 = "40"
             Cells(m1 + 2, n1 + 4).FormulaR1C1 = "y"
@@ -1453,6 +1472,7 @@ Sub Project_27_EN(ByVal VecType, m, n, m1, n1 As Integer) ' 27_Loop in a Magneti
 "     If a rectangular closed wire with current is composed of 4 rectilinear parts, then each part experiences a different force in a different direction depending on the mutual orientation of the current element and the external field, where the current element is called the product of the current and the rectilinear cable element: IL and is a vector that goes in the direction of the current." & Chr(10) & _
 "     In the model, in cell E9 the magnitude and direction of the current can be modified, in E11, E12, E13 the position of the loop in space; in E17, E18 and E19 the components of the external magnetic field, in E23 the size of the loop. With the 1 By 1 button you can change the orientation of the loop with respect to the magnetic field and observe the behavior of the magnetic forces on the segments of the loop." & Chr(10) & _
 "     With the Run button, you can rotate the loop 360 degrees and watch the changes in forces. The Set to Zero button returns the loop to the starting position."
+       On Error Resume Next
        Cells(m1, n1 + 9).Comment.Text Text:=HELPtxt
 
 
@@ -1490,6 +1510,7 @@ Sub Project_27_EN(ByVal VecType, m, n, m1, n1 As Integer) ' 27_Loop in a Magneti
             Cells(m + 10, n + -1).FormulaR1C1 = "1"
             Cells(m + 10, n + 0).FormulaR1C1 = "0"
             Cells(m + 10, n + 1).FormulaR1C1 = "1"
+            Cells(m + 10, n + 4).FormulaR1C1 = "=IF(RC[-4]>0,""       For aditional formula (FA),"","""")"
             Cells(m + 11, n + -1).FormulaR1C1 = "1"
             Cells(m + 11, n + 0).FormulaR1C1 = "0"
             Cells(m + 11, n + 1).FormulaR1C1 = "1"
@@ -1545,6 +1566,7 @@ Sub Project_27_EN(ByVal VecType, m, n, m1, n1 As Integer) ' 27_Loop in a Magneti
             Cells(m + 11, n + -1).FormulaR1C1 = "2"
             Cells(m + 11, n + 0).FormulaR1C1 = "0"
             Cells(m + 11, n + 1).FormulaR1C1 = "1,5"
+            Cells(m + 11, n + 4).FormulaR1C1 = "=IF(R[-1]C[-4]>0,""<--  use these cells."","""")"
             Cells(m + 11, n + 21).FormulaR1C1 = "loop in space; in G14, G15 and G16 the components of the external magnetic field, in G26 the size "
             Cells(m + 3, n + 1).Interior.Color = "16777075"
             Cells(m + 3, n + 1).Font.Size = "11"
@@ -1570,21 +1592,26 @@ Sub Project_27_EN(ByVal VecType, m, n, m1, n1 As Integer) ' 27_Loop in a Magneti
             Cells(m + 7, n + -1).FormulaR1C1 = "=R[-9]C"
             Cells(m + 7, n + 0).FormulaR1C1 = "=R[-9]C"
             Cells(m + 7, n + 1).FormulaR1C1 = "=R[-9]C"
+            Cells(m + 7, n + 4).FormulaR1C1 = "Magnitude of the forces"
             Cells(m + 8, n + 2).FormulaR1C1 = "=IF(R[-4]C[-1]>1,"" <-- Variable coordinates"","""")"
             Cells(m + 8, n + 21).FormulaR1C1 = "Exercise:"
             Cells(m + 9, n + -1).FormulaR1C1 = "=-SIN(RADIANS(R[-9]C[6]))"
             Cells(m + 9, n + 0).FormulaR1C1 = "=COS(RADIANS(R[-9]C[5]))"
             Cells(m + 9, n + 1).FormulaR1C1 = "0"
             Cells(m + 9, n + 2).FormulaR1C1 = "=IF(R[-5]C[-1]>1,"" <-- Field formulae"","""")"
+            Cells(m + 9, n + 4).FormulaR1C1 = "F1="
+            Cells(m + 9, n + 5).FormulaR1C1 = "=SQRT(R[117]C[-6]^2+R[117]C[-5]^2+R[117]C[-4]^2)"
             Cells(m + 10, n + -1).FormulaR1C1 = "1"
             Cells(m + 10, n + 0).FormulaR1C1 = "0"
             Cells(m + 10, n + 1).FormulaR1C1 = "1"
-            Cells(m + 10, n + 4).FormulaR1C1 = "=IF(RC[-4]>0,""       For aditional formula (FA),"","""")"
+            Cells(m + 10, n + 4).FormulaR1C1 = "F2="
+            Cells(m + 10, n + 5).FormulaR1C1 = "=SQRT(R[134]C[-6]^2+R[134]C[-5]^2+R[134]C[-4]^2)"
             Cells(m + 10, n + 21).FormulaR1C1 = "1. Qualitatively identify the position of the most stable and least stable loop with respect to the magnetic field."
             Cells(m + 11, n + -1).FormulaR1C1 = "2"
             Cells(m + 11, n + 0).FormulaR1C1 = "0"
             Cells(m + 11, n + 1).FormulaR1C1 = "1,5"
-            Cells(m + 11, n + 4).FormulaR1C1 = "=IF(R[-1]C[-4]>0,""<--  use these cells."","""")"
+            Cells(m + 11, n + 4).FormulaR1C1 = "F3="
+            Cells(m + 11, n + 5).FormulaR1C1 = "=SQRT(R[124]C[-6]^2+R[124]C[-5]^2+R[124]C[-4]^2)"
             Cells(m + 11, n + 21).FormulaR1C1 = "2. In which positions is its potential energy maximum and in which is it minimum?"
             Cells(m + 3, n + 1).Interior.Color = "65535"
             Cells(m + 3, n + 1).Font.Size = "11"
@@ -1596,6 +1623,8 @@ Sub Project_27_EN(ByVal VecType, m, n, m1, n1 As Integer) ' 27_Loop in a Magneti
       If m = m1 + 27 Then ' vector 16
             Cells(m + 3, n + -1).FormulaR1C1 = "0"
             Cells(m + 3, n + 0).FormulaR1C1 = "theta"
+            Cells(m + 3, n + 4).FormulaR1C1 = "F4="
+            Cells(m + 3, n + 5).FormulaR1C1 = "=SQRT(R[141]C[-6]^2+R[141]C[-5]^2+R[141]C[-4]^2)"
             Cells(m + 3, n + 21).FormulaR1C1 = "3. Search the literature for the formulas for torque and potential energy of the loop with current in a "
             Cells(m + 4, n + -1).FormulaR1C1 = "1"
             Cells(m + 4, n + 0).FormulaR1C1 = "183"
@@ -1959,15 +1988,15 @@ Sub Project_27_EN(ByVal VecType, m, n, m1, n1 As Integer) ' 27_Loop in a Magneti
             Cells(m + 3, n + 0).FormulaR1C1 = "B"
             Cells(m + 4, n + -1).FormulaR1C1 = "1"
             Cells(m + 4, n + 0).FormulaR1C1 = "183"
-            Cells(m + 4, n + 1).FormulaR1C1 = "o[0,2]x=[-2;2]o2[0,2]y=[0;4]o3[1]z=[0;0]color=[0]origin[cart.]=[0;0;0]tfactor=0,002790179s"
-            Cells(m + 5, n + -1).FormulaR1C1 = "21"
+            Cells(m + 4, n + 1).FormulaR1C1 = "o[1]x=[-2;2]o2[1]y=[0;4]o3[1]z=[0;0]color=[0]origin[cart.]=[0;0;0]tfactor=0,001802885s"
+            Cells(m + 5, n + -1).FormulaR1C1 = "26"
             Cells(m + 5, n + 0).FormulaR1C1 = "3"
             Cells(m + 5, n + 1).FormulaR1C1 = "0"
             Cells(m + 7, n + -1).FormulaR1C1 = "=R[1]C"
             Cells(m + 7, n + 0).FormulaR1C1 = "=R[1]C"
             Cells(m + 7, n + 1).FormulaR1C1 = "=R[1]C"
             Cells(m + 8, n + -1).FormulaR1C1 = "2"
-            Cells(m + 8, n + 0).FormulaR1C1 = "3.6"
+            Cells(m + 8, n + 0).FormulaR1C1 = "4"
             Cells(m + 8, n + 1).FormulaR1C1 = "0"
             Cells(m + 8, n + 2).FormulaR1C1 = "=IF(R[-4]C[-1]>1,"" <-- Magnetic field position"","""")"
             Cells(m + 9, n + -1).FormulaR1C1 = "=R[-124]C[6]"
@@ -2124,6 +2153,7 @@ Sub Project_27_EN(ByVal VecType, m, n, m1, n1 As Integer) ' 27_Loop in a Magneti
        Call PutEqBut
       End If ' actualizar hoja
 End Sub
+
 Sub Project_28_ES(ByVal VecType, m, n, m1, n1 As Integer) ' 28_Ley de Biot - Savart_ES
 
    ' Updated: 7/07/24
@@ -3517,5 +3547,3 @@ Sub Project_28_EN(ByVal VecType, m, n, m1, n1 As Integer) ' 28_Biot-Savart Law_E
        Call PutEqBut
       End If ' actualizar hoja
 End Sub
-
-
