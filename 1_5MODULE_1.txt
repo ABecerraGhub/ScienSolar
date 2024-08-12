@@ -1177,6 +1177,7 @@ Sub Field(ByVal m, n As Integer) ' Visualizacoon de vectores y campos vectoriale
                         End If
                     End If
                   'Origen de coordenadas:
+                  On Error Resume Next ' 08-2024
                   'origen en x:
                     Atemp = InStr(ActiveSheet.Cells(m + 4, n + 1).Value, "origin[cart.]=") + 15
                     Btemp = InStr(Atemp, ActiveSheet.Cells(m + 4, n + 1).Value, ";", 1)
@@ -1300,6 +1301,7 @@ Sub Field(ByVal m, n As Integer) ' Visualizacoon de vectores y campos vectoriale
                         End If
                     End If
                   'Origen de coordenadas:
+                   On Error Resume Next ' 08-2024
                   'origen en x:
                     Atemp = InStr(ActiveSheet.Cells(m + 4, n + 1).Value, "origin[cart.]=") + 15
                     Btemp = InStr(Atemp, ActiveSheet.Cells(m + 4, n + 1).Value, ";", 1)
@@ -1424,6 +1426,7 @@ Sub Field(ByVal m, n As Integer) ' Visualizacoon de vectores y campos vectoriale
                         End If
                     End If
                   'Origen de coordenadas:
+                   On Error Resume Next ' 08-2024
                   'origen en x:
                     Atemp = InStr(ActiveSheet.Cells(m + 4, n + 1).Value, "origin[cart.]=") + 15
                     Btemp = InStr(Atemp, ActiveSheet.Cells(m + 4, n + 1).Value, ";", 1)
