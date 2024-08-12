@@ -1,6 +1,6 @@
 '////////////////////////////////////  ((((((()))))))  \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
 
-'  ScienSolar v. 1.5 MAIN MODULE 1. Updated 06-2024
+'  ScienSolar v. 1.5 MAIN MODULE 1. Updated 08-2024
 ' ScienSolar package for modeling physics and mathematics in MS Excel (tested on MS Excel 2013-2019 for Windows and Mac).
 ' The package is distributed in five text files and must be integrated into an Excel file.
 ' This package is protected by copyright law. © PhD Ariel R. Becerra B., 2022.
