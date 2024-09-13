@@ -1,22 +1,22 @@
 
 Sub Project_11_ES(ByVal VecType, m, n, m1, n1 As Integer) ' 11_Coordenadas esfericas_ES
 
-   ' Updated: 27/03/24
+   ' Updated: 5/09/24
    ' Created by: Ariel R. Becerra (21/11/23)
    ' Modified by: _________________
    ' This is the code of your new project.
    ' Steps to embed the code to ScienSolar:
    ' Note 1: The number 11 in the name of this function must match the one in the list of the CONFIG sheet for this project. If not, please correct it.
-   ' Note 2: This code will be integrated into the main code to automate the download of the project.
-   ' Note 3: The formulas and cell values generated here correspond only to the first 30 columns from INICIO to the right in the sheet. All your formulas and values are recommended to be written in these columns.
-   ' Step 1. Go to the CONFIG sheet and add a short name and the number of your new project to the last row in the projects list.
+   ' Note 2: This code will be integrated into the main code (into the VBA editor) to automate the download of the project.
+   ' Note 3: The formulas and cell values generated here correspond only to the first 30 columns in the sheet. All your formulas and values are recommended to be written in these columns.
+   ' Step 1. Go to the CONFIG sheet (at the end of column C) and add the number of your new project to the last row in the projects list, and a short name in the corresponding langage column.
    ' Step 2. Make sure that the list of projects in CONFIG sheet has the correct ascending numbering.
    ' Step 4. Open the VBA editor (Alt + F11 in Windows or Fn + Option + F11 in macOS). To avoid mistakes, make sure you only have one workbook open.
    ' Step 5. On the left, in the project explorer, select a non full module (or add a new one).
    ' Step 6. Select all the code in this file, copy and paste it at the end of the existing code in the module (or in the new one).
    ' Step 7. To load the project and to check it in a new sheet, go to the CONFIG sheet and click the New Sheet button, then select the project from the list and click the +Vector button.
    ' Step 8. Click any XYZ button to get the project in the coordinate system. Enjoy it!
-   ' Visit  www.sciensolar.com for news and updates of ? ScienSolar.
+   ' Visit  www.sciensolar.com for news and updates of © ScienSolar.
   
   
             Cells(m1 - 1, n1 + 2).FormulaR1C1 = "1"
@@ -31,12 +31,13 @@ Sub Project_11_ES(ByVal VecType, m, n, m1, n1 As Integer) ' 11_Coordenadas esfer
             Cells(m1 + 1, n1 + 5).FormulaR1C1 = "0"
             Cells(m1 + 1, n1 + 6).FormulaR1C1 = "=CONFIG!R4C8"
             Cells(m1 + 1, n1 + 7).FormulaR1C1 = "=CONFIG!R4C9"
+            Cells(m1 + 2, n1 + 0).FormulaR1C1 = "t = 0,109375 s."
             Cells(m1 + 2, n1 + 2).FormulaR1C1 = "=CONFIG!R5C4"
             Cells(m1 + 2, n1 + 3).FormulaR1C1 = "40"
             Cells(m1 + 2, n1 + 4).FormulaR1C1 = "y"
             Cells(m1 + 2, n1 + 5).FormulaR1C1 = "15"
             Cells(m1 + 2, n1 + 6).FormulaR1C1 = "=CONFIG!R5C8"
-            Cells(m1 + 2, n1 + 7).FormulaR1C1 = "40"
+            Cells(m1 + 2, n1 + 7).FormulaR1C1 = "45"
             Cells(m1 + 3, n1 + 0).FormulaR1C1 = "(Eq-r)"
             Cells(m1 + 3, n1 + 2).FormulaR1C1 = "=CONFIG!R6C4"
             Cells(m1 + 3, n1 + 3).FormulaR1C1 = "200"
@@ -63,6 +64,7 @@ Sub Project_11_ES(ByVal VecType, m, n, m1, n1 As Integer) ' 11_Coordenadas esfer
 "     phi = - i sin phi + j cos theta, theta = i cos phi cos theta + j sin phi cos theta - k sin theta," & Chr(10) & _
 "     where to the left of the equal sign are the unit vectors and to the right the angles themselves.These equations for unit r are in cells A12, B12, C12, in A21, B21, C21 for unit phi, and in A30, B30, C30 for unit theta." & Chr(10) & _
 "     To run a simulation, enter a value for r in cell E9=2 and for phi in cell E10=45, and then press the Run button. The angles will start to go in 4 from 45 to 180 degrees for theta. To change the initial position of the cylindrical system, go to the vector parameters r" & ChrW(233) & "ox, r" & ChrW(233) & "oy, r" & ChrW(233) & "oz."
+       On Error Resume Next
        Cells(m1, n1 + 9).Comment.Text Text:=HELPtxt
 
 
@@ -155,7 +157,7 @@ Sub Project_11_ES(ByVal VecType, m, n, m1, n1 As Integer) ' 11_Coordenadas esfer
             Cells(m + 7, n + 21).FormulaR1C1 = "proyectos SIMETR" & ChrW(205) & "A CIL" & ChrW(205) & "NDRICA y SIMETR" & ChrW(205) & "A ESF" & ChrW(201) & "RICA."
             Cells(m + 8, n + 2).FormulaR1C1 = "y ="
             Cells(m + 8, n + 4).FormulaR1C1 = "phi ="
-            Cells(m + 8, n + 5).FormulaR1C1 = "=IF(R[-1]C[-2]="""",R[-7]C[-2],DEGREES(IF(AND(R[-1]C[-2]>0,RC[-2]<0),2*PI()+ASIN(RC[-2]/R[-1]C),IF(AND(R[-1]C[-2]<0,RC[-2]>0),ACOS(R[-1]C[-2]/R[-1]C),IF(AND(R[-1]C[-2]<0,RC[-2]<0),ATAN(RC[-2]/R[-1]C[-2])+PI(),IF(R[-1]C[-2]=0,ATAN(RC[-2]/0.000000001),ATAN(RC[-2]/R[-1]C[-2])))))))"
+            Cells(m + 8, n + 5).FormulaR1C1 = "=IF(R[-1]C[-2]="""",R[-7]C[-2],DEGREES(IF(AND(R[-1]C[-2]>0,RC[-2]<0),2*PI()+ASIN(RC[-2]/R[-1]C),IF(AND(R[-1]C[-2]<=0,RC[-2]>=0),ACOS(R[-1]C[-2]/R[-1]C),IF(AND(R[-1]C[-2]<0,RC[-2]<0),ATAN(RC[-2]/R[-1]C[-2])+PI(),IF(R[-1]C[-2]=0,2*PI()-ACOS(R[-1]C[-2]/R[-1]C),ATAN(RC[-2]/R[-1]C[-2])))))))"
             Cells(m + 9, n + -1).FormulaR1C1 = "=-SIN(RADIANS(R[15]C[3]))"
             Cells(m + 9, n + 0).FormulaR1C1 = "=COS(RADIANS(R[15]C[2]))"
             Cells(m + 9, n + 1).FormulaR1C1 = "0"
@@ -494,24 +496,24 @@ Sub Project_11_ES(ByVal VecType, m, n, m1, n1 As Integer) ' 11_Coordenadas esfer
        Call PutEqBut
       End If ' actualizar hoja
 End Sub
-Sub Project_11_EN(ByVal VecType, m, n, m1, n1 As Integer) ' 11_Spherical coordinates_EN
+Sub Project_11_EN(ByVal VecType, m, n, m1, n1 As Integer) ' 11_Spherical Coordinates_EN
 
-   ' Updated: 27/03/24
+   ' Updated: 5/09/24
    ' Created by: Ariel R. Becerra (21/11/23)
    ' Modified by: _________________
    ' This is the code of your new project.
    ' Steps to embed the code to ScienSolar:
    ' Note 1: The number 11 in the name of this function must match the one in the list of the CONFIG sheet for this project. If not, please correct it.
-   ' Note 2: This code will be integrated into the main code to automate the download of the project.
-   ' Note 3: The formulas and cell values generated here correspond only to the first 30 columns from INICIO to the right in the sheet. All your formulas and values are recommended to be written in these columns.
-   ' Step 1. Go to the CONFIG sheet and add a short name and the number of your new project to the last row in the projects list.
+   ' Note 2: This code will be integrated into the main code (into the VBA editor) to automate the download of the project.
+   ' Note 3: The formulas and cell values generated here correspond only to the first 30 columns in the sheet. All your formulas and values are recommended to be written in these columns.
+   ' Step 1. Go to the CONFIG sheet (at the end of column C) and add the number of your new project to the last row in the projects list, and a short name in the corresponding langage column.
    ' Step 2. Make sure that the list of projects in CONFIG sheet has the correct ascending numbering.
    ' Step 4. Open the VBA editor (Alt + F11 in Windows or Fn + Option + F11 in macOS). To avoid mistakes, make sure you only have one workbook open.
    ' Step 5. On the left, in the project explorer, select a non full module (or add a new one).
    ' Step 6. Select all the code in this file, copy and paste it at the end of the existing code in the module (or in the new one).
    ' Step 7. To load the project and to check it in a new sheet, go to the CONFIG sheet and click the New Sheet button, then select the project from the list and click the +Vector button.
    ' Step 8. Click any XYZ button to get the project in the coordinate system. Enjoy it!
-   ' Visit  www.sciensolar.com for news and updates of ? ScienSolar.
+   ' Visit  www.sciensolar.com for news and updates of © ScienSolar.
   
   
             Cells(m1 - 1, n1 + 2).FormulaR1C1 = "1"
@@ -526,12 +528,13 @@ Sub Project_11_EN(ByVal VecType, m, n, m1, n1 As Integer) ' 11_Spherical coordin
             Cells(m1 + 1, n1 + 5).FormulaR1C1 = "0"
             Cells(m1 + 1, n1 + 6).FormulaR1C1 = "=CONFIG!R4C8"
             Cells(m1 + 1, n1 + 7).FormulaR1C1 = "=CONFIG!R4C9"
+            Cells(m1 + 2, n1 + 0).FormulaR1C1 = "t = 0,109375 s."
             Cells(m1 + 2, n1 + 2).FormulaR1C1 = "=CONFIG!R5C4"
             Cells(m1 + 2, n1 + 3).FormulaR1C1 = "40"
             Cells(m1 + 2, n1 + 4).FormulaR1C1 = "y"
             Cells(m1 + 2, n1 + 5).FormulaR1C1 = "15"
             Cells(m1 + 2, n1 + 6).FormulaR1C1 = "=CONFIG!R5C8"
-            Cells(m1 + 2, n1 + 7).FormulaR1C1 = "40"
+            Cells(m1 + 2, n1 + 7).FormulaR1C1 = "45"
             Cells(m1 + 3, n1 + 0).FormulaR1C1 = "(Eq-r)"
             Cells(m1 + 3, n1 + 2).FormulaR1C1 = "=CONFIG!R6C4"
             Cells(m1 + 3, n1 + 3).FormulaR1C1 = "200"
@@ -546,6 +549,7 @@ Sub Project_11_EN(ByVal VecType, m, n, m1, n1 As Integer) ' 11_Spherical coordin
 "     r = i cos phi sin theta + j sin phi sin theta + k cos theta," & Chr(10) & _
 "     phi = - i sin phi + j cos theta, theta = i cos phi cos theta + j sin phi cos theta - k sin theta," & Chr(10) & _
 "     where to the left of the equal sign are the unit vectors and to the right the angles themselves.These equations for unit r are in cells A12, B12, C12, in A21, B21, C21 for unit phi, and in A30, B30, C30 for unit theta."
+       On Error Resume Next
        Cells(m1, n1 + 9).Comment.Text Text:=HELPtxt
 
 
@@ -636,7 +640,7 @@ Sub Project_11_EN(ByVal VecType, m, n, m1, n1 As Integer) ' 11_Spherical coordin
             Cells(m + 7, n + 21).FormulaR1C1 = "The spherical coordinate system is an orthogonal system that has three unit vectors."
             Cells(m + 8, n + 2).FormulaR1C1 = "y ="
             Cells(m + 8, n + 4).FormulaR1C1 = "phi ="
-            Cells(m + 8, n + 5).FormulaR1C1 = "=IF(R[-1]C[-2]="""",R[-7]C[-2],DEGREES(IF(AND(R[-1]C[-2]>0,RC[-2]<0),2*PI()+ASIN(RC[-2]/R[-1]C),IF(AND(R[-1]C[-2]<0,RC[-2]>0),ACOS(R[-1]C[-2]/R[-1]C),IF(AND(R[-1]C[-2]<0,RC[-2]<0),ATAN(RC[-2]/R[-1]C[-2])+PI(),IF(R[-1]C[-2]=0,ATAN(RC[-2]/0.000000001),ATAN(RC[-2]/R[-1]C[-2])))))))"
+            Cells(m + 8, n + 5).FormulaR1C1 = "=IF(R[-1]C[-2]="""",R[-7]C[-2],DEGREES(IF(AND(R[-1]C[-2]>0,RC[-2]<0),2*PI()+ASIN(RC[-2]/R[-1]C),IF(AND(R[-1]C[-2]<=0,RC[-2]>=0),ACOS(R[-1]C[-2]/R[-1]C),IF(AND(R[-1]C[-2]<0,RC[-2]<0),ATAN(RC[-2]/R[-1]C[-2])+PI(),IF(R[-1]C[-2]=0,2*PI()-ACOS(R[-1]C[-2]/R[-1]C),ATAN(RC[-2]/R[-1]C[-2])))))))"
             Cells(m + 9, n + -1).FormulaR1C1 = "=-SIN(RADIANS(R[15]C[3]))"
             Cells(m + 9, n + 0).FormulaR1C1 = "=COS(RADIANS(R[15]C[2]))"
             Cells(m + 9, n + 1).FormulaR1C1 = "0"
@@ -969,6 +973,7 @@ Sub Project_11_EN(ByVal VecType, m, n, m1, n1 As Integer) ' 11_Spherical coordin
        Call PutEqBut
       End If ' actualizar hoja
 End Sub
+
 Sub Project_12_ES(ByVal VecType, m, n, m1, n1 As Integer) ' 12_SimetrIa plana_ES
 
    ' Updated: 27/03/24
@@ -1904,7 +1909,7 @@ Sub Project_15(ByVal VecType, m, n, m1, n1 As Integer) ' Module to build traject
 ' This module is reserved for plotting trajectories that vectors make during a simulation or  rotation of the axes.
   ' Credits: PhD. Ariel Becerra, Universidad de Pamplona, www.sciensolar.com
   
-     'definir el patrn de medida de los botones
+     'definir el patr‹n de medida de los botones
     Dim PatronW As Double
     Dim PatronH As Double
     Cells(m + 1, n).Select
@@ -1920,16 +1925,16 @@ Sub Project_15(ByVal VecType, m, n, m1, n1 As Integer) ' Module to build traject
         ActiveSheet.Cells(m + 9, n - 1).FormulaR1C1 = "4"
         ActiveSheet.Cells(m + 9, n).FormulaR1C1 = "4"
         ActiveSheet.Cells(m + 9, n + 1).FormulaR1C1 = "4"
-        ActiveSheet.Cells(m1 + 1, n1 + 1).FormulaR1C1 = "GRF" 'para el prximo vector
+        ActiveSheet.Cells(m1 + 1, n1 + 1).FormulaR1C1 = "GRF" 'para el pr‹ximo vector
     End If
-        If m > m1 Then ' interface para la grfica
-            ' a continuacin se lee la lista de vectores
+        If m > m1 Then ' interface para la gr_fica
+            ' a continuaci‹n se lee la lista de vectores
             i = 3
             Do While Cells(m1 + i, n1 - 1) <> ""
                 i = i + 9
-                If Cells(m1 + i + 1, n1).Value = "186" Then ' verificar si ya existe un mdulo para graficar.
-                    MsgBox "Ya existe un mdulo para graficar. Utilice el mdulo " _
-                     & Cells(m1 + i, n1 - 1).Value & " para graficar cualquier vector. Se actualizar la lista de vecctores disponibles. "
+                If Cells(m1 + i + 1, n1).Value = "186" Then ' verificar si ya existe un m‹dulo para graficar.
+                    MsgBox "Ya existe un m‹dulo para graficar. Utilice el m‹dulo " _
+                     & Cells(m1 + i, n1 - 1).Value & " para graficar cualquier vector. Se actualizar_ la lista de vecctores disponibles. "
                         ActiveSheet.DropDowns("List2").Select
                         With Selection ' actualizar la lista para incluir los vectores posteriores
                             Do While .ListCount > 0 ' incluye los vectores depu_s del actual
@@ -1937,18 +1942,18 @@ Sub Project_15(ByVal VecType, m, n, m1, n1 As Integer) ' Module to build traject
                                 .RemoveItem (.ListIndex)
                             Loop
                             i = 3
-                            Do While Cells(m1 + i, n1 - 1) <> ""  ' incluye todos los vectores anteriores al mdulo de grfico
+                            Do While Cells(m1 + i, n1 - 1) <> ""  ' incluye todos los vectores anteriores al m‹dulo de gr_fico
                                 .AddItem Cells(m1 + i, n1 - 1).Value
                                 i = i + 9
                             Loop
-                            MsgBox "Se ha actualizado la lista en el mdulo de grfica."
+                            MsgBox "Se ha actualizado la lista en el m‹dulo de gr_fica."
                         End With
                         Cells(m1 + i + 1, n1 - 1).Select
                      GoTo fin
                 End If
             Loop
-            'botn Nuevo
-            ActiveSheet.Buttons.Add(PatronW * (n - 1), PatronT + 32, PatronW * 2, PatronH - 2).Select ' agrega el botn de grfica
+            'bot‹n Nuevo
+            ActiveSheet.Buttons.Add(PatronW * (n - 1), PatronT + 32, PatronW * 2, PatronH - 2).Select ' agrega el bot‹n de gr_fica
             Selection.name = "ResetGraph"
             Selection.Characters.Text = "Reset graph"
             Selection.OnAction = "DeleteGraphFunction"
@@ -1962,7 +1967,7 @@ Sub Project_15(ByVal VecType, m, n, m1, n1 As Integer) ' Module to build traject
                 .Display3DShading = True
                 .AddItem "1" ' valor 1
                 i = 12
-                Do While Cells(m1 + i + 9, n1 - 1) <> "" ' incluye todos los vectores anteriores al mdulo de grfico
+                Do While Cells(m1 + i + 9, n1 - 1) <> "" ' incluye todos los vectores anteriores al m‹dulo de gr_fico
                     .AddItem Cells(m1 + i, n1 - 1).Value
                     i = i + 9
                 Loop
@@ -3178,7 +3183,7 @@ Sub Project_17_ES(ByVal VecType, m, n, m1, n1 As Integer) ' 17_Modelo 3D_ES
             Cells(m + 14, n + 21).FormulaR1C1 = "MODELO 3D:"
             Cells(m + 16, n + 21).FormulaR1C1 = "Para el caso del objeto 3D que se integra al movimiento, aqu" & ChrW(237) & " se utiliza la celda B15=Cubo para "
             Cells(m + 17, n + 21).FormulaR1C1 = "llamar al objeto que se encuentra en la hoja 3Dmodels. Para que este comando funcione es "
-            Cells(m + 18, n + 21).FormulaR1C1 = "necesario que la celda B16 contenga el n" & ChrW(250) & "mero 200: B16=200. El tamao del objeto se regula "
+            Cells(m + 18, n + 21).FormulaR1C1 = "necesario que la celda B16 contenga el n" & ChrW(250) & "mero 200: B16=200. El tama–o del objeto se regula "
             Cells(m + 19, n + 21).FormulaR1C1 = "en la celda B17, coloque por ejemplo B17=4 y oprima Ejecutar. Las celdas A18 y B18 se encargan de"
             Cells(m + 20, n + 21).FormulaR1C1 = "modificar los " & ChrW(225) & "ngulos de rotaci" & ChrW(243) & "n del objeto 3D. En este caso se dinamizaron poniendo un valor "
             Cells(m + 21, n + 21).FormulaR1C1 = "ligado al tiempo (representado por la celda I5), a trav" & ChrW(233) & "s de las f" & ChrW(243) & "rmulas A18=I5*250 y B18 =I5*50+90; "
@@ -6068,7 +6073,7 @@ Sub Project_20_ES(ByVal VecType, m, n, m1, n1 As Integer) ' 20_PV = nRT_ES
             Cells(m + 18, n + 21).FormulaR1C1 = "Se pueden observar por ejemplo las isotermas, que son curvas P vs V a temperatura constante, o tambi" & ChrW(233) & "n "
             Cells(m + 19, n + 21).FormulaR1C1 = "las isochoras P vs T a volumen constante. "
             Cells(m + 21, n + 21).FormulaR1C1 = "La advertencia SOME VECTORS WERE  U N D E R S C A L E D ! En la simulaci" & ChrW(243) & "n se refiere a que algunos "
-            Cells(m + 22, n + 21).FormulaR1C1 = "valores de la presi" & ChrW(243) & "n P que se salen de la escala del sistema de coordenadas fueron reducidos al tamao "
+            Cells(m + 22, n + 21).FormulaR1C1 = "valores de la presi" & ChrW(243) & "n P que se salen de la escala del sistema de coordenadas fueron reducidos al tama–o "
             Cells(m + 23, n + 21).FormulaR1C1 = "de los ejes, por lo tanto no debe representar ning" & ChrW(250) & "n malentendido, pues las magnitudes P, V y T son "
             Cells(m + 24, n + 21).FormulaR1C1 = "escalares. "
             Cells(m + 26, n + 21).FormulaR1C1 = "La configuraci" & ChrW(243) & "n de la gr" & ChrW(225) & "fica se modifica en la celda C7, por ejemplo para observar una sola isoterma,"
