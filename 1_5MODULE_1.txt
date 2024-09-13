@@ -1,8 +1,8 @@
 '////////////////////////////////////  ((((((()))))))  \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
 
-'  ScienSolar v. 1.5 MAIN MODULE 1. Updated 08-2024
+'  ScienSolar v. 1.51 MAIN MODULE 1. Updated 09-2024
 ' ScienSolar package for modeling physics and mathematics in MS Excel (tested on MS Excel 2013-2019 for Windows and Mac).
-' The package is distributed in five text files and must be integrated into an Excel file.
+' The package is distributed in 8 text files and must be integrated into an Excel file.
 ' This package is protected by copyright law. © PhD Ariel R. Becerra B., 2022.
 ' By downloading the package you agree to the terms and conditions under the license GNU General Public License v.3.0 (https://www.gnu.org/licenses/gpl-3.0.html).
 ' You may use the ScienSolar package for free only under the terms of this license.
@@ -22,627 +22,618 @@
 
 '////////////////////////////////////  ((((((()))))))  \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
 
-''definicion de variables universales
-Dim Y_abs As Single
-Dim Z_abs As Single
-Dim A As Double
-Dim B As Double
-Dim C As Double
-Dim L As Double
-Dim Lx As Double
-Dim Ly As Double
-Dim Lz As Double
-Dim Lox As Double
-Dim Loy As Double
-Dim Loz As Double
-Dim i As Integer
- 'deficici‹n de unidades de medida para algunos objetos
-Dim PatronW As Double
-Dim PatronH As Double
-Dim PatronT As Double
+''Set variables
+        Dim Y_abs As Single ' Excel horizontal point of origin of XYZ
+        Dim Z_abs As Single ' Excel vertical point of origin of XYZ
+        Dim A As Double ' Rotation angle about X
+        Dim B As Double ' Rotation angle about Y
+        Dim C As Double ' Rotation angle about Z
+        Dim L As Double ' Axis lenght
+        Dim Lx As Double 'The x component of a vector (that is, the value in cell A12 for the first vector)
+        Dim Ly As Double 'The y component of a vector (that is, the value in cell B12 for the first vector)
+        Dim Lz As Double 'The z component of a vector (that is, the value in cell C12 for the first vector)
+        Dim Lox As Double 'The initial position in x of a vector (that is, the value in cell A10 for the first vector)
+        Dim Loy As Double 'The initial position in y of a vector (that is, the value in cell A10 for the first vector)
+        Dim Loz As Double 'The initial position in z of a vector (that is, the value in cell A10 for the first vector)
+        Dim i As Double 'updated 07-2024
+        
+'Definition of general units of measurement
+        Dim PatronW As Double ' The width of a cell will be taken as measure patron for other objects
+        Dim PatronH As Double ' The height of a cell will be taken as measure patron for other objects
+        Dim PatronT As Double  ' The top of a cell will be taken as measure patron for other objects
 Sub Init()
 '© 2022 A Becerra. ScienSolar.com
-    ' Segment Init-01. No actualizar durante la ejecucion y
-    ' ocultar los bordes de las celdas:
-    Application.ScreenUpdating = False
-    ActiveWindow.DisplayGridlines = False
-
-    'Segment Init-02. Definir coordenadas relativas a INICIO:
-    Dim fila As Range
-    Dim m As Integer
-    Dim n As Integer
-    Set fila = ActiveSheet.Cells.Find(What:="INICIO")
-    m = fila.Offset(1, 0).Row
-    n = fila.Offset(1, 1).Column
-    
-    
-    'Segment Init-02a. Definir coordenadas relativas a LENGUAJE. Added 03.2024.
-    Set fila = Sheets("CONFIG").Cells.Find(What:="(LENGUAJE)")
-    If ActiveSheet.Cells(m - 1, n + 18).Value = "" Then
-        ActiveSheet.Cells(m - 1, n + 18).Value = Sheets("CONFIG").Cells(fila.Row + 1, fila.Column).Value
-    End If
-    Sheets("CONFIG").Cells(fila.Row + 1, fila.Column).Value = ActiveSheet.Cells(m - 1, n + 18).Value
-    Set fila = Nothing
-    
-
-    'Segment Init-03. Funcion para limpiar la hoja:
-    Cells.Select
-    Selection.Delete
-    DeleteObjects (8)
-    DeleteObjects (17)
-
-'Segment Init-04. Establecer una unidad general dentro de la hoja:
-    PatronW = ActiveSheet.Cells(1, 1).Width
-    PatronH = ActiveSheet.Cells(1, 2).Height
-
-'Segment Init-06. Parametros de la celda Vector y el titulo del proyecto:
-    Cells(m + 1, n + 1).Select
-    With Selection
-        .Value = "A"
-        .Font.Bold = True
-        .HorizontalAlignment = xlCenter
-        .VerticalAlignment = xlBottom
-    End With
-    
-'Segment Init-07. Agregar una lista de proyectos:
-    Dim lista As Range
-    Set lista = Sheets("CONFIG").Cells.Find(What:="(LISTA)")
-    m2 = lista.Offset(2, 0).Row
-    n2 = lista.Column
-    Set lista = Nothing
-    ActiveSheet.DropDowns.Add(PatronW * (n + 14), PatronH * (m + 1), PatronW * 3, PatronH).Select
-    With Selection
-        .name = "List1"
-        .LinkedCell = Cells(m + 1, n - 1).Address
-        .DropDownLines = 20
-        .Display3DShading = True
-        .AddItem " " ' valor 1
+' Procedure aim: Create a new sheet with the ScienSolar interface.
+' Segment Init-01. Command to avoid updating the sheet during execution.
+        Application.ScreenUpdating = False
+        ActiveWindow.DisplayGridlines = False
         
-'Segment Init-08. Contar el numero de proyectos en la hoja CONFIG:
-        i = 0
-        Do While Sheets("CONFIG").Cells(m2 + i, n2) <> ""
-            .AddItem Sheets("CONFIG").Cells(m2 + i, n2 + 1).Value & " " & Sheets("CONFIG").Cells(m2 + i, n2).Value
-            i = i + 1
-        Loop
-    End With
-       
-'Segment Init-07a. Agregar una lista de idiomas. 03.2024:
-    Set lista = Sheets("CONFIG").Cells.Find(What:="LENGUAJE")
-    m2 = lista.Offset(2, 0).Row
-    n2 = lista.Column
-    Set lista = Nothing
-
-    ActiveSheet.DropDowns.Add(PatronW * (n + 17), PatronH * (m - 2), PatronW + 15, PatronH + 3).Select
-    With Selection
-        .name = "LangList"
-        .LinkedCell = Cells(m - 1, n + 18).Address
-        .DropDownLines = 20
-        .Display3DShading = True
-
-'Segment Init-08a. Contar el numero de lenguajes. 03.2024:
-        i = 0
-        Do While Sheets("CONFIG").Cells(m2 + i, n2) <> ""
-            .AddItem Sheets("CONFIG").Cells(m2 + i, n2).Value
-            i = i + 1
-        Loop
-    End With
-       ActiveSheet.Cells(m - 1, n + 18).Value = Sheets("CONFIG").Cells(m2 - 1, n2).Value
-
-'Segment Init-09. Agregar botones para modificar los angulos de entrada:
-    ActiveSheet.Spinners.Add(PatronW * (n + 4), PatronH * (m), PatronW / 4, PatronH).Select
-    With Selection
-        .Value = 0
-        .SmallChange = 1
-        .LinkedCell = Cells(m + 1, n + 5).Address
-        .Display3DShading = True
-    End With
-    Selection.OnAction = "Rotate"
-    ActiveSheet.Spinners.Add(PatronW * (n + 4), PatronH * (m + 1), PatronW / 4, PatronH).Select
-    With Selection
-        .Value = 0
-        .SmallChange = 1
-        .LinkedCell = Cells(m + 2, n + 5).Address
-        .Display3DShading = True
-    End With
-    Selection.OnAction = "Rotate"
-    ActiveSheet.Spinners.Add(PatronW * (n + 4), PatronH * (m + 2), PatronW / 4, PatronH).Select
-    With Selection
-        .Value = 0
-        .SmallChange = 1
-        .LinkedCell = Cells(m + 3, n + 5).Address
-        .Display3DShading = True
-    End With
-    Selection.OnAction = "Rotate"
-
-'Segment Init-10. Boton para ocultar/visualizar el tablero de control:y ayuda
-    ActiveSheet.Buttons.Add(PatronW * (n + 15 / 2), PatronH * (m - 2), PatronW * 0.5, PatronH).Select
-    Selection.name = Cells(m - 2, n - 1).Column
-    Selection.OnAction = "ShowHideMenu"
-    Selection.Characters.Text = ChrW(9664)
-    With Selection.Characters(Start:=1, Length:=3).Font
-        .name = "Calibri"
-        .FontStyle = "Normal"
-        .Size = 11
-        .ColorIndex = 1
-    End With
-    ActiveSheet.Buttons.Add(PatronW * (n + 17 / 2), PatronH * (m - 2), PatronW / 2, PatronH).Select
-    Selection.OnAction = "HELP"
-    Selection.Characters.Text = " ? "
-    With Selection.Characters(Start:=1, Length:=3).Font
-        .name = "Calibri"
-        .FontStyle = "Normal"
-        .Size = 15
-        .ColorIndex = 1
-    End With
-
-'Segment Init-11. Botones
-    ActiveSheet.Buttons.Add(PatronW * (n + 2), PatronH * (m + 1), PatronW / 2, PatronH).Select
-    Selection.name = "AutoSc"
-    Selection.OnAction = "AutoScale"
-    Selection.Characters.Text = "Auto"
-    With Selection.Characters(Start:=1, Length:=3).Font
-        .name = "Calibri"
-        .FontStyle = "Normal"
-        .Size = 11
-    End With
-    
-    ActiveSheet.Buttons.Add(PatronW * (n - 1), PatronH * (m - 1), PatronW / 2, PatronH).Select
-    Selection.name = "AddButt"
-    Selection.OnAction = "AddObject"
-    Selection.Characters.Text = "+ OBJ"
-    With Selection.Characters(Start:=1, Length:=3).Font
-        .name = "Calibri"
-        .FontStyle = "Normal"
-        .Size = 11
-    End With
-    ActiveSheet.Buttons.Add(PatronW * (n), PatronH * (m - 1), PatronW / 2, PatronH).Select
-    Selection.name = "DelButt"
-    Selection.OnAction = "AddObject"
-    Selection.Characters.Text = "- OBJ"
-    With Selection.Characters(Start:=1, Length:=3).Font
-        .name = "Calibri"
-        .FontStyle = "Normal"
-        .Size = 11
-    End With
-    ActiveSheet.Buttons.Add(PatronW * (n + 7 / 2), PatronH * (m - 1), PatronW / 2, PatronH).Select
-    Selection.OnAction = "rotate"
-    Selection.Characters.Text = ""
-    With Selection.Characters(Start:=1, Length:=3).Font
-        .name = "Calibri"
-        .FontStyle = "Normal"
-        .Size = 11
-    End With
-    ActiveSheet.Buttons.Add(PatronW * (n + 4), PatronH * (m - 2), PatronW / 2, PatronH).Select
-    Selection.OnAction = "rotate_XZY"
-    Selection.Characters.Text = "XYZ"
-    With Selection.Characters(Start:=1, Length:=3).Font
-        .name = "Calibri"
-        .FontStyle = "Normal"
-        .Size = 11
-    End With
-    ActiveSheet.Buttons.Add(PatronW * (n + 4), PatronH * (m - 1), PatronW / 2, PatronH).Select
-    Selection.OnAction = "rotate_XY"
-    Selection.Characters.Text = "XY"
-    With Selection.Characters(Start:=1, Length:=2).Font
-        .name = "Calibri"
-        .FontStyle = "Normal"
-        .Size = 11
-    End With
-    ActiveSheet.Buttons.Add(PatronW * (n + 9 / 2), PatronH * (m - 1), PatronW / 2, PatronH).Select
-    Selection.OnAction = "rotate_XZ"
-    Selection.Characters.Text = "XZ"
-    With Selection.Characters(Start:=1, Length:=2).Font
-        .name = "Calibri"
-        .FontStyle = "Normal"
-        .Size = 11
-    End With
-    ActiveSheet.Buttons.Add(PatronW * (n + 9 / 2), PatronH * (m - 2), PatronW / 2, PatronH).Select
-    Selection.OnAction = "rotate_YZ"
-    Selection.Characters.Text = "YZ"
-    With Selection.Characters(Start:=1, Length:=2).Font
-        .name = "Calibri"
-        .FontStyle = "Normal"
-        .Size = 11
-    End With
-    ActiveSheet.Buttons.Add(PatronW * (n + 7 / 2), PatronH * (m), PatronW / 2, PatronH).Select
-    Selection.OnAction = "rotate_A"
-    Selection.Characters.Text = ChrW(8811) & " A"
-    With Selection.Characters(Start:=1, Length:=1).Font
-        .name = "Calibri"
-        .FontStyle = "Normal"
-        .Size = 11
-    End With
-    ActiveSheet.Buttons.Add(PatronW * (n + 7 / 2), PatronH * (m + 1), PatronW / 2, PatronH).Select
-    Selection.OnAction = "rotate_B"
-    Selection.Characters.Text = ChrW(8811) & " B"
-    With Selection.Characters(Start:=1, Length:=1).Font
-        .name = "Calibri"
-        .FontStyle = "Normal"
-        .Size = 11
-    End With
-    ActiveSheet.Buttons.Add(PatronW * (n + 7 / 2), PatronH * (m + 2), PatronW / 2, PatronH).Select
-    Selection.OnAction = "rotate_C"
-    Selection.Characters.Text = ChrW(8811) & " C"
-    With Selection.Characters(Start:=1, Length:=1).Font
-        .name = "Calibri"
-        .FontStyle = "Normal"
-        .Size = 11
-    End With
-    ActiveSheet.Buttons.Add(PatronW * (n + 16), PatronH * (m - 2), PatronW, PatronH + 3).Select
-    Selection.OnAction = "CleanSheet"
-    Selection.Characters.Text = Sheets("CONFIG").Range("B2").Value '"Restablecer"
-    With Selection.Characters(Start:=1, Length:=11).Font
-        .name = "Calibri"
-        .FontStyle = "Normal"
-        .Size = 11
-    End With
-    ActiveSheet.Buttons.Add(PatronW * (n + 13), PatronH * (m + 1), PatronW, PatronH).Select
-    Selection.OnAction = "NewSheet"
-    Selection.Characters.Text = Sheets("CONFIG").Range("C2").Value
-    With Selection.Characters(Start:=1, Length:=11).Font
-        .name = "Calibri"
-        .FontStyle = "Normal"
-        .Size = 11
-    End With
-     ActiveSheet.Buttons.Add(PatronW * (n + 7 / 2), PatronH * (m - 2), PatronW / 2, PatronH).Select
-    Selection.OnAction = "XYZNeg"
-    Selection.Characters.Text = "-xyz"
-    With Selection.Characters(Start:=1, Length:=3).Font
-        .name = "Calibri"
-        .FontStyle = "Normal"
-        .Size = 11
-    End With
-    ActiveSheet.Buttons.Add(PatronW * (n + 3), PatronH * (m - 2), PatronW * 0.5, PatronH).Select
-    Selection.OnAction = "BlackWhiteDesk"
-    Selection.Characters.Text = "B/W"
-    With Selection.Characters(Start:=1, Length:=11).Font
-        .name = "Calibri"
-        .FontStyle = "Normal"
-        .Size = 11
-    End With
-    ActiveSheet.Buttons.Add(PatronW * (n + 17), PatronH * (m + 1), PatronW, PatronH).Select
-    Selection.name = "AddVector1"
-    Selection.OnAction = "AddNewVector"
-    Selection.Characters.Text = "+  Vector"
-    With Selection.Characters(Start:=1, Length:=11).Font
-        .name = "Calibri"
-        .FontStyle = "Normal"
-        .Size = 11
-    End With
-    ActiveSheet.Buttons.Add(PatronW * (n + 7), PatronH * (m - 1), PatronW, PatronH).Select
-    Selection.name = "ChangeParFrw"
-    Selection.OnAction = "ChangeParameter"
-    Selection.Characters.Text = ChrW(8811) & Sheets("CONFIG").Range("J3").Value
-    With Selection.Characters(Start:=1, Length:=11).Font
-        .name = "Calibri"
-        .FontStyle = "Normal"
-        .Size = 11
-    End With
-    ActiveSheet.Buttons.Add(PatronW * (n + 7), PatronH * (m), PatronW, PatronH).Select
-    Selection.name = "ChangeParBack"
-    Selection.OnAction = "ChangeParameter"
-    Selection.Characters.Text = "<< " & Sheets("CONFIG").Range("J3").Value
-    With Selection.Characters(Start:=1, Length:=11).Font
-        .name = "Calibri"
-        .FontStyle = "Normal"
-        .Size = 11
-    End With
-    ActiveSheet.Buttons.Add(PatronW * (n + 9), PatronH * (m + 1), PatronW * 0.5, PatronH).Select
-    Selection.OnAction = "rotate_Single"
-    Selection.Characters.Text = "->"
-    With Selection.Characters(Start:=1, Length:=11).Font
-        .name = "Calibri"
-        .FontStyle = "Normal"
-        .Size = 11
-    End With
-    ActiveSheet.Buttons.Add(PatronW * (n + 7.5), PatronH * (m + 1), PatronW * 0.5, PatronH).Select
-    Selection.OnAction = "rotate_SingleBack"
-    Selection.Characters.Text = "<-"
-    With Selection.Characters(Start:=1, Length:=11).Font
-        .name = "Calibri"
-        .FontStyle = "Normal"
-        .Size = 11
-    End With
-    ActiveSheet.Buttons.Add(PatronW * (n + 9.5), PatronH * (m + 1), PatronW * 0.5, PatronH).Select
-    Selection.OnAction = "rotate_End"
-    Selection.Characters.Text = "-->>"
-    With Selection.Characters(Start:=1, Length:=11).Font
-        .name = "Calibri"
-        .FontStyle = "Normal"
-        .Size = 11
-    End With
-    ActiveSheet.Buttons.Add(PatronW * (n + 8), PatronH * (m + 1), PatronW, PatronH).Select
-    Selection.OnAction = "rotate_n"
-    Selection.Characters.Text = ChrW(8811) & Sheets("CONFIG").Range("K5").Value
-    With Selection.Characters(Start:=1, Length:=11).Font
-        .name = "Calibri"
-        .FontStyle = "Normal"
-        .Size = 11
-    End With
-    ActiveSheet.Buttons.Add(PatronW * (n + 9), PatronH * (m - 2), PatronW * 2, PatronH).Select
-    Selection.OnAction = "About"
-    Selection.Characters.Text = "ScienSolar info" 'ChrW(8811) & Sheets("CONFIG").Range("K5").Value
-    With Selection.Characters(Start:=1, Length:=11).Font
-        .name = "Calibri"
-        .FontStyle = "Normal"
-        .Size = 11
-    End With
-    ActiveSheet.Buttons.Add(PatronW * (n + 12), PatronH * (m - 2), PatronW * 2, PatronH).Select
-    Selection.OnAction = "ManualOnline"
-    Selection.Characters.Text = "Manual" 'ChrW(8811) & Sheets("CONFIG").Range("K5").Value
-    With Selection.Characters(Start:=1, Length:=11).Font
-        .name = "Calibri"
-        .FontStyle = "Normal"
-        .Size = 11
-    End With
-    ActiveSheet.Buttons.Add(PatronW * (n + 7), PatronH * (m + 1), PatronW * 0.5, PatronH).Select
-    Selection.OnAction = "Reset"
-    Selection.Characters.Text = "<<--"
-    With Selection.Characters(Start:=1, Length:=11).Font
-        .name = "Calibri"
-        .FontStyle = "Normal"
-        .Size = 11
-    End With
-    ActiveSheet.Buttons.Add(PatronW * (n - 2) + 1, PatronH * (m), PatronW, PatronH).Select
-    Selection.OnAction = "CreateCode"
-    Selection.Characters.Text = Sheets("CONFIG").Range("B3").Value
-    With Selection.Characters(Start:=1, Length:=11).Font
-        .name = "Calibri"
-        .FontStyle = "Normal"
-        .Size = 11
-    End With
-
-'Segment Init-12. Dar formato a las celdas de la hoja:
-    Cells.Select
-    With Selection.Interior
-        .PatternColorIndex = xlAutomatic
-        .ThemeColor = xlThemeColorLight1
-        .TintAndShade = 0
-        .PatternTintAndShade = 0
-    End With
-     With Selection.Font
-        .ThemeColor = xlThemeColorDark1
-        .TintAndShade = 0
-    End With
-    
-    Range("A1:K1").Select
-    With Selection.Borders(xlEdgeBottom)
-        .LineStyle = xlContinuous
-        .ThemeColor = 1
-        .TintAndShade = -0.349986266670736
-        .Weight = xlThick
-    End With
-    Range("K2:K5").Select
-    With Selection.Borders(xlEdgeTop)
-        .LineStyle = xlContinuous
-        .ThemeColor = 1
-        .TintAndShade = -0.349986266670736
-        .Weight = xlThick
-    End With
-    With Selection.Borders(xlEdgeRight)
-        .LineStyle = xlContinuous
-        .ThemeColor = 1
-        .TintAndShade = -0.349986266670736
-        .Weight = xlThick
-    End With
-    Range("H5:K5").Select
-    With Selection.Borders(xlEdgeBottom)
-        .LineStyle = xlContinuous
-        .ThemeColor = 1
-        .TintAndShade = -0.349986266670736
-        .Weight = xlThick
-    End With
-    With Selection.Borders(xlEdgeRight)
-        .LineStyle = xlContinuous
-        .ThemeColor = 1
-        .TintAndShade = -0.349986266670736
-        .Weight = xlThick
-    End With
-    Range("G6").Select
-    With Selection.Borders(xlEdgeRight)
-        .LineStyle = xlContinuous
-        .ThemeColor = 1
-        .TintAndShade = -0.349986266670736
-        .Weight = xlThick
-    End With
-    Range("D6:G6").Select
-    With Selection.Borders(xlEdgeBottom)
-        .LineStyle = xlContinuous
-        .ThemeColor = 1
-        .TintAndShade = -0.349986266670736
-        .Weight = xlThick
-    End With
-    With Selection.Borders(xlEdgeRight)
-        .LineStyle = xlContinuous
-        .ThemeColor = 1
-        .TintAndShade = -0.349986266670736
-        .Weight = xlThick
-    End With
-    Range("C5:C6").Select
-    With Selection.Borders(xlEdgeRight)
-        .LineStyle = xlContinuous
-        .ThemeColor = 1
-        .TintAndShade = -0.349986266670736
-        .Weight = xlThick
-    End With
-    Range("A4:C4").Select
-    With Selection.Borders(xlEdgeBottom)
-        .LineStyle = xlContinuous
-        .ThemeColor = 1
-        .TintAndShade = -0.349986266670736
-        .Weight = xlThick
-    End With
-    Range("A2:K4").Select
-    With Selection.Interior
-        .Pattern = xlSolid
-        .PatternColorIndex = xlAutomatic
-        .ThemeColor = xlThemeColorDark2
-        .TintAndShade = 0
-        .PatternTintAndShade = 0
-    End With
-    With Selection.Font
-        .ThemeColor = xlThemeColorLight1
-        .TintAndShade = 0
-    End With
-    Range("D5:J5").Select
-    With Selection.Interior
-        .Pattern = xlSolid
-        .PatternColorIndex = xlAutomatic
-        .ThemeColor = xlThemeColorDark2
-        .TintAndShade = 0
-        .PatternTintAndShade = 0
-    End With
-    With Selection.Font
-        .ThemeColor = xlThemeColorLight1
-        .TintAndShade = 0
-    End With
-    Range("D6:G6").Select
-    With Selection.Interior
-        .Pattern = xlSolid
-        .PatternColorIndex = xlAutomatic
-        .ThemeColor = xlThemeColorDark2
-        .TintAndShade = 0
-        .PatternTintAndShade = 0
-    End With
-    With Selection.Font
-        .ThemeColor = xlThemeColorLight1
-        .TintAndShade = 0
-    End With
-    
-    Cells(m + 1, n + 9).Select
-    With Selection.Interior
-        .Pattern = xlSolid
-        .PatternColorIndex = xlAutomatic
-        .ThemeColor = xlThemeColorDark1
-        .TintAndShade = -0.249977111117893
-        .PatternTintAndShade = 0
-    End With
-    With Selection.Font
-        .Size = 9
-        .Color = -4165632
-        .TintAndShade = 0
-    End With
-    ActiveCell.FormulaR1C1 = "S" & "c" & "i" & "e" & "n" _
-    & "S" & "o" & "l" & "a" & "r" & " v" & 1 & ".5"
-    Cells(m + 4, n + 2).Select
-    With Selection.Font
-        .Size = 12
-        .Color = -4165632
-        .TintAndShade = 0
-        '.Bold = True
-        .Italic = True
-    End With
-    Cells(m, n + 4).Select  ' Color del texto de las etiquetas
-    With Selection.Interior
-        .Pattern = xlSolid
-        .PatternColorIndex = xlAutomatic
-        .ThemeColor = xlThemeColorLight2
-        .TintAndShade = 0.399975585192419
-        .PatternTintAndShade = 0
-    End With
-    Cells(m + 1, n + 4).Select ' Color del eje x
-    With Selection.Interior
-        .Pattern = xlSolid
-        .PatternColorIndex = xlAutomatic
-        .ThemeColor = xlThemeColorLight2
-        .TintAndShade = 0.399975585192419
-        .PatternTintAndShade = 0
-    End With
-    Cells(m + 2, n + 4).Select ' Color del eje y
-    With Selection.Interior
-        .Pattern = xlSolid
-        .PatternColorIndex = xlAutomatic
-        .ThemeColor = xlThemeColorLight2
-        .TintAndShade = 0.399975585192419
-        .PatternTintAndShade = 0
-    End With
-    Cells(m + 3, n + 4).Select ' Color del eje z
-    With Selection.Interior
-        .Pattern = xlSolid
-        .PatternColorIndex = xlAutomatic
-        .ThemeColor = xlThemeColorLight2
-        .TintAndShade = 0.399975585192419
-        .PatternTintAndShade = 0
-    End With
-    
-'Segment Init-05. Establecer parametros iniciales para el tablero de control:
-    Cells(m - 1, n - 1).Value = "INICIO"
-    Cells(m - 1, n + 3).FormulaR1C1 = "=CONFIG!R2C4"
-    Cells(m - 1, n + 6).FormulaR1C1 = "=CONFIG!R2C8"
-    Cells(m - 1, n + 8).Value = 1
-    Cells(m, n + 2).FormulaR1C1 = "=CONFIG!R3C4"
-    Cells(m, n + 3).FormulaR1C1 = "=CONFIG!R3C5"
-    Cells(m, n + 6).FormulaR1C1 = "=CONFIG!R3C8"
-    Cells(m, n + 7).FormulaR1C1 = "=CONFIG!R3C9"
-    Cells(m + 1, n + 2).FormulaR1C1 = "=CONFIG!R4C4"
-    Cells(m + 1, n + 3).FormulaR1C1 = "=CONFIG!R4C5"
-    Cells(m + 1, n + 6).FormulaR1C1 = "=CONFIG!R4C8"
-    Cells(m + 1, n + 4).FormulaR1C1 = "=CONFIG!R4C6"
-    Cells(m + 1, n + 5).FormulaR1C1 = "=CONFIG!R4C7"
-    Cells(m + 1, n + 7).FormulaR1C1 = "=CONFIG!R4C9"
-    Cells(m + 2, n + 2).FormulaR1C1 = "=CONFIG!R5C4"
-    Cells(m + 2, n + 3).FormulaR1C1 = "=CONFIG!R5C5"
-    Cells(m + 2, n + 4).FormulaR1C1 = "=CONFIG!R5C6"
-    Cells(m + 2, n + 5).FormulaR1C1 = "=CONFIG!R5C7"
-    Cells(m + 2, n + 6).FormulaR1C1 = "=CONFIG!R5C8"
-    Cells(m + 2, n + 7).FormulaR1C1 = "=CONFIG!R5C9"
-    Cells(m + 3, n + 2).FormulaR1C1 = "=CONFIG!R6C4"
-    Cells(m + 3, n + 3).FormulaR1C1 = "=CONFIG!R6C5"
-    Cells(m + 3, n + 4).FormulaR1C1 = "=CONFIG!R6C6"
-    Cells(m + 3, n + 5).FormulaR1C1 = "=CONFIG!R6C7"
-    Cells(m - 1, n + 2).Value = 2
-    
-'Segment Init-14. Restringir valores a la celda INICIO:
-    Range(Cells(m - 1, n - 1), Cells(m - 1, n - 1)).Select
-    With Selection.Validation
-        .Delete
-        .Add Type:=xlValidateCustom, AlertStyle:=xlValidAlertStop, Operator:=xlBetween, Formula1:="INICIO"
-        .IgnoreBlank = True
-        .InCellDropdown = True
-        .InputTitle = "INICIO"
-        .ErrorTitle = ""
-        .InputMessage = "Only value INICIO is allowed."
-        .ErrorMessage = "Only value INICIO is allowed."
-        .ShowInput = True
-        .ShowError = True
-    End With
+'Segment Init-02. Define coordinates relative to INICIO. The variables m and n relative to the initial position of the control board are introduced.
+        Dim fila As Range ' This name will be a reference in the CONFIG sheet
+        Dim m As Integer ' This is a reference number for starting point of rows in ScienSolar
+        Dim n As Integer ' This is a reference number for starting point of columns in ScienSolar
+        Set fila = ActiveSheet.Cells.Find(What:="INICIO")
+        m = fila.Offset(1, 0).Row
+        n = fila.Offset(1, 1).Column
         
-'Segment Init-15. Introduccion de un comentario de ayuda- Updated 05-2023
-    ActiveSheet.Cells(m, n + 9).Value = "HELP"
-    ActiveSheet.Cells(m, n + 9).AddComment
-    ActiveSheet.Cells(m, n + 9).Comment.Visible = False
-    ActiveSheet.Cells(m, n + 9).Comment.Shape.Width = 300
-    ActiveSheet.Cells(m, n + 9).Comment.Shape.Height = 300
-    ActiveSheet.Cells(m, n + 9).Comment.Text Text:= _
-    "HELP Comment:" _
-    & Chr(10) & _
-    "1. To create new projects, press the +Vector button without selecting any project in the project list." _
-    & Chr(10) & _
-    "2. To load an existing project, select a project from the list and then press +Vector" _
-    & Chr(10) & _
-    "3. To export a new project, press the Get Code button. The code will be saved on your PC in the same directory where this file is located." _
-    & Chr(10) & Chr(10) & _
-    "If necessary, use this comment to create your own HELP comment for your project. To do this, simply replace this text with your own (Right Click, Edit Comment) and avoid special characters." _
-    & Chr(10) & "After pressing Get Code, your comment will be updated and saved in the same txt file as your project and will be uploaded after the project appears in ScienSolar." _
-    & "To include the new project in ScienSolar, perform the following steps:" _
-    & Chr(10) & _
-    "a) Open the txt file where the project was saved; " & _
-    "b) copy all the contents of the file and paste it in the VBA Editor of the Excel file ScienSolar; " & _
-    "b) add the project name and number to the list on the CONFIG sheet; " & _
-    "a) Verify that the number is correlative and that it agrees with the project header number, if not modify it in the header or in the list as necessary;Ó" _
-    & Chr(10) & Chr(10) & _
-    "Right click to delete or edit this comment." _
-    & Chr(10) & Chr(10) & _
-    "For documentation on ScienSolar, please visit www.sciensolar.com. ScienSolar was designed for 3D physics modeling in MS Excel." & _
-    "It is normal that for some projects it takes time to load it in the sheet, it depends on the number of objects in your project and the performance of your PC."
-
-    Cells(m + 1, n + 1).Select
-Application.ScreenUpdating = True
+'Segment Init-03. Define coordinates relative to LANGUAGE. Added 03.2024.
+        Set fila = Sheets("CONFIG").Cells.Find(What:="(LENGUAJE)")
+        If ActiveSheet.Cells(m - 1, n + 18).Value = "" Then
+           ActiveSheet.Cells(m - 1, n + 18).Value = Sheets("CONFIG").Cells(fila.Row + 1, fila.Column).Value
+        End If
+        Sheets("CONFIG").Cells(fila.Row + 1, fila.Column).Value = ActiveSheet.Cells(m - 1, n + 18).Value
+        Set fila = Nothing
+        
+'Segment Init-04. Clean the worksheet
+        Cells.Delete
+        DeleteObjects (8)
+        DeleteObjects (17)
+        
+'Segment Init-05. Establish a general unit of length measurement within the sheet:
+        PatronW = ActiveSheet.Cells(1, 1).Width
+        PatronH = ActiveSheet.Cells(1, 2).Height
+        
+'Segment Init-06. Vector cell parameters and project title:
+        Cells(m + 1, n + 1).Select
+        With Selection
+           .Value = "A"
+           .Font.Bold = True
+           .HorizontalAlignment = xlCenter
+           .VerticalAlignment = xlBottom
+        End With
+        
+'Segment Init-07. Add a project list:
+        Dim lista As Range
+        Set lista = Sheets("CONFIG").Cells.Find(What:="(LISTA)")
+        m2 = lista.Offset(2, 0).Row
+        n2 = lista.Column
+        Set lista = Nothing
+        ActiveSheet.DropDowns.Add(PatronW * (n + 14), PatronH * (m + 1), PatronW * 3, PatronH).Select
+        With Selection
+           .name = "List1"
+           .LinkedCell = Cells(m + 1, n - 1).Address
+           .DropDownLines = 20
+           .Display3DShading = True
+           .AddItem " " ' valor 1
+            i = 0
+            Do While Sheets("CONFIG").Cells(m2 + i, n2) <> ""
+                .AddItem Sheets("CONFIG").Cells(m2 + i, n2 + 1).Value & " " & Sheets("CONFIG").Cells(m2 + i, n2).Value
+                i = i + 1
+            Loop
+        End With
+          
+'Segment Init-08. Add a language list. 03.2024:
+        Set lista = Sheets("CONFIG").Cells.Find(What:="LENGUAJE")
+        m2 = lista.Offset(2, 0).Row
+        n2 = lista.Column
+        Set lista = Nothing
+        ActiveSheet.DropDowns.Add(PatronW * (n + 17), PatronH * (m - 2), PatronW + 15, PatronH + 3).Select
+        With Selection
+           .name = "LangList"
+           .LinkedCell = Cells(m - 1, n + 18).Address
+           .DropDownLines = 20
+           .Display3DShading = True
+            i = 0
+            Do While Sheets("CONFIG").Cells(m2 + i, n2) <> ""
+                .AddItem Sheets("CONFIG").Cells(m2 + i, n2).Value
+                i = i + 1
+            Loop
+        End With
+        ActiveSheet.Cells(m - 1, n + 18).Value = Sheets("CONFIG").Cells(m2 - 1, n2).Value
+        
+'Segment Init-09. Add buttons to modify the view angles of the coordinate system:
+        ActiveSheet.Spinners.Add(PatronW * (n + 4), PatronH * (m), PatronW / 4, PatronH).Select
+        With Selection
+           .Value = 0
+           .SmallChange = 1
+           .LinkedCell = Cells(m + 1, n + 5).Address
+           .Display3DShading = True
+        End With
+        Selection.OnAction = "Rotate"
+        ActiveSheet.Spinners.Add(PatronW * (n + 4), PatronH * (m + 1), PatronW / 4, PatronH).Select
+        With Selection
+           .Value = 0
+           .SmallChange = 1
+           .LinkedCell = Cells(m + 2, n + 5).Address
+           .Display3DShading = True
+        End With
+        Selection.OnAction = "Rotate"
+        ActiveSheet.Spinners.Add(PatronW * (n + 4), PatronH * (m + 2), PatronW / 4, PatronH).Select
+        With Selection
+           .Value = 0
+           .SmallChange = 1
+           .LinkedCell = Cells(m + 3, n + 5).Address
+           .Display3DShading = True
+        End With
+        Selection.OnAction = "Rotate"
+        
+'Segment Init-10. Button to hide/show the control panel and help
+        ActiveSheet.Buttons.Add(PatronW * (n + 15 / 2), PatronH * (m - 2), PatronW * 0.5, PatronH).Select
+        Selection.name = Cells(m - 2, n - 1).Column
+        Selection.OnAction = "ShowHideMenu"
+        Selection.Characters.Text = ChrW(9664)
+        With Selection.Characters(Start:=1, Length:=3).Font
+           .name = "Calibri"
+           .FontStyle = "Normal"
+           .Size = 11
+           .ColorIndex = 1
+        End With
+        ActiveSheet.Buttons.Add(PatronW * (n + 17 / 2), PatronH * (m - 2), PatronW / 2, PatronH).Select
+        Selection.OnAction = "HELP"
+        Selection.Characters.Text = " ? "
+        With Selection.Characters(Start:=1, Length:=3).Font
+           .name = "Calibri"
+           .FontStyle = "Normal"
+           .Size = 15
+           .ColorIndex = 1
+        End With
+        
+'Segment Init-11. General control panel buttons. See Characters.Text to identify the button.
+        ActiveSheet.Buttons.Add(PatronW * (n + 2), PatronH * (m + 1), PatronW / 2, PatronH).Select
+        Selection.name = "AutoSc"
+        Selection.OnAction = "AutoScale"
+        Selection.Characters.Text = "Auto"
+        With Selection.Characters(Start:=1, Length:=3).Font
+           .name = "Calibri"
+           .FontStyle = "Normal"
+           .Size = 11
+        End With
+        ActiveSheet.Buttons.Add(PatronW * (n - 1), PatronH * (m - 1), PatronW / 2, PatronH).Select
+        Selection.name = "AddButt"
+        Selection.OnAction = "AddObject"
+        Selection.Characters.Text = "+ OBJ"
+        With Selection.Characters(Start:=1, Length:=3).Font
+           .name = "Calibri"
+           .FontStyle = "Normal"
+           .Size = 11
+        End With
+        ActiveSheet.Buttons.Add(PatronW * (n), PatronH * (m - 1), PatronW / 2, PatronH).Select
+        Selection.name = "DelButt"
+        Selection.OnAction = "AddObject"
+        Selection.Characters.Text = "- OBJ"
+        With Selection.Characters(Start:=1, Length:=3).Font
+           .name = "Calibri"
+           .FontStyle = "Normal"
+           .Size = 11
+        End With
+        ActiveSheet.Buttons.Add(PatronW * (n + 7 / 2), PatronH * (m - 1), PatronW / 2, PatronH).Select
+        Selection.OnAction = "rotate"
+        Selection.Characters.Text = ""
+        With Selection.Characters(Start:=1, Length:=3).Font
+           .name = "Calibri"
+           .FontStyle = "Normal"
+           .Size = 11
+        End With
+        ActiveSheet.Buttons.Add(PatronW * (n + 4), PatronH * (m - 2), PatronW / 2, PatronH).Select
+        Selection.OnAction = "rotate_XZY"
+        Selection.Characters.Text = "XYZ"
+        With Selection.Characters(Start:=1, Length:=3).Font
+           .name = "Calibri"
+           .FontStyle = "Normal"
+           .Size = 11
+        End With
+        ActiveSheet.Buttons.Add(PatronW * (n + 4), PatronH * (m - 1), PatronW / 2, PatronH).Select
+        Selection.OnAction = "rotate_XY"
+        Selection.Characters.Text = "XY"
+        With Selection.Characters(Start:=1, Length:=2).Font
+           .name = "Calibri"
+           .FontStyle = "Normal"
+           .Size = 11
+        End With
+        ActiveSheet.Buttons.Add(PatronW * (n + 9 / 2), PatronH * (m - 1), PatronW / 2, PatronH).Select
+        Selection.OnAction = "rotate_XZ"
+        Selection.Characters.Text = "XZ"
+        With Selection.Characters(Start:=1, Length:=2).Font
+           .name = "Calibri"
+           .FontStyle = "Normal"
+           .Size = 11
+        End With
+        ActiveSheet.Buttons.Add(PatronW * (n + 9 / 2), PatronH * (m - 2), PatronW / 2, PatronH).Select
+        Selection.OnAction = "rotate_YZ"
+        Selection.Characters.Text = "YZ"
+        With Selection.Characters(Start:=1, Length:=2).Font
+           .name = "Calibri"
+           .FontStyle = "Normal"
+           .Size = 11
+        End With
+        ActiveSheet.Buttons.Add(PatronW * (n + 7 / 2), PatronH * (m), PatronW / 2, PatronH).Select
+        Selection.OnAction = "rotate_A"
+        Selection.Characters.Text = ChrW(8811) & " A"
+        With Selection.Characters(Start:=1, Length:=1).Font
+           .name = "Calibri"
+           .FontStyle = "Normal"
+           .Size = 11
+        End With
+        ActiveSheet.Buttons.Add(PatronW * (n + 7 / 2), PatronH * (m + 1), PatronW / 2, PatronH).Select
+        Selection.OnAction = "rotate_B"
+        Selection.Characters.Text = ChrW(8811) & " B"
+        With Selection.Characters(Start:=1, Length:=1).Font
+           .name = "Calibri"
+           .FontStyle = "Normal"
+           .Size = 11
+        End With
+        ActiveSheet.Buttons.Add(PatronW * (n + 7 / 2), PatronH * (m + 2), PatronW / 2, PatronH).Select
+        Selection.OnAction = "rotate_C"
+        Selection.Characters.Text = ChrW(8811) & " C"
+        With Selection.Characters(Start:=1, Length:=1).Font
+           .name = "Calibri"
+           .FontStyle = "Normal"
+           .Size = 11
+        End With
+        ActiveSheet.Buttons.Add(PatronW * (n + 16), PatronH * (m - 2), PatronW, PatronH + 3).Select
+        Selection.OnAction = "CleanSheet"
+        Selection.Characters.Text = Sheets("CONFIG").Range("B2").Value '"Restablecer"
+        With Selection.Characters(Start:=1, Length:=11).Font
+           .name = "Calibri"
+           .FontStyle = "Normal"
+           .Size = 11
+        End With
+        ActiveSheet.Buttons.Add(PatronW * (n + 13), PatronH * (m + 1), PatronW, PatronH).Select
+        Selection.OnAction = "NewSheet"
+        Selection.Characters.Text = Sheets("CONFIG").Range("C2").Value
+        With Selection.Characters(Start:=1, Length:=11).Font
+           .name = "Calibri"
+           .FontStyle = "Normal"
+           .Size = 11
+        End With
+        ActiveSheet.Buttons.Add(PatronW * (n + 7 / 2), PatronH * (m - 2), PatronW / 2, PatronH).Select
+        Selection.OnAction = "XYZNeg"
+        Selection.Characters.Text = "-xyz"
+        With Selection.Characters(Start:=1, Length:=3).Font
+           .name = "Calibri"
+           .FontStyle = "Normal"
+           .Size = 11
+        End With
+        ActiveSheet.Buttons.Add(PatronW * (n + 3), PatronH * (m - 2), PatronW * 0.5, PatronH).Select
+        Selection.OnAction = "BlackWhiteDesk"
+        Selection.Characters.Text = "B/W"
+        With Selection.Characters(Start:=1, Length:=11).Font
+           .name = "Calibri"
+           .FontStyle = "Normal"
+           .Size = 11
+        End With
+        ActiveSheet.Buttons.Add(PatronW * (n + 17), PatronH * (m + 1), PatronW, PatronH).Select
+        Selection.name = "AddVector1"
+        Selection.OnAction = "AddNewVector"
+        Selection.Characters.Text = "+  Vector"
+        With Selection.Characters(Start:=1, Length:=11).Font
+           .name = "Calibri"
+           .FontStyle = "Normal"
+           .Size = 11
+        End With
+        ActiveSheet.Buttons.Add(PatronW * (n + 7), PatronH * (m - 1), PatronW, PatronH).Select
+        Selection.name = "ChangeParFrw"
+        Selection.OnAction = "ChangeParameter"
+        Selection.Characters.Text = ChrW(8811) & Sheets("CONFIG").Range("J3").Value
+        With Selection.Characters(Start:=1, Length:=11).Font
+           .name = "Calibri"
+           .FontStyle = "Normal"
+           .Size = 11
+        End With
+        ActiveSheet.Buttons.Add(PatronW * (n + 7), PatronH * (m), PatronW, PatronH).Select
+        Selection.name = "ChangeParBack"
+        Selection.OnAction = "ChangeParameter"
+        Selection.Characters.Text = "<< " & Sheets("CONFIG").Range("J3").Value
+        With Selection.Characters(Start:=1, Length:=11).Font
+           .name = "Calibri"
+           .FontStyle = "Normal"
+           .Size = 11
+        End With
+        ActiveSheet.Buttons.Add(PatronW * (n + 9), PatronH * (m + 1), PatronW * 0.5, PatronH).Select
+        Selection.OnAction = "rotate_Single"
+        Selection.Characters.Text = "->"
+        With Selection.Characters(Start:=1, Length:=11).Font
+           .name = "Calibri"
+           .FontStyle = "Normal"
+           .Size = 11
+        End With
+        ActiveSheet.Buttons.Add(PatronW * (n + 7.5), PatronH * (m + 1), PatronW * 0.5, PatronH).Select
+        Selection.OnAction = "rotate_SingleBack"
+        Selection.Characters.Text = "<-"
+        With Selection.Characters(Start:=1, Length:=11).Font
+           .name = "Calibri"
+           .FontStyle = "Normal"
+           .Size = 11
+        End With
+        ActiveSheet.Buttons.Add(PatronW * (n + 9.5), PatronH * (m + 1), PatronW * 0.5, PatronH).Select
+        Selection.OnAction = "rotate_End"
+        Selection.Characters.Text = "-->>"
+        With Selection.Characters(Start:=1, Length:=11).Font
+           .name = "Calibri"
+           .FontStyle = "Normal"
+           .Size = 11
+        End With
+        ActiveSheet.Buttons.Add(PatronW * (n + 8), PatronH * (m + 1), PatronW, PatronH).Select
+        Selection.OnAction = "rotate_n"
+        Selection.Characters.Text = ChrW(8811) & Sheets("CONFIG").Range("K5").Value
+        With Selection.Characters(Start:=1, Length:=11).Font
+           .name = "Calibri"
+           .FontStyle = "Normal"
+           .Size = 11
+        End With
+        ActiveSheet.Buttons.Add(PatronW * (n + 9), PatronH * (m - 2), PatronW * 2, PatronH).Select
+        Selection.OnAction = "About"
+        Selection.Characters.Text = "ScienSolar info"
+        With Selection.Characters(Start:=1, Length:=11).Font
+           .name = "Calibri"
+           .FontStyle = "Normal"
+           .Size = 11
+        End With
+        ActiveSheet.Buttons.Add(PatronW * (n + 12), PatronH * (m - 2), PatronW * 2, PatronH).Select
+        Selection.OnAction = "ManualOnline"
+        Selection.Characters.Text = "Manual"
+        With Selection.Characters(Start:=1, Length:=11).Font
+           .name = "Calibri"
+           .FontStyle = "Normal"
+           .Size = 11
+        End With
+        ActiveSheet.Buttons.Add(PatronW * (n + 7), PatronH * (m + 1), PatronW * 0.5, PatronH).Select
+        Selection.OnAction = "Reset"
+        Selection.Characters.Text = "<<--"
+        With Selection.Characters(Start:=1, Length:=11).Font
+           .name = "Calibri"
+           .FontStyle = "Normal"
+           .Size = 11
+        End With
+        ActiveSheet.Buttons.Add(PatronW * (n - 2) + 1, PatronH * (m), PatronW, PatronH).Select
+        Selection.OnAction = "CreateCode"
+        Selection.Characters.Text = Sheets("CONFIG").Range("B3").Value
+        With Selection.Characters(Start:=1, Length:=11).Font
+           .name = "Calibri"
+           .FontStyle = "Normal"
+           .Size = 11
+        End With
+        
+'Segment Init-12. Give a format to the cells in the spreadsheet:
+        Cells.Select
+        With Selection.Interior
+           .PatternColorIndex = xlAutomatic
+           .ThemeColor = xlThemeColorLight1
+           .TintAndShade = 0
+           .PatternTintAndShade = 0
+        End With
+        With Selection.Font
+           .ThemeColor = xlThemeColorDark1
+           .TintAndShade = 0
+        End With
+        Range("A1:K1").Select
+        With Selection.Borders(xlEdgeBottom)
+           .LineStyle = xlContinuous
+           .ThemeColor = 1
+           .TintAndShade = -0.349986266670736
+           .Weight = xlThick
+        End With
+        Range("K2:K5").Select
+        With Selection.Borders(xlEdgeTop)
+           .LineStyle = xlContinuous
+           .ThemeColor = 1
+           .TintAndShade = -0.349986266670736
+           .Weight = xlThick
+        End With
+        With Selection.Borders(xlEdgeRight)
+           .LineStyle = xlContinuous
+           .ThemeColor = 1
+           .TintAndShade = -0.349986266670736
+           .Weight = xlThick
+        End With
+        Range("H5:K5").Select
+        With Selection.Borders(xlEdgeBottom)
+           .LineStyle = xlContinuous
+           .ThemeColor = 1
+           .TintAndShade = -0.349986266670736
+           .Weight = xlThick
+        End With
+        With Selection.Borders(xlEdgeRight)
+           .LineStyle = xlContinuous
+           .ThemeColor = 1
+           .TintAndShade = -0.349986266670736
+           .Weight = xlThick
+        End With
+        Range("G6").Select
+        With Selection.Borders(xlEdgeRight)
+           .LineStyle = xlContinuous
+           .ThemeColor = 1
+           .TintAndShade = -0.349986266670736
+           .Weight = xlThick
+        End With
+        Range("D6:G6").Select
+        With Selection.Borders(xlEdgeBottom)
+           .LineStyle = xlContinuous
+           .ThemeColor = 1
+           .TintAndShade = -0.349986266670736
+           .Weight = xlThick
+        End With
+        With Selection.Borders(xlEdgeRight)
+           .LineStyle = xlContinuous
+           .ThemeColor = 1
+           .TintAndShade = -0.349986266670736
+           .Weight = xlThick
+        End With
+        Range("C5:C6").Select
+        With Selection.Borders(xlEdgeRight)
+           .LineStyle = xlContinuous
+           .ThemeColor = 1
+           .TintAndShade = -0.349986266670736
+           .Weight = xlThick
+        End With
+        Range("A4:C4").Select
+        With Selection.Borders(xlEdgeBottom)
+           .LineStyle = xlContinuous
+           .ThemeColor = 1
+           .TintAndShade = -0.349986266670736
+           .Weight = xlThick
+        End With
+        Range("A2:K4").Select
+        With Selection.Interior
+           .Pattern = xlSolid
+           .PatternColorIndex = xlAutomatic
+           .ThemeColor = xlThemeColorDark2
+           .TintAndShade = 0
+           .PatternTintAndShade = 0
+        End With
+        With Selection.Font
+           .ThemeColor = xlThemeColorLight1
+           .TintAndShade = 0
+        End With
+        Range("D5:J5").Select
+        With Selection.Interior
+           .Pattern = xlSolid
+           .PatternColorIndex = xlAutomatic
+           .ThemeColor = xlThemeColorDark2
+           .TintAndShade = 0
+           .PatternTintAndShade = 0
+        End With
+        With Selection.Font
+           .ThemeColor = xlThemeColorLight1
+           .TintAndShade = 0
+        End With
+        Range("D6:G6").Select
+        With Selection.Interior
+           .Pattern = xlSolid
+           .PatternColorIndex = xlAutomatic
+           .ThemeColor = xlThemeColorDark2
+           .TintAndShade = 0
+           .PatternTintAndShade = 0
+        End With
+        With Selection.Font
+           .ThemeColor = xlThemeColorLight1
+           .TintAndShade = 0
+        End With
+        
+        Cells(m + 1, n + 9).Select
+        With Selection.Interior
+           .Pattern = xlSolid
+           .PatternColorIndex = xlAutomatic
+           .ThemeColor = xlThemeColorDark1
+           .TintAndShade = -0.249977111117893
+           .PatternTintAndShade = 0
+        End With
+        With Selection.Font
+           .Size = 9
+           .Color = -4165632
+           .TintAndShade = 0
+        End With
+        ActiveCell.FormulaR1C1 = "S" & "c" & "i" & "e" & "n" _
+        & "S" & "o" & "l" & "a" & "r" & " v" & 1 & ".5"
+        Cells(m + 4, n + 2).Select
+        With Selection.Font
+           .Size = 12
+           .Color = -4165632
+           .TintAndShade = 0
+           '.Bold = True
+           .Italic = True
+        End With
+        Cells(m, n + 4).Select  'Label text color
+        With Selection.Interior
+           .Pattern = xlSolid
+           .PatternColorIndex = xlAutomatic
+           .ThemeColor = xlThemeColorLight2
+           .TintAndShade = 0.399975585192419
+           .PatternTintAndShade = 0
+        End With
+        Cells(m + 1, n + 4).Select ' X axis color
+        With Selection.Interior
+           .Pattern = xlSolid
+           .PatternColorIndex = xlAutomatic
+           .ThemeColor = xlThemeColorLight2
+           .TintAndShade = 0.399975585192419
+           .PatternTintAndShade = 0
+        End With
+        Cells(m + 2, n + 4).Select ' Y axis color
+        With Selection.Interior
+           .Pattern = xlSolid
+           .PatternColorIndex = xlAutomatic
+           .ThemeColor = xlThemeColorLight2
+           .TintAndShade = 0.399975585192419
+           .PatternTintAndShade = 0
+        End With
+        Cells(m + 3, n + 4).Select ' Z axis color
+        With Selection.Interior
+           .Pattern = xlSolid
+           .PatternColorIndex = xlAutomatic
+           .ThemeColor = xlThemeColorLight2
+           .TintAndShade = 0.399975585192419
+           .PatternTintAndShade = 0
+        End With
+        
+'Segment Init-13.Set initial parameters for the control panel:
+        Cells(m - 1, n - 1).Value = "INICIO"
+        Cells(m - 1, n + 3).FormulaR1C1 = "=CONFIG!R2C4"
+        Cells(m - 1, n + 6).FormulaR1C1 = "=CONFIG!R2C8"
+        Cells(m - 1, n + 8).Value = 1
+        Cells(m, n + 2).FormulaR1C1 = "=CONFIG!R3C4"
+        Cells(m, n + 3).FormulaR1C1 = "=CONFIG!R3C5"
+        Cells(m, n + 6).FormulaR1C1 = "=CONFIG!R3C8"
+        Cells(m, n + 7).FormulaR1C1 = "=CONFIG!R3C9"
+        Cells(m + 1, n + 2).FormulaR1C1 = "=CONFIG!R4C4"
+        Cells(m + 1, n + 3).FormulaR1C1 = "=CONFIG!R4C5"
+        Cells(m + 1, n + 6).FormulaR1C1 = "=CONFIG!R4C8"
+        Cells(m + 1, n + 4).FormulaR1C1 = "=CONFIG!R4C6"
+        Cells(m + 1, n + 5).FormulaR1C1 = "=CONFIG!R4C7"
+        Cells(m + 1, n + 7).FormulaR1C1 = "=CONFIG!R4C9"
+        Cells(m + 2, n + 2).FormulaR1C1 = "=CONFIG!R5C4"
+        Cells(m + 2, n + 3).FormulaR1C1 = "=CONFIG!R5C5"
+        Cells(m + 2, n + 4).FormulaR1C1 = "=CONFIG!R5C6"
+        Cells(m + 2, n + 5).FormulaR1C1 = "=CONFIG!R5C7"
+        Cells(m + 2, n + 6).FormulaR1C1 = "=CONFIG!R5C8"
+        Cells(m + 2, n + 7).FormulaR1C1 = "=CONFIG!R5C9"
+        Cells(m + 3, n + 2).FormulaR1C1 = "=CONFIG!R6C4"
+        Cells(m + 3, n + 3).FormulaR1C1 = "=CONFIG!R6C5"
+        Cells(m + 3, n + 4).FormulaR1C1 = "=CONFIG!R6C6"
+        Cells(m + 3, n + 5).FormulaR1C1 = "=CONFIG!R6C7"
+        Cells(m - 1, n + 2).Value = 2
+        
+'Segment Init-14. Restrict values to the INICIO cell:
+        Range(Cells(m - 1, n - 1), Cells(m - 1, n - 1)).Select
+        With Selection.Validation
+           .Delete
+           .Add Type:=xlValidateCustom, AlertStyle:=xlValidAlertStop, Operator:=xlBetween, Formula1:="INICIO"
+           .IgnoreBlank = True
+           .InCellDropdown = True
+           .InputTitle = "INICIO"
+           .ErrorTitle = ""
+           .InputMessage = "Only value INICIO is allowed."
+           .ErrorMessage = "Only value INICIO is allowed."
+           .ShowInput = True
+           .ShowError = True
+        End With
+           
+'Segment Init-15. Introducing a help comment
+        ActiveSheet.Cells(m, n + 9).Value = "HELP"
+        ActiveSheet.Cells(m, n + 9).AddComment
+        ActiveSheet.Cells(m, n + 9).Comment.Visible = False
+        ActiveSheet.Cells(m, n + 9).Comment.Shape.Width = 300
+        ActiveSheet.Cells(m, n + 9).Comment.Shape.Height = 300
+        ActiveSheet.Cells(m, n + 9).Comment.Text Text:= _
+        "HELP Comment:" _
+            & Chr(10) & _
+        "1. To create new projects, press the +Vector button without selecting any project in the project list." _
+            & Chr(10) & _
+        "2. To load an existing project, select a project from the list and then press +Vector" _
+            & Chr(10) & _
+        "3. To export a new project, press the Get Code button. The code will be saved on your PC in the same directory where this file is located." _
+            & Chr(10) & Chr(10) & _
+        "If necessary, use this comment to create your own HELP comment for your project. To do this, simply replace this text with your own (Right Click, Edit Comment) and avoid special characters." _
+            & Chr(10) & "After pressing Get Code, your comment will be updated and saved in the same txt file as your project and will be uploaded after the project appears in ScienSolar." _
+            & "To include the new project in ScienSolar, perform the following steps:" _
+            & Chr(10) & _
+        "a) Open the txt file where the project was saved; " & _
+        "b) copy all the contents of the file and paste it in the VBA Editor of the Excel file ScienSolar; " & _
+        "c) add the project name and number to the list on the CONFIG sheet; " & _
+        "d) Verify that the number is correlative and that it agrees with the project header number, if not modify it in the header or in the list as necessary." _
+            & Chr(10) & _
+        "Right click to delete or edit this comment." _
+            & Chr(10) & Chr(10) & _
+        "For documentation on ScienSolar, please visit www.sciensolar.com. ScienSolar was designed for 3D physics modeling in MS Excel." & _
+        "It is normal that for some projects it takes time to load it in the sheet, it depends on the number of objects in your project and the performance of your PC."
+        
+        Cells(m + 1, n + 1).Select
+    Application.ScreenUpdating = True
 End Sub
 
 Sub XYZ(ByVal m, n As Integer)
 '© 2022 A Becerra. ScienSolar.com
-'Segment XYZ-01. Definir el punto en MSExcel del origen de coordenadas:
+'Segment XYZ-01. Define the point of the coordinate origin
     
     If Cells(m - 1, n + 4).Value = 1 Then
         Call XYZOpposite(m, n)
@@ -663,32 +654,31 @@ Sub XYZ(ByVal m, n As Integer)
     End If
     
      If IsNumeric(ActiveSheet.Cells(m + 3, n + 3).Value) Then
-         L = ActiveSheet.Cells(m + 3, n + 3).Value  'longitud de los ejes
+         L = ActiveSheet.Cells(m + 3, n + 3).Value  'Axles length
     Else
         ActiveSheet.Cells(m + 3, n + 3).Value = 200
         L = 200
     End If
 
-
-'Segment XYZ-02. Definir los _ngulos de rotaci‹n y la longitud de los ejes:
+'Segment XYZ-02. Define the angles of rotation of the axes:
     A = -ActiveSheet.Cells(m + 1, n + 5).Value * WorksheetFunction.Pi / 180   'angulo alrededor de X en radianes phi
     B = ActiveSheet.Cells(m + 2, n + 5).Value * WorksheetFunction.Pi / 180   'angulo alrededor de Y en radianes theta
     C = -ActiveSheet.Cells(m + 3, n + 5).Value * WorksheetFunction.Pi / 180   'angulo alrededor de Z en radianes alpha
    
-'Segment XYZ-03. Definir las variables del ancho y alto de los objetos (ejes) y etiquetas:
+'Segment XYZ-03. Define the variables for the dimensions and position of the axes in the spreadsheet
     Dim x_width As Double
     Dim y_width As Double
     Dim z_width As Double
     Dim x_height As Double
     Dim y_height As Double
     Dim z_height As Double
-    Dim T_top   ' par_metros de las etiquetas de los vectores y ejes
+    Dim T_top
     Dim T_left
     Dim T_name
     Dim T_color As Double
     T_color = Cells(m, n + 4).Interior.Color
 
-'Segment XYZ-04. Establecer el ancho y alto de las formas (ejes):
+'Segment XYZ-04. Set the width and height of the Excel shapes that will represent the axes, according to the rotation matrix
     x_width = L * (Cos(A) * Sin(C) + Sin(A) * Cos(C) * Sin(B))
     x_height = L * (Sin(A) * Sin(C) - Cos(A) * Cos(C) * Sin(B))
 
@@ -698,124 +688,124 @@ Sub XYZ(ByVal m, n As Integer)
     z_width = -L * Sin(A) * Cos(B)
     z_height = L * Cos(A) * Cos(B)
 
-'Segment XYZ-05. Eliminar etiquetas y ejes antiguos.
-        'Esto se hace para iniciar con un objeto nuevo, del cual se saben sus propiedades iniciales.
-        If CheckExists("EjeX") = True Then
-             ActiveSheet.Shapes("EjeX").Delete
+'Segment XYZ-05. Delete old labels and axes.
+    If CheckExists("EjeX") = True Then
+         ActiveSheet.Shapes("EjeX").Delete
+    End If
+    If CheckExists("EjeY") = True Then
+         ActiveSheet.Shapes("EjeY").Delete
+    End If
+    If CheckExists("EjeZ") = True Then
+         ActiveSheet.Shapes("EjeZ").Delete
+    End If
+
+'Segment XYZ-06. Delete other old objects
+    DeleteObjects (17) ' 17 - for text boxes (labels), 1 -  for axes and vectors, 5- for free forms
+    If CheckExists("campoHelp") = True Then '
+        ActiveSheet.Shapes("campoHelp").Delete
+    End If
+
+'Segment XYZ-07. Create new axes as Excel shapes
+    Dim Eje As Object
+    Set Eje = ActiveSheet.Shapes.AddShape(msoShapeLineInverse, 787.2, 301.8, 1047, 304.2)
+    Eje.name = "EjeX"
+    Set Eje = ActiveSheet.Shapes.AddShape(msoShapeLineInverse, 787.2, 301.8, 1047, 304.2)
+    Eje.name = "EjeY"
+    Set Eje = ActiveSheet.Shapes.AddShape(msoShapeLineInverse, 787.2, 301.8, 1047, 304.2)
+    Eje.name = "EjeZ"
+    Set Eje = Nothing
+
+'Segment XYZ-08. Correct the dimensions of the shapes that represent the X axis, due to their variation when rotating them.
+    With ActiveSheet.Shapes("EjeX")
+        If x_width < "0" Then
+            .Width = -x_width
+            .Left = Y_abs + x_width
+            T_left = .Left
+        Else
+            .Width = x_width
+            .Left = Y_abs
+            T_left = .Left + x_width
+            .Flip msoFlipHorizontal
         End If
-        If CheckExists("EjeY") = True Then
-             ActiveSheet.Shapes("EjeY").Delete
+        If x_height < "0" Then
+            .Height = -x_height
+            .Top = Z_abs
+            T_top = .Top - x_height
+        Else
+            .Height = x_height
+            .Top = Z_abs - x_height
+             T_top = .Top
+             .Flip msoFlipVertical
         End If
-        If CheckExists("EjeZ") = True Then
-             ActiveSheet.Shapes("EjeZ").Delete
+        .Line.BeginArrowheadStyle = msoArrowheadTriangle
+        .Line.ForeColor.RGB = Cells(m + 1, n + 4).Interior.Color '
+    End With
+
+'Segment XYZ-09. Create X axis label
+    T_label = ActiveSheet.Cells(m + 1, n + 4).Value
+    T_name = ActiveSheet.Cells(m + 1, n + 4).Value
+    Call CreateLabel(T_left, T_top, 0, 50, T_color, T_name, T_label)
+
+'Segment XYZ-10. Do the same procedure above for the other two axes and labels
+    With ActiveSheet.Shapes("EjeY")
+        If y_width < "0" Then
+            .Width = -y_width
+            .Left = Y_abs + y_width
+            T_left = .Left
+        Else
+            .Width = y_width
+            .Left = Y_abs
+            T_left = .Left + y_width
+            .Flip msoFlipHorizontal
         End If
-
-'Segment XYZ-06. Eliminar otros objetos antiguos
-        DeleteObjects (17) ' 17 - cuadros de texto (etiquetas), 1 - ejes y vectores, 5- formas libres
-         If CheckExists("campoHelp") = True Then '
-            ActiveSheet.Shapes("campoHelp").Delete
+        If y_height < "0" Then
+            .Height = -y_height
+            .Top = Z_abs
+            T_top = .Top - y_height
+        Else
+            .Height = y_height
+            .Top = Z_abs - y_height
+            T_top = .Top
+            .Flip msoFlipVertical
         End If
+        .Line.BeginArrowheadStyle = msoArrowheadTriangle
+        .Line.ForeColor.RGB = Cells(m + 2, n + 4).Interior.Color
+    End With
+    T_label = ActiveSheet.Cells(m + 2, n + 4).Value
+    T_name = ActiveSheet.Cells(m + 2, n + 4).Value
+    Call CreateLabel(T_left, T_top, 0, 50, T_color, T_name, T_label)
 
-'Segment XYZ-07. Crear nuevos ejes como formas (shapes)
-        Dim Eje As Object
-        Set Eje = ActiveSheet.Shapes.AddShape(msoShapeLineInverse, 787.2, 301.8, 1047, 304.2)
-        Eje.name = "EjeX"
-        Set Eje = ActiveSheet.Shapes.AddShape(msoShapeLineInverse, 787.2, 301.8, 1047, 304.2)
-        Eje.name = "EjeY"
-        Set Eje = ActiveSheet.Shapes.AddShape(msoShapeLineInverse, 787.2, 301.8, 1047, 304.2)
-        Eje.name = "EjeZ"
-        Set Eje = Nothing
-
-'Segment XYZ-08. Establecer las posiciones correctas dentro de la hoja y sus propiedades
-        With ActiveSheet.Shapes("EjeX")
-            If x_width < "0" Then
-                .Width = -x_width
-                .Left = Y_abs + x_width
-                T_left = .Left
-            Else
-                .Width = x_width
-                .Left = Y_abs
-                T_left = .Left + x_width
-                .Flip msoFlipHorizontal
-            End If
-            If x_height < "0" Then
-                .Height = -x_height
-                .Top = Z_abs
-                T_top = .Top - x_height
-            Else
-                .Height = x_height
-                .Top = Z_abs - x_height
-                 T_top = .Top
-                 .Flip msoFlipVertical
-            End If
-            .Line.BeginArrowheadStyle = msoArrowheadTriangle
-            .Line.ForeColor.RGB = Cells(m + 1, n + 4).Interior.Color '
-        End With
-
-'Segment XYZ-09. Crear las etiquetas de los ejes
-        T_label = ActiveSheet.Cells(m + 1, n + 4).Value
-        T_name = ActiveSheet.Cells(m + 1, n + 4).Value
-        Call CreateLabel(T_left, T_top, 0, 50, T_color, T_name, T_label)
-
-'Segment XYZ-10. Hacer el mismo procedimiento anterior para los otros dos ejes
-        With ActiveSheet.Shapes("EjeY")
-            If y_width < "0" Then
-                .Width = -y_width
-                .Left = Y_abs + y_width
-                T_left = .Left
-            Else
-                .Width = y_width
-                .Left = Y_abs
-                T_left = .Left + y_width
-                .Flip msoFlipHorizontal
-            End If
-            If y_height < "0" Then
-                .Height = -y_height
-                .Top = Z_abs
-                T_top = .Top - y_height
-            Else
-                .Height = y_height
-                .Top = Z_abs - y_height
-                T_top = .Top
-                .Flip msoFlipVertical
-            End If
-            .Line.BeginArrowheadStyle = msoArrowheadTriangle
-            .Line.ForeColor.RGB = Cells(m + 2, n + 4).Interior.Color
-        End With
-        T_label = ActiveSheet.Cells(m + 2, n + 4).Value
-        T_name = ActiveSheet.Cells(m + 2, n + 4).Value
-        Call CreateLabel(T_left, T_top, 0, 50, T_color, T_name, T_label)
-
-        With ActiveSheet.Shapes("EjeZ")
-            If z_width < "0" Then
-                .Width = -z_width
-                .Flip msoFlipHorizontal
-                .Left = Y_abs + z_width
-                T_left = .Left
-            Else
-                .Width = z_width
-                .Left = Y_abs
-                T_left = .Left + z_width
-            End If
-            If z_height < "0" Then
-                .Flip msoFlipVertical
-                .Height = -z_height
-                .Top = Z_abs
-                T_top = .Top - z_height
-            Else
-                .Height = z_height
-                .Top = Z_abs - z_height
-                T_top = .Top
-            End If
-            .Line.EndArrowheadStyle = msoArrowheadTriangle
-            .Line.ForeColor.RGB = Cells(m + 3, n + 4).Interior.Color
-        End With
-        T_label = ActiveSheet.Cells(m + 3, n + 4).Value
-        T_name = ActiveSheet.Cells(m + 3, n + 4).Value
-        Call CreateLabel(T_left, T_top, 0, 50, T_color, T_name, T_label)
+    With ActiveSheet.Shapes("EjeZ")
+        If z_width < "0" Then
+            .Width = -z_width
+            .Flip msoFlipHorizontal
+            .Left = Y_abs + z_width
+            T_left = .Left
+        Else
+            .Width = z_width
+            .Left = Y_abs
+            T_left = .Left + z_width
+        End If
+        If z_height < "0" Then
+            .Flip msoFlipVertical
+            .Height = -z_height
+            .Top = Z_abs
+            T_top = .Top - z_height
+        Else
+            .Height = z_height
+            .Top = Z_abs - z_height
+            T_top = .Top
+        End If
+        .Line.EndArrowheadStyle = msoArrowheadTriangle
+        .Line.ForeColor.RGB = Cells(m + 3, n + 4).Interior.Color
+    End With
+    T_label = ActiveSheet.Cells(m + 3, n + 4).Value
+    T_name = ActiveSheet.Cells(m + 3, n + 4).Value
+    Call CreateLabel(T_left, T_top, 0, 50, T_color, T_name, T_label)
+    
 End Sub
 Sub XYZNeg()
-' Habilitar ejes negativos del sistema de coordenadas
+' Segment-XYZNeg-01. Enable negative axes of the coordinate system
     Dim m As Integer
     Dim n As Integer
     Set fila = ActiveSheet.Cells.Find(What:="INICIO")
@@ -837,11 +827,14 @@ Sub XYZNeg()
     Else
         Cells(m - 1, n + 4).Value = 1
     End If
+    
+'Segment-XYZNeg-02. Update spreadsheet
     Rotate
 End Sub
 Sub XYZOpposite(ByVal m, n As Integer)
 '© 2022 A Becerra. ScienSolar.com
-'Segment XYZ-01. Definir el punto en MSExcel del origen de coordenadas:
+'Parameters of the negative axes
+'Segment XYZOpposite-01. Define the point of the coordinate origin
     If IsNumeric(ActiveSheet.Cells(m, n + 3).Value) Then
         Y_abs = ActiveSheet.Cells(m, n + 3).Value
     Else
@@ -863,12 +856,12 @@ Sub XYZOpposite(ByVal m, n As Integer)
         L = 200
     End If
 
-'Segment XYZ-02. Definir los _ngulos de rotaci‹n y la longitud de los ejes:
+'Segment XYZOpposite-02. Define the angles of rotation of the axes:
     A = -ActiveSheet.Cells(m + 1, n + 5).Value * WorksheetFunction.Pi / 180   'angulo alrededor de X en radianes phi
     B = ActiveSheet.Cells(m + 2, n + 5).Value * WorksheetFunction.Pi / 180   'angulo alrededor de Y en radianes theta
     C = -ActiveSheet.Cells(m + 3, n + 5).Value * WorksheetFunction.Pi / 180   'angulo alrededor de Z en radianes alpha
    
-'Segment XYZ-03. Definir las variables del ancho y alto de los objetos (ejes) y etiquetas:
+'Segment XYZOpposite-03. Define the variables for the dimensions and position of the objects in the spreadsheet
     Dim x_width As Double
     Dim y_width As Double
     Dim z_width As Double
@@ -876,7 +869,7 @@ Sub XYZOpposite(ByVal m, n As Integer)
     Dim y_height As Double
     Dim z_height As Double
 
-'Segment XYZ-04. Establecer el ancho y alto de las formas (ejes):
+'Segment XYZOpposite-04. Set the width and height of the Excel shapes that will represent the axes, according to the rotation matrix
     x_width = -L * (Cos(A) * Sin(C) + Sin(A) * Cos(C) * Sin(B))
     x_height = -L * (Sin(A) * Sin(C) - Cos(A) * Cos(C) * Sin(B))
 
@@ -886,8 +879,7 @@ Sub XYZOpposite(ByVal m, n As Integer)
     z_width = L * Sin(A) * Cos(B)
     z_height = -L * Cos(A) * Cos(B)
 
-'Segment XYZ-05. Eliminar etiquetas y ejes antiguos.
-    'Esto se hace para iniciar con un objeto nuevo, del cual se saben sus propiedades iniciales.
+'Segment XYZOpposite-05. Delete old labels and axes.
     If CheckExists("EjeXo") = True Then
          ActiveSheet.Shapes("EjeXo").Delete
     End If
@@ -898,7 +890,7 @@ Sub XYZOpposite(ByVal m, n As Integer)
          ActiveSheet.Shapes("EjeZo").Delete
     End If
 
-'Segment XYZ-07. Crear nuevos ejes como formas (shapes)
+'Segment XYZOpposite-06. Create new axes as Excel shapes
     Dim Eje As Object
     Set Eje = ActiveSheet.Shapes.AddShape(msoShapeLineInverse, 787.2, 301.8, 1047, 304.2)
     Eje.name = "EjeXo"
@@ -908,7 +900,7 @@ Sub XYZOpposite(ByVal m, n As Integer)
     Eje.name = "EjeZo"
     Set Eje = Nothing
 
-'Segment XYZ-08. Establecer las posiciones correctas dentro de la hoja y sus propiedades
+'Segment XYZOpposite-07. Correct the dimensions of the shapes that represent the X axis, due to their variation when rotating them.
     With ActiveSheet.Shapes("EjeXo")
         If x_width < "0" Then
             .Width = -x_width
@@ -936,7 +928,7 @@ Sub XYZOpposite(ByVal m, n As Integer)
         .Line.ForeColor.RGB = Cells(m + 1, n + 4).Interior.Color '
     End With
 
-'Segment XYZ-10. Hacer el mismo procedimiento anterior para los otros dos ejes
+'Segment XYZOpposite-08. Do the same procedure above for the other two negative axes
     With ActiveSheet.Shapes("EjeYo")
         If y_width < "0" Then
             .Width = -y_width
@@ -993,16 +985,18 @@ Sub XYZOpposite(ByVal m, n As Integer)
 
 End Sub
 
-Sub Field(ByVal m, n As Integer) ' Visualizacoon de vectores y campos vectoriales
-    '© 2022 A Becerra. ScienSolar.com
-'Segment Field-01. Declaracion de variables universales
-    ActiveSheet.Range("K6").Value = "" ' ' eliminar some vector were underscaled
-    Dim T_color As Double
-    Dim xS As Single ' escala de los vectores
-    Dim NLine As Double 'incremento de coordenadas x
-    Dim NLine2 As Double 'incremento de coordenadas y
-    Dim NLine3 As Double 'incremento de coordenadas z
-    Dim s As Integer
+Sub Field(ByVal m, n As Integer)
+'© 2022 A Becerra. ScienSolar.com
+'Procedure to display three-dimensional fields in the spreadsheet
+
+'Segment Field-01. Declaration of variables
+    ActiveSheet.Range("K6").Value = "" ' ' Clean the message: some vector were underscaled.
+    Dim T_color As Double  'Label text color
+    Dim xS As Single ' Vector scale in the XYZ system
+    Dim NLine As Double ' Variable for range in X coordinate
+    Dim NLine2 As Double ' Variable for range in Y coordinate
+    Dim NLine3 As Double 'Variable for range in Z coordinate
+    Dim s As Integer ' This indicates the number of each vector in a fiel formula. If a field has 900 vectors on the sheet, s goes from 1 to 900
     T_color = Cells(m, n + 4).Interior.Color
     
     If IsNumeric(ActiveSheet.Cells(m + 2, n + 3).Value) Then
@@ -1012,15 +1006,15 @@ Sub Field(ByVal m, n As Integer) ' Visualizacoon de vectores y campos vectoriale
         xS = 20
     End If
      
-'Segment Field-02. Recorrer todos los vectores
+'Segment Field-02. Do while there are vectors in the spreadsheet.
     Do While Cells(m + 3, n - 1).Value <> ""
     
-'Segment Field-03. Eliminar campos antiguos de la hoja
-        If Cells(m + 5, n - 1).Value > 2000 Then ' si la cantidad de vectores es grande,limpiar la hoja
+'Segment Field-03. Clean old vectors in the spreadsheet
+        If Cells(m + 5, n - 1).Value > 2000 Then ' If the number of vectors is >2000, they disappear instantly:
             Call DeleteObjects(1)
-            Call DeleteObjects(30) ' Enero 2024 eliminar objetos 3D
-            Call XYZ(m, n) ' UpdatedDec 2023
-        Else 'si no, borrar gradualment para dar efecto de movimiento
+            Call DeleteObjects(30)
+            Call XYZ(m, n)
+        Else 'if not, they gradually disappear:
             i = 0
             For i = Cells(m + 10, n + 1).Value To Cells(m + 5, n - 1).Value ' deja un vector sin eliminar (el indicado en la celda)
                 On Error Resume Next
@@ -1029,462 +1023,623 @@ Sub Field(ByVal m, n As Integer) ' Visualizacoon de vectores y campos vectoriale
             Next i
         End If
         
-'Segment Field-04. Iniciar identificacion del vector y apariencia.
-        If Cells(m + 4, n).Value = 200 Then Cells(m + 5, n + 1).Value = 2 ' para que la transparencia no afectte a los objetos 3D
-        If Cells(m + 3, n - 1).Value > 0 And Cells(m + 5, n + 1).Value <> 1 Then   ' si esta activada la opcion de mostrar vector.
-            Dim cod As Integer ' deficicion del codigo del objeto (vector).
-            cod = Cells(m + 4, n).Value  ' tipo de forma que representa al vector.
+'Segment Field-04. Verifyif that the vector has 3D objects
+        If Cells(m + 4, n).Value = 200 Then Cells(m + 5, n + 1).Value = 2 ' This property is to enable 3D Excel Models (stored in 3DModels spreadsheet)
+        
+'Segment Field-05. Display vectors in the XYZ system:
+        If Cells(m + 3, n - 1).Value > 0 And Cells(m + 5, n + 1).Value <> 1 Then   ' These conditions apply to the vectors that will be displayed
+            Dim cod As Integer ' Define the type of Excel shape that will represent the vector
+            cod = Cells(m + 4, n).Value
             
-'Segment Field-05. Salida de datos durante una simulacion.
-        If Cells(m + 10, n).Value > 0 And Cells(m + 11, n).Value > 0 Then ' May 2023. Trasladado aun procedimiento y agregado adicionalmente al modo campo
-            Call DataOutput(m, n)
-        End If
-            
-'Segment Field-06. Pasar de la opcion vector a la opcion campo (en coord esfericas, cilindricas o cartesianas)
-        If ActiveSheet.Cells(m + 4, n + 1).Value <> "" Then ' Empieza la opcion de campo
-            If ActiveSheet.Cells(m + 4, n + 1).FormulaR1C1 = 1 Then
-                ActiveSheet.Cells(m + 4, n + 1).FormulaR1C1 = ""
-                GoTo sig
-            End If
-            If ActiveSheet.Cells(m + 4, n + 1).FormulaR1C1 = 0 Then
-                ActiveSheet.Cells(m + 4, n + 1).FormulaR1C1 = ""
-                GoTo sig
+'Segment Field-06. Output data to a table when simulating. If the cell value is zero, no data will be displayed
+            If Cells(m + 10, n).Value > 0 And Cells(m + 11, n).Value > 0 Then
+                Call DataOutput(m, n) ' Display data in a table.
             End If
             
-'If ActiveSheet.Cells(m + 4, n + 1).Value = 0 Then GoTo sig
-            NLine = 0
-            NLine2 = 10
-            NLine3 = 10
-            Dim Atemp As Double  'variables auxiliares
-            Dim Btemp As Double
-            Dim Ctemp As Double
-            Dim x_0 As Double 'variables para correr el origen de coordenadas rectangulares
-            Dim y_0 As Double
-            Dim z_0 As Double
-            Dim Nline0x As Double  ' inicio de recorrido de la coordenada
-            Dim Nline0y As Double
-            Dim Nline0z As Double
-            Dim Nlinex As Double  ' final derecorrido de la coordenada
-            Dim Nliney As Double
-            Dim Nlinez As Double
-            Dim Bulk ' calculo preliminar de cantidad de vectores
-            Dim Response
-            Dim msg
-            Dim tfactor 'tiempo que demora el PC enponer un vector en la hoja
-            Dim T As Single 'fijacion del tiempo
-            i = CDbl(i) ' convertir a Double
-            Dim j As Double
-            Dim k As Double
-            x_0 = 0
-            y_0 = 0
-            z_0 = 0
-            Atemp = 0
-            Btemp = 0
-            Ctemp = 0
-            i = 0 ' avance en el eje x
-            j = 0 ' avance en el eje y
-            k = 0 ' avance en el eje z
-            s = 1 ' identificador unica de cada vector
-            
-'Segment Field-06a. Modificar las formulas de las coordenadas iniciales. introducido Sep 2023
-            ActiveSheet.Cells(m + 7, n - 1).FormulaR1C1 = "=R[1]C"
-            ActiveSheet.Cells(m + 7, n).FormulaR1C1 = "=R[1]C"
-            ActiveSheet.Cells(m + 7, n + 1).FormulaR1C1 = "=R[1]C"
-            
-'Segment Field-07. Recorrer las coordenadas del campo en un rango definido
-            If Left(ActiveSheet.Cells(m + 4, n + 1).Value, 1) = "s" Then   'Coordenadas esfericas. Updated 05-2023
-                If InStr(ActiveSheet.Cells(m + 4, n + 1).Value, "r=") = 0 Then
-                    ActiveSheet.Cells(m + 4, n + 1).FormulaR1C1 = "s[10]r=[8;8]s2[10]phi=[0;360]s3[10]theta=[0;180]color=[8]origin[cart.]=[0;0;0]tfactor=0,008s"
-                    ActiveSheet.Cells(m + 4, n + 1).AddComment
-                    ActiveSheet.Cells(m + 4, n + 1).Comment.Visible = False
-                    ActiveSheet.Cells(m + 4, n + 1).Comment.Shape.Width = 300
-                    ActiveSheet.Cells(m + 4, n + 1).Comment.Shape.Height = 300
-                    ActiveSheet.Cells(m + 4, n + 1).Comment.Text Text:="Field mode:" & Chr(10) & "1. For spherical coordinates, cell value = s" _
-                    & Chr(10) & "2. For cylindrical coordinates, cell value = c" _
-                    & Chr(10) & "3. For Cartesian coordinates, cell value = o" _
-                    & Chr(10) & Chr(10) & "Then set the parameters to the string that appeared in this cell." _
-                    & Chr(10) & "The first parenthesis [ ] indicates the step of increasing coordinates, " _
-                    & "the next three parentheses [ ] indicate the range of each of the three coordinates, " _
-                    & "the higher the range, the longer the rendering time; " _
-                    & "the color parameter is used to color the vector according to its length, the number indicating approximately the length of the largest vector, " _
-                    & "the color is distributed between red (smaller vector) and violet (larger vector)." _
-                    & "The last parenthesis [ ] indicates the origin of the coordinates, where vector distributions begin." _
-                    & Chr(10) & Chr(10) & "Please enclose only numeric values between semicolons, do not modify the structure of this string, except if you are an expert in MS Excel." _
-                    & Chr(10) & Chr(10) & "To return to single vector mode, clear the contents of this cell." _
-                    & Chr(10) & Chr(10) & "Right-click to remove this comment."
+'Segment Field-07. The following condition allows us to display a field function in a region of XYZ as a set of vectors.
+            If ActiveSheet.Cells(m + 4, n + 1).Value <> "" Then ' If not empty, is a field; if empty is a single vector.
+                If ActiveSheet.Cells(m + 4, n + 1).FormulaR1C1 = 1 Then
+                    ActiveSheet.Cells(m + 4, n + 1).FormulaR1C1 = ""
+                    GoTo sig
                 End If
-                If InStr(ActiveSheet.Cells(m + 4, n + 1).Value, "phi=") = 0 Then
-                    ActiveSheet.Cells(m + 4, n + 1).FormulaR1C1 = "=CONCAT(""s[10]r=[8;8]s2[10]phi=[0;360]s3[10]theta=[0;180]color=[8]origin[cart.]=[0;0;0]tfactor=0,008s"")" '
+                If ActiveSheet.Cells(m + 4, n + 1).FormulaR1C1 = 0 Then
+                    ActiveSheet.Cells(m + 4, n + 1).FormulaR1C1 = ""
+                    GoTo sig
                 End If
-                If InStr(ActiveSheet.Cells(m + 4, n + 1).Value, "theta=") = 0 Then
-                    ActiveSheet.Cells(m + 4, n + 1).FormulaR1C1 = "s[10]r=[8;8]s2[10]phi=[0;360]s3[10]theta=[0;180]color=[8]origin[cart.]=[0;0;0]tfactor=0,008s"
-                End If
-                  'Definir NLine, intervalo de cambio de las variables
-                    Atemp = InStr(ActiveSheet.Cells(m + 4, n + 1).Value, "s[") + 2
-                    Btemp = InStr(Atemp, ActiveSheet.Cells(m + 4, n + 1).Value, "]", 1)
-                    Ctemp = Btemp - Atemp
-                    NLine = Mid(ActiveSheet.Cells(m + 4, n + 1).Value, Atemp, Ctemp) 'valor de NLine
-                  'Definir NLine2, intervalo de cambio de las variables
-                    Atemp = InStr(ActiveSheet.Cells(m + 4, n + 1).Value, "s2[") + 3
-                    Btemp = InStr(Atemp, ActiveSheet.Cells(m + 4, n + 1).Value, "]", 1)
-                    Ctemp = Btemp - Atemp
-                    NLine2 = Mid(ActiveSheet.Cells(m + 4, n + 1).Value, Atemp, Ctemp) 'valor de NLine
-                  'Definir NLine3, intervalo de cambio de las variables
-                    Atemp = InStr(ActiveSheet.Cells(m + 4, n + 1).Value, "s3[") + 3
-                    Btemp = InStr(Atemp, ActiveSheet.Cells(m + 4, n + 1).Value, "]", 1)
-                    Ctemp = Btemp - Atemp
-                    NLine3 = Mid(ActiveSheet.Cells(m + 4, n + 1).Value, Atemp, Ctemp) 'valor de NLine
-                'Definir el rango de r
-                    Atemp = InStr(ActiveSheet.Cells(m + 4, n + 1).Value, "r=") + 3
-                    Btemp = InStr(Atemp, ActiveSheet.Cells(m + 4, n + 1).Value, ";", 1)
-                    Ctemp = Btemp - Atemp
-                    Nline0x = Mid(ActiveSheet.Cells(m + 4, n + 1).Value, Atemp, Ctemp) 'valor inicial de r
-                    Atemp = InStr(Btemp, ActiveSheet.Cells(m + 4, n + 1).Value, "]")
-                    Ctemp = Atemp - Btemp
-                    Nlinex = Mid(ActiveSheet.Cells(m + 4, n + 1).Value, Btemp + 1, Ctemp - 1) ' valor final de r
-                'Definir el rango de phi
-                    Atemp = InStr(ActiveSheet.Cells(m + 4, n + 1).Value, "phi=") + 5
-                    Btemp = InStr(Atemp, ActiveSheet.Cells(m + 4, n + 1).Value, ";", 1)
-                    Ctemp = Btemp - Atemp
-                    Nline0y = Mid(ActiveSheet.Cells(m + 4, n + 1).Value, Atemp, Ctemp) 'valor inicial de phi
-                    Atemp = InStr(Btemp, ActiveSheet.Cells(m + 4, n + 1).Value, "]")
-                    Ctemp = Atemp - Btemp
-                    Nliney = Mid(ActiveSheet.Cells(m + 4, n + 1).Value, Btemp + 1, Ctemp - 1) ' valor final de phi
-                'Definir el rango de theta
-                    Atemp = InStr(ActiveSheet.Cells(m + 4, n + 1).Value, "theta=") + 7
-                    Btemp = InStr(Atemp, ActiveSheet.Cells(m + 4, n + 1).Value, ";", 1)
-                    Ctemp = Btemp - Atemp
-                    Nline0z = Mid(ActiveSheet.Cells(m + 4, n + 1).Value, Atemp, Ctemp) 'valor inicial de phi
-                    Atemp = InStr(Btemp, ActiveSheet.Cells(m + 4, n + 1).Value, "]")
-                    Ctemp = Atemp - Btemp
-                    Nlinez = Mid(ActiveSheet.Cells(m + 4, n + 1).Value, Btemp + 1, Ctemp - 1) ' valor final de phi
-                 'Definir el tiempo de demora para mostrar un vector
-                    Atemp = InStr(ActiveSheet.Cells(m + 4, n + 1).Value, "tfactor=") + 8
-                    Btemp = InStr(Atemp, ActiveSheet.Cells(m + 4, n + 1).Value, "s", 1)
-                    Ctemp = Btemp - Atemp
-                    tfactor = Mid(ActiveSheet.Cells(m + 4, n + 1).Value, Atemp, Ctemp) 'valor de tfactor
-                 'Verificar la cantidad de vectores
-                    Bulk = (WorksheetFunction.RoundDown((Nlinex - Nline0x + 1) / (NLine + 1), 0) + 1) _
-                    * (WorksheetFunction.RoundDown((Nliney - Nline0y + 1) / (NLine2 + 1), 0) + 1) _
-                    * (WorksheetFunction.RoundDown((Nlinez - Nline0z + 1) / (NLine3 + 1), 0) + 1)
-                    msg = "They will be more than " & Bulk & " vectors, and depending on the performance of your computer it will take more than " _
-                        & Round(1.2 * (Bulk * tfactor + 15) / 60, 1) & " minutes to render. Do you want to continue?"
-                    If Round(2 * (Bulk * tfactor) / 60, 1) > 0.5 Then  ' confirmacion del ususario cuando el tiempode renderiz. es mayor a medio minuto
-                        Response = MsgBox(msg, vbYesNo, "Confirmation")
-                        If Response = vbYes Then
+                NLine = 0 ' X feed step
+                NLine2 = 10 ' Y feed step
+                NLine3 = 10 ' Z feed step
+                Dim Atemp As Double  'Temp variables
+                Dim Btemp As Double
+                Dim Ctemp As Double
+                Dim x_0 As Double
+                Dim y_0 As Double
+                Dim z_0 As Double
+                Dim Nline0x As Double  'X begin
+                Dim Nline0y As Double  'Y begin
+                Dim Nline0z As Double  'Z begin
+                Dim Nlinex As Double   'X end
+                Dim Nliney As Double  'Y end
+                Dim Nlinez As Double  'Z end
+                Dim Bulk ' calculo preliminar de cantidad de vectores
+                Dim Response
+                Dim msg
+                Dim tfactor 'tiempo que demora el PC enponer un vector en la hoja
+                Dim t As Single 'fijacion del tiempo
+                Dim A As Variant
+                Dim Centery As Double
+                Dim Centerx As Double
+                Dim Centerz As Double
+                A = Array()
+                'i = CDbl(i) ' convertir a Double
+                Dim j As Double
+                Dim k As Double
+                x_0 = 0
+                y_0 = 0
+                z_0 = 0
+                Atemp = 0
+                Btemp = 0
+                Ctemp = 0
+                i = 0 ' feed in x
+                j = 0 ' feed in  y
+                k = 0 ' feed in  z
+                s = 1
+                
+                'Modify the initial coordinate formulas.
+                ActiveSheet.Cells(m + 7, n - 1).FormulaR1C1 = "=R[1]C"
+                ActiveSheet.Cells(m + 7, n).FormulaR1C1 = "=R[1]C"
+                ActiveSheet.Cells(m + 7, n + 1).FormulaR1C1 = "=R[1]C"
+                
+                'Choose the coordinate system indicated by the user (s, c or o)
+                If Left(ActiveSheet.Cells(m + 4, n + 1).Value, 1) = "s" Then
+                'Segment Field-07a. Spherical coordinates
+                    'verify if the parameters were not stablished by the user:
+                    If WorksheetFunction.Or(InStr(ActiveSheet.Cells(m + 4, n + 1).Value, "r=") = 0, InStr(ActiveSheet.Cells(m + 4, n + 1).Value, "phi=") = 0, InStr(ActiveSheet.Cells(m + 4, n + 1).Value, "theta=") = 0) Then
+                        If L / xS < 1 Then
+                            Nlinex = Round(L / (2 * xS), InStr(InStr(L / (2 * xS), ","), L / (2 * xS), "0", 0) + 1)
                         Else
-                            GoTo sig
+                            Nlinex = Round(L / (2 * xS), 0)
                         End If
+                        NLine = Nlinex / 10
+                        NLine2 = 10
+                        NLine3 = 10
+                        Nline0x = Nlinex
+                        Nline0y = 0
+                        Nline0z = 0
+                        Nliney = 360
+                        Nlinez = 180
+                        
+                        ' Set origin by default and automatically according to the dimensions of the current vectors:
+                        'Collect current vector coordinate data:
+                        i = 0
+                        j = 1
+                        Do While ActiveSheet.Cells(m + 3 + i * 9, n - 1).Value <> ""
+                            If Cells(m + 5 + i * 9, n + 1).Value < 1 Then
+                                ReDim Preserve A(j + 5)
+                                A(j) = Cells(m + 7 + i * 9, n - 1).Value
+                            End If
+                            i = i + 1
+                            j = j + 1
+                        Loop
+                        Centerx = WorksheetFunction.Average(A)
+                        Erase A
+                        
+                        i = 0
+                        j = 1
+                        Do While ActiveSheet.Cells(m + 3 + i * 9, n - 1).Value <> ""
+                            If Cells(m + 5 + i * 9, n + 1).Value < 1 Then
+                                ReDim Preserve A(j + 5)
+                                A(j) = Cells(m + 7 + i * 9, n).Value
+                            End If
+                            i = i + 1
+                            j = j + 1
+                        Loop
+                        Centery = WorksheetFunction.Average(A)
+                        Erase A
+                        
+                        i = 0
+                        j = 1
+                        Do While ActiveSheet.Cells(m + 3 + i * 9, n - 1).Value <> ""
+                            If Cells(m + 5 + i * 9, n + 1).Value < 1 Then
+                                ReDim Preserve A(j + 5)
+                                A(j) = Cells(m + 7 + i * 9, n + 1).Value
+                            End If
+                            i = i + 1
+                            j = j + 1
+                        Loop
+                        Centerz = WorksheetFunction.Average(A)
+                        Erase A
+                        
+                        'Put parameters to display the field:
+                        ActiveSheet.Cells(m + 4, n + 1).FormulaR1C1 = "s[" & NLine & "]r=[" & Nline0x & ";" & Nlinex & "]s2[" & NLine2 & "]phi=[" & Nline0y & ";" & Nliney & "]s3[" & NLine3 & "]theta=[" & Nline0z & ";" & Nlinez & "]color=[" & Nlinex * 2 & "]origin[cart.]=[" & Centerx & ";" & Centery & ";" & Centerz & "]tfactor=0,008s"
+                        ActiveSheet.Cells(m + 4, n + 1).AddComment
+                        ActiveSheet.Cells(m + 4, n + 1).Comment.Visible = False
+                        ActiveSheet.Cells(m + 4, n + 1).Comment.Shape.Width = 300
+                        ActiveSheet.Cells(m + 4, n + 1).Comment.Shape.Height = 300
+                        ActiveSheet.Cells(m + 4, n + 1).Comment.Text Text:="Field mode:" & Chr(10) & "1. For spherical coordinates, cell value = s" _
+                        & Chr(10) & "2. For cylindrical coordinates, cell value = c" _
+                        & Chr(10) & "3. For Cartesian coordinates, cell value = o" _
+                        & Chr(10) & Chr(10) & "Then set the parameters to the string that appeared in this cell." _
+                        & Chr(10) & "The first parenthesis [ ] indicates the step of increasing coordinates, " _
+                        & "the next three parentheses [ ] indicate the range of each of the three coordinates, " _
+                        & "the higher the range, the longer the rendering time; " _
+                        & "the color parameter is used to color the vector according to its length, the number indicating approximately the length of the largest vector, " _
+                        & "the color is distributed between red (smaller vector) and violet (larger vector)." _
+                        & "The last parenthesis [ ] indicates the origin of the coordinates, where vector distributions begin." _
+                        & Chr(10) & Chr(10) & "Please enclose only numeric values between semicolons, do not modify the structure of this string, except if you are an expert in MS Excel." _
+                        & Chr(10) & Chr(10) & "To return to single vector mode, clear the contents of this cell." _
+                        & Chr(10) & Chr(10) & "Right-click to remove this comment."
+                        
+                        'Regulate the length of all the vectors of the field.
+                        ActiveSheet.Cells(m + 5, n).Value = "60*1" ' regulador de longitudes
                     End If
-                  'Origen de coordenadas:
-                  On Error Resume Next ' 08-2024
-                  'origen en x:
-                    Atemp = InStr(ActiveSheet.Cells(m + 4, n + 1).Value, "origin[cart.]=") + 15
-                    Btemp = InStr(Atemp, ActiveSheet.Cells(m + 4, n + 1).Value, ";", 1)
-                    Ctemp = Btemp - Atemp
-                    x_0 = Mid(ActiveSheet.Cells(m + 4, n + 1).Value, Atemp, Ctemp)
-                  'origen en y
-                    Atemp = InStr(ActiveSheet.Cells(m + 4, n + 1).Value, "origin[cart.]=") + 16 + Ctemp
-                    Btemp = InStr(Atemp + 1, ActiveSheet.Cells(m + 4, n + 1).Value, ";", 1)
-                    Ctemp = Btemp - Atemp
-                    y_0 = Mid(ActiveSheet.Cells(m + 4, n + 1).Value, Atemp, Ctemp)
-                 'origen en z
-                    Atemp = InStr(Btemp + 1, ActiveSheet.Cells(m + 4, n + 1).Value, "]", 1)
-                    Ctemp = Atemp - Btemp
-                    z_0 = Mid(ActiveSheet.Cells(m + 4, n + 1).Value, Btemp + 1, Ctemp - 1)
-                    '/////////////////'medicion de tiempo de ejecucion del campo
-                        T = Timer
-                    '/////////////////
-                    'salida de coordenadas esfericas
-                        For i = Nline0x To Nlinex
-                            For j = Nline0y To Nliney
-                                For k = Nline0z To Nlinez
-                                    ActiveSheet.Cells(m + 8, n - 1).Value = i * Cos(WorksheetFunction.Radians(j)) * Sin(WorksheetFunction.Radians(k)) + x_0
-                                    ActiveSheet.Cells(m + 8, n).Value = i * Sin(WorksheetFunction.Radians(j)) * Sin(WorksheetFunction.Radians(k)) + y_0
-                                    ActiveSheet.Cells(m + 8, n + 1).Value = i * Cos(WorksheetFunction.Radians(k)) + z_0
-                                    Call VectorOutput(m, n, s, cod, Y_abs, Z_abs, xS, T_color)
-                                    If Cells(m + 10, n).Value > 0 And Cells(m + 11, n).Value > 0 Then ' May 2023. Trasladado  a un procedimiento y agregado adicionalmente al modo campo
-                                            Call DataOutput(m, n)
-                                            DoEvents
-                                    End If
-                                    s = s + 1 ' siguiente vector clonado
-                                    k = k + NLine3
-                                Next k
-                                j = j + NLine2
-                            Next j
-                            i = i + NLine
-                        Next i
-            Else 'Termina coordenadas esfericas y siguen cilindricas y cartesianas
-            If Left(ActiveSheet.Cells(m + 4, n + 1).Value, 1) = "c" Then ' coordenadas cilindricas
-                 If InStr(ActiveSheet.Cells(m + 4, n + 1).Value, "rho=") = 0 Then
-                    ActiveSheet.Cells(m + 4, n + 1).FormulaR1C1 = "c[5]rho=[10;10]c2[10]phi=[0;360]c3[1]z=[0;10]color=[8]origin[cart.]=[0;0;0]tfactor=0,008s"
-                    ActiveSheet.Cells(m + 4, n + 1).AddComment
-                    ActiveSheet.Cells(m + 4, n + 1).Comment.Visible = False
-                    ActiveSheet.Cells(m + 4, n + 1).Comment.Shape.Width = 300
-                    ActiveSheet.Cells(m + 4, n + 1).Comment.Shape.Height = 300
-                    ActiveSheet.Cells(m + 4, n + 1).Comment.Text Text:="Field mode:" & Chr(10) & "1. For spherical coordinates, cell value = s" _
-                    & Chr(10) & "2. For cylindrical coordinates, cell value = c" _
-                    & Chr(10) & "3. For Cartesian coordinates, cell value = o" _
-                    & Chr(10) & Chr(10) & "Then set the parameters to the string that appeared in this cell." _
-                    & Chr(10) & "The first parenthesis [ ] indicates the step of increasing coordinates, " _
-                    & "the next three parentheses [ ] indicate the range of each of the three coordinates, " _
-                    & "the higher the range, the longer the rendering time; " _
-                    & "the color parameter is used to color the vector according to its length, the number indicating approximately the length of the largest vector, " _
-                    & "the color is distributed between red (smaller vector) and violet (larger vector)." _
-                    & "The last parenthesis [ ] indicates the origin of the coordinates, where vector distributions begin." _
-                    & Chr(10) & Chr(10) & "Please enclose only numeric values between semicolons, do not modify the structure of this string, except if you are an expert in MS Excel." _
-                    & Chr(10) & Chr(10) & "To return to single vector mode, clear the contents of this cell." _
-                    & Chr(10) & Chr(10) & "Right-click to remove this comment."
-                End If
-                If InStr(ActiveSheet.Cells(m + 4, n + 1).Value, "phi=") = 0 Then
-                    ActiveSheet.Cells(m + 4, n + 1).FormulaR1C1 = "c[5]rho=[10;10]c2[10]phi=[0;360]c3[1]z=[0;10]color=[8]origin[cart.]=[0;0;0]tfactor=0,008s"
-                End If
-                If InStr(ActiveSheet.Cells(m + 4, n + 1).Value, "z=") = 0 Then
-                    ActiveSheet.Cells(m + 4, n + 1).FormulaR1C1 = "c[5]rho=[10;10]c2[10]phi=[0;360]c3[1]z=[0;10]color=[8]origin[cart.]=[0;0;0]tfactor=0,008s"
-                End If
-                  'Definir NLine, intervalo de cambio de las variables
-                    Atemp = InStr(ActiveSheet.Cells(m + 4, n + 1).Value, "c[") + 2
-                    Btemp = InStr(Atemp, ActiveSheet.Cells(m + 4, n + 1).Value, "]", 1)
-                    Ctemp = Btemp - Atemp
-                    NLine = Mid(ActiveSheet.Cells(m + 4, n + 1).Value, Atemp, Ctemp) 'valor de NLine
-                  'Definir NLine2, intervalo de cambio de las variables
-                    Atemp = InStr(ActiveSheet.Cells(m + 4, n + 1).Value, "c2[") + 3
-                    Btemp = InStr(Atemp, ActiveSheet.Cells(m + 4, n + 1).Value, "]", 1)
-                    Ctemp = Btemp - Atemp
-                    NLine2 = Mid(ActiveSheet.Cells(m + 4, n + 1).Value, Atemp, Ctemp) 'valor de NLine
-                  'Definir NLine3, intervalo de cambio de las variables
-                    Atemp = InStr(ActiveSheet.Cells(m + 4, n + 1).Value, "c3[") + 3
-                    Btemp = InStr(Atemp, ActiveSheet.Cells(m + 4, n + 1).Value, "]", 1)
-                    Ctemp = Btemp - Atemp
-                    NLine3 = Mid(ActiveSheet.Cells(m + 4, n + 1).Value, Atemp, Ctemp) 'valor de NLine
-                'Definir el rango de rho
-                    Atemp = InStr(ActiveSheet.Cells(m + 4, n + 1).Value, "rho=") + 5
-                    Btemp = InStr(Atemp, ActiveSheet.Cells(m + 4, n + 1).Value, ";", 1)
-                    Ctemp = Btemp - Atemp
-                    Nline0x = Mid(ActiveSheet.Cells(m + 4, n + 1).Value, Atemp, Ctemp) 'valor inicial de rho
-                    Atemp = InStr(Btemp, ActiveSheet.Cells(m + 4, n + 1).Value, "]")
-                    Ctemp = Atemp - Btemp
-                    Nlinex = Mid(ActiveSheet.Cells(m + 4, n + 1).Value, Btemp + 1, Ctemp - 1) ' valor final de r
-                'Definir el rango de phi
-                    Atemp = InStr(ActiveSheet.Cells(m + 4, n + 1).Value, "phi=") + 5
-                    Btemp = InStr(Atemp, ActiveSheet.Cells(m + 4, n + 1).Value, ";", 1)
-                    Ctemp = Btemp - Atemp
-                    Nline0y = Mid(ActiveSheet.Cells(m + 4, n + 1).Value, Atemp, Ctemp) 'valor inicial de phi
-                    Atemp = InStr(Btemp, ActiveSheet.Cells(m + 4, n + 1).Value, "]")
-                    Ctemp = Atemp - Btemp
-                    Nliney = Mid(ActiveSheet.Cells(m + 4, n + 1).Value, Btemp + 1, Ctemp - 1) ' valor final de phi
-                'Definir el rango de z
-                    Atemp = InStr(ActiveSheet.Cells(m + 4, n + 1).Value, "z=") + 3
-                    Btemp = InStr(Atemp, ActiveSheet.Cells(m + 4, n + 1).Value, ";", 1)
-                    Ctemp = Btemp - Atemp
-                    Nline0z = Mid(ActiveSheet.Cells(m + 4, n + 1).Value, Atemp, Ctemp) 'valor inicial de phi
-                    Atemp = InStr(Btemp, ActiveSheet.Cells(m + 4, n + 1).Value, "]")
-                    Ctemp = Atemp - Btemp
-                    Nlinez = Mid(ActiveSheet.Cells(m + 4, n + 1).Value, Btemp + 1, Ctemp - 1) ' valor final de phi
-                  'Definir el tiempo de demora para mostrar un vector
-                    Atemp = InStr(ActiveSheet.Cells(m + 4, n + 1).Value, "tfactor=") + 8
-                    Btemp = InStr(Atemp, ActiveSheet.Cells(m + 4, n + 1).Value, "s", 1)
-                    Ctemp = Btemp - Atemp
-                    tfactor = Mid(ActiveSheet.Cells(m + 4, n + 1).Value, Atemp, Ctemp) 'valor de tfactor
-    
-                 'Verificar la cantidad de vectores
-                     Bulk = (WorksheetFunction.RoundDown((Nlinex - Nline0x + 1) / (NLine + 1), 0) + 1) _
-                    * (WorksheetFunction.RoundDown((Nliney - Nline0y + 1) / (NLine2 + 1), 0) + 1) _
-                    * (WorksheetFunction.RoundDown((Nlinez - Nline0z + 1) / (NLine3 + 1), 0) + 1)
-                    msg = "They will be more than " & Bulk & " vectors, and depending on the performance of your computer it will take more than " _
-                        & Round((Bulk * tfactor + 15) / 60, 1) & " minutes to render. Do you want to continue?"
-                    If Round((2 * Bulk * tfactor) / 60, 1) > 0.5 Then ' confirmacion del ususario cuando el tiempode renderiz. es mayor a medio minuto
-                        Response = MsgBox(msg, vbYesNo, "Confirmation")
-                        If Response = vbYes Then
+                        Atemp = InStr(ActiveSheet.Cells(m + 4, n + 1).Value, "s[") + 2
+                        Btemp = InStr(Atemp, ActiveSheet.Cells(m + 4, n + 1).Value, "]", 1)
+                        Ctemp = Btemp - Atemp
+                        NLine = Mid(ActiveSheet.Cells(m + 4, n + 1).Value, Atemp, Ctemp) 'value of NLine
+                      'Definir NLine2, intervalo de cambio de las variables
+                        Atemp = InStr(ActiveSheet.Cells(m + 4, n + 1).Value, "s2[") + 3
+                        Btemp = InStr(Atemp, ActiveSheet.Cells(m + 4, n + 1).Value, "]", 1)
+                        Ctemp = Btemp - Atemp
+                        NLine2 = Mid(ActiveSheet.Cells(m + 4, n + 1).Value, Atemp, Ctemp) 'valor de NLine
+                      'Definir NLine3, intervalo de cambio de las variables
+                        Atemp = InStr(ActiveSheet.Cells(m + 4, n + 1).Value, "s3[") + 3
+                        Btemp = InStr(Atemp, ActiveSheet.Cells(m + 4, n + 1).Value, "]", 1)
+                        Ctemp = Btemp - Atemp
+                        NLine3 = Mid(ActiveSheet.Cells(m + 4, n + 1).Value, Atemp, Ctemp) 'valor de NLine
+                    'Definir el rango de r
+                        Atemp = InStr(ActiveSheet.Cells(m + 4, n + 1).Value, "r=") + 3
+                        Btemp = InStr(Atemp, ActiveSheet.Cells(m + 4, n + 1).Value, ";", 1)
+                        Ctemp = Btemp - Atemp
+                        Nline0x = Mid(ActiveSheet.Cells(m + 4, n + 1).Value, Atemp, Ctemp) 'valor inicial de r
+                        Atemp = InStr(Btemp, ActiveSheet.Cells(m + 4, n + 1).Value, "]")
+                        Ctemp = Atemp - Btemp
+                        Nlinex = Mid(ActiveSheet.Cells(m + 4, n + 1).Value, Btemp + 1, Ctemp - 1) ' valor final de r
+                    'Definir el rango de phi
+                        Atemp = InStr(ActiveSheet.Cells(m + 4, n + 1).Value, "phi=") + 5
+                        Btemp = InStr(Atemp, ActiveSheet.Cells(m + 4, n + 1).Value, ";", 1)
+                        Ctemp = Btemp - Atemp
+                        Nline0y = Mid(ActiveSheet.Cells(m + 4, n + 1).Value, Atemp, Ctemp) 'valor inicial de phi
+                        Atemp = InStr(Btemp, ActiveSheet.Cells(m + 4, n + 1).Value, "]")
+                        Ctemp = Atemp - Btemp
+                        Nliney = Mid(ActiveSheet.Cells(m + 4, n + 1).Value, Btemp + 1, Ctemp - 1) ' valor final de phi
+                    'Definir el rango de theta
+                        Atemp = InStr(ActiveSheet.Cells(m + 4, n + 1).Value, "theta=") + 7
+                        Btemp = InStr(Atemp, ActiveSheet.Cells(m + 4, n + 1).Value, ";", 1)
+                        Ctemp = Btemp - Atemp
+                        Nline0z = Mid(ActiveSheet.Cells(m + 4, n + 1).Value, Atemp, Ctemp) 'valor inicial de phi
+                        Atemp = InStr(Btemp, ActiveSheet.Cells(m + 4, n + 1).Value, "]")
+                        Ctemp = Atemp - Btemp
+                        Nlinez = Mid(ActiveSheet.Cells(m + 4, n + 1).Value, Btemp + 1, Ctemp - 1) ' valor final de phi
+                     'Definir el tiempo de demora para mostrar un vector
+                        Atemp = InStr(ActiveSheet.Cells(m + 4, n + 1).Value, "tfactor=") + 8
+                        Btemp = InStr(Atemp, ActiveSheet.Cells(m + 4, n + 1).Value, "s", 1)
+                        Ctemp = Btemp - Atemp
+                        tfactor = Mid(ActiveSheet.Cells(m + 4, n + 1).Value, Atemp, Ctemp) 'valor de tfactor
+                     'Verificar la cantidad de vectores
+                        Bulk = (WorksheetFunction.RoundDown((Nlinex - Nline0x + 1) / (NLine + 1), 0) + 1) _
+                        * (WorksheetFunction.RoundDown((Nliney - Nline0y + 1) / (NLine2 + 1), 0) + 1) _
+                        * (WorksheetFunction.RoundDown((Nlinez - Nline0z + 1) / (NLine3 + 1), 0) + 1)
+                        msg = "They will be more than " & Bulk & " vectors, and depending on the performance of your computer it will take more than " _
+                            & Round(1.2 * (Bulk * tfactor + 15) / 60, 1) & " minutes to render. Do you want to continue?"
+                        If Round(2 * (Bulk * tfactor) / 60, 1) > 0.5 Then  ' confirmacion del ususario cuando el tiempode renderiz. es mayor a medio minuto
+                            Response = MsgBox(msg, vbYesNo, "Confirmation")
+                            If Response = vbYes Then
+                            Else
+                                GoTo sig
+                            End If
+                        End If
+                      'Origin of the spherical coordinates in the XYZ system
+                      On Error Resume Next ' 08-2024
+                      'Origin in x:
+                        Atemp = InStr(ActiveSheet.Cells(m + 4, n + 1).Value, "origin[cart.]=") + 15
+                        Btemp = InStr(Atemp, ActiveSheet.Cells(m + 4, n + 1).Value, ";", 1)
+                        Ctemp = Btemp - Atemp
+                        x_0 = Mid(ActiveSheet.Cells(m + 4, n + 1).Value, Atemp, Ctemp)
+                      'Origin in y
+                        Atemp = InStr(ActiveSheet.Cells(m + 4, n + 1).Value, "origin[cart.]=") + 16 + Ctemp
+                        Btemp = InStr(Atemp + 1, ActiveSheet.Cells(m + 4, n + 1).Value, ";", 1)
+                        Ctemp = Btemp - Atemp
+                        y_0 = Mid(ActiveSheet.Cells(m + 4, n + 1).Value, Atemp, Ctemp)
+                     'Origin in z
+                        Atemp = InStr(Btemp + 1, ActiveSheet.Cells(m + 4, n + 1).Value, "]", 1)
+                        Ctemp = Atemp - Btemp
+                        z_0 = Mid(ActiveSheet.Cells(m + 4, n + 1).Value, Btemp + 1, Ctemp - 1)
+                        '/////////////////'  measurement of time
+                            t = Timer
+                        '/////////////////
+                        'Display the field in the coordinate system (display it in spherical coordinates)
+                            For i = Nline0x To Nlinex Step NLine
+                                For j = Nline0y To Nliney Step NLine2
+                                    For k = Nline0z To Nlinez Step NLine3
+                                        ActiveSheet.Cells(m + 8, n - 1).Value = i * Cos(WorksheetFunction.Radians(j)) * Sin(WorksheetFunction.Radians(k)) + x_0
+                                        ActiveSheet.Cells(m + 8, n).Value = i * Sin(WorksheetFunction.Radians(j)) * Sin(WorksheetFunction.Radians(k)) + y_0
+                                        ActiveSheet.Cells(m + 8, n + 1).Value = i * Cos(WorksheetFunction.Radians(k)) + z_0
+                                        Call VectorOutput(m, n, s, cod, Y_abs, Z_abs, xS, T_color) 'Put each vector in XYZ
+                                        If Cells(m + 10, n).Value > 0 And Cells(m + 11, n).Value > 0 Then
+                                                Call DataOutput(m, n)
+                                                DoEvents
+                                        End If
+                                        s = s + 1 ' next vector
+                                    Next k
+                                Next j
+                            Next i
+                Else
+                'Segment Field-07b Begin of cylindrical coordinates
+                If Left(ActiveSheet.Cells(m + 4, n + 1).Value, 1) = "c" Then
+                     If WorksheetFunction.Or(InStr(ActiveSheet.Cells(m + 4, n + 1).Value, "rho=") = 0, InStr(ActiveSheet.Cells(m + 4, n + 1).Value, "phi=") = 0, InStr(ActiveSheet.Cells(m + 4, n + 1).Value, "z=") = 0) Then
+                        If L / xS < 1 Then
+                            Nlinex = Round(L / (xS), InStr(InStr(L / (xS), ","), L / (xS), "0", 0) + 1)
                         Else
-                            GoTo sig
+                            Nlinex = Round(L / (xS), 0)
                         End If
+                        NLine = Nlinex / 5
+                        NLine2 = 10
+                        NLine3 = Nlinex / 5
+                        Nline0x = Nlinex / 3
+                        Nline0y = 0
+                        Nline0z = 0
+                        Nliney = 360
+                        Nlinez = 0
+                        
+                       ' Set origin by default and automatically according to the dimensions of the current vectors:
+                        'Collect current vector coordinate data:
+                        i = 0
+                        j = 1
+                        Do While ActiveSheet.Cells(m + 3 + i * 9, n - 1).Value <> ""
+                            If Cells(m + 5 + i * 9, n + 1).Value < 1 Then
+                                ReDim Preserve A(j + 5)
+                                A(j) = Cells(m + 7 + i * 9, n - 1).Value
+                            End If
+                            i = i + 1
+                            j = j + 1
+                        Loop
+                        Centerx = WorksheetFunction.Average(A)
+                        Erase A
+                        
+                        i = 0
+                        j = 1
+                        Do While ActiveSheet.Cells(m + 3 + i * 9, n - 1).Value <> ""
+                            If Cells(m + 5 + i * 9, n + 1).Value < 1 Then
+                                ReDim Preserve A(j + 5)
+                                A(j) = Cells(m + 7 + i * 9, n).Value
+                            End If
+                            i = i + 1
+                            j = j + 1
+                        Loop
+                        Centery = WorksheetFunction.Average(A)
+                        Erase A
+                        
+                        i = 0
+                        j = 1
+                        Do While ActiveSheet.Cells(m + 3 + i * 9, n - 1).Value <> ""
+                            If Cells(m + 5 + i * 9, n + 1).Value < 1 Then
+                                ReDim Preserve A(j + 5)
+                                A(j) = Cells(m + 7 + i * 9, n + 1).Value
+                            End If
+                            i = i + 1
+                            j = j + 1
+                        Loop
+                        Centerz = WorksheetFunction.Average(A)
+                        Erase A
+                        
+                        'Put parameters to display the field:
+                        ActiveSheet.Cells(m + 4, n + 1).FormulaR1C1 = "c[" & NLine & "]rho=[" & Nline0x & ";" & Nlinex & "]c2[" & NLine2 & "]phi=[" & Nline0y & ";" & Nliney & "]c3[" & NLine3 & "]z=[" & Nline0z & ";" & Nlinez & "]color=[" & Nlinex & "]origin[cart.]=[" & Centerx & ";" & Centery & ";" & Centerz & "]tfactor=0,008s"
+                        ActiveSheet.Cells(m + 4, n + 1).AddComment
+                        ActiveSheet.Cells(m + 4, n + 1).Comment.Visible = False
+                        ActiveSheet.Cells(m + 4, n + 1).Comment.Shape.Width = 300
+                        ActiveSheet.Cells(m + 4, n + 1).Comment.Shape.Height = 300
+                        ActiveSheet.Cells(m + 4, n + 1).Comment.Text Text:="Field mode:" & Chr(10) & "1. For spherical coordinates, cell value = s" _
+                        & Chr(10) & "2. For cylindrical coordinates, cell value = c" _
+                        & Chr(10) & "3. For Cartesian coordinates, cell value = o" _
+                        & Chr(10) & Chr(10) & "Then set the parameters to the string that appeared in this cell." _
+                        & Chr(10) & "The first parenthesis [ ] indicates the step of increasing coordinates, " _
+                        & "the next three parentheses [ ] indicate the range of each of the three coordinates, " _
+                        & "the higher the range, the longer the rendering time; " _
+                        & "the color parameter is used to color the vector according to its length, the number indicating approximately the length of the largest vector, " _
+                        & "the color is distributed between red (smaller vector) and violet (larger vector)." _
+                        & "The last parenthesis [ ] indicates the origin of the coordinates, where vector distributions begin." _
+                        & Chr(10) & Chr(10) & "Please enclose only numeric values between semicolons, do not modify the structure of this string, except if you are an expert in MS Excel." _
+                        & Chr(10) & Chr(10) & "To return to single vector mode, clear the contents of this cell." _
+                        & Chr(10) & Chr(10) & "Right-click to remove this comment."
+                        'ActiveSheet.Cells(m + 5, n).Value = "60*1" ' regulador de longitudes
                     End If
-                  'Origen de coordenadas:
-                   On Error Resume Next ' 08-2024
-                  'origen en x:
-                    Atemp = InStr(ActiveSheet.Cells(m + 4, n + 1).Value, "origin[cart.]=") + 15
-                    Btemp = InStr(Atemp, ActiveSheet.Cells(m + 4, n + 1).Value, ";", 1)
-                    Ctemp = Btemp - Atemp
-                    x_0 = Mid(ActiveSheet.Cells(m + 4, n + 1).Value, Atemp, Ctemp)
-                  'origen en y
-                    Atemp = InStr(ActiveSheet.Cells(m + 4, n + 1).Value, "origin[cart.]=") + 16 + Ctemp
-                    Btemp = InStr(Atemp + 1, ActiveSheet.Cells(m + 4, n + 1).Value, ";", 1)
-                    Ctemp = Btemp - Atemp
-                    y_0 = Mid(ActiveSheet.Cells(m + 4, n + 1).Value, Atemp, Ctemp)
-                 'origen en z
-                    Atemp = InStr(Btemp + 1, ActiveSheet.Cells(m + 4, n + 1).Value, "]", 1)
-                    Ctemp = Atemp - Btemp
-                    z_0 = Mid(ActiveSheet.Cells(m + 4, n + 1).Value, Btemp + 1, Ctemp - 1)
-                    '/////////////////'medicion de tiempo de ejecucion del campo
-                        T = Timer
-                    '/////////////////
-                    'salida de coordenadas cilindricas
-                        For i = Nline0x To Nlinex
-                            For j = Nline0y To Nliney
-                                For k = Nline0z To Nlinez
-                                    ActiveSheet.Cells(m + 8, n - 1).Value = i * Cos(WorksheetFunction.Radians(j)) + x_0
-                                    ActiveSheet.Cells(m + 8, n).Value = i * Sin(WorksheetFunction.Radians(j)) + y_0
-                                    ActiveSheet.Cells(m + 8, n + 1).Value = k + z_0
-                                    Call VectorOutput(m, n, s, cod, Y_abs, Z_abs, xS, T_color)
-                                      If Cells(m + 10, n).Value > 0 And Cells(m + 11, n).Value > 0 Then ' May 2023. Trasladado  a un procedimiento y agregado adicionalmente al modo campo
-                                            Call DataOutput(m, n)
-                                            DoEvents
-                                    End If
-                                    s = s + 1 ' siguiente vector clonado
-                                    k = k + NLine3 - 1
-                                Next k
-                                j = j + NLine2 - 1
-                            Next j
-                            i = i + NLine - 1
-                        Next i
-            Else ' Termina coordenadas cilindricas y empieza coordenadas cartesianas
-            If Left(ActiveSheet.Cells(m + 4, n + 1).Value, 1) = "=" Then GoTo sig
-                 If InStr(ActiveSheet.Cells(m + 4, n + 1).Value, "x=") = 0 Then
-                    ActiveSheet.Cells(m + 4, n + 1).FormulaR1C1 = "o[2]x=[0;0]o2[2]y=[-10;10]o3[2]z=[-10;10]color=[8]origin[cart.]=[0;0;0]tfactor=0,008s"
-                    ActiveSheet.Cells(m + 4, n + 1).AddComment
-                    ActiveSheet.Cells(m + 4, n + 1).Comment.Visible = False
-                    ActiveSheet.Cells(m + 4, n + 1).Comment.Shape.Width = 300
-                    ActiveSheet.Cells(m + 4, n + 1).Comment.Shape.Height = 300
-                    ActiveSheet.Cells(m + 4, n + 1).Comment.Text Text:="Field mode:" & Chr(10) & "1. For spherical coordinates, cell value = s" _
-                    & Chr(10) & "2. For cylindrical coordinates, cell value = c" _
-                    & Chr(10) & "3. For Cartesian coordinates, cell value = o" _
-                    & Chr(10) & Chr(10) & "Then set the parameters to the string that appeared in this cell." _
-                    & Chr(10) & "The first parenthesis [ ] indicates the step of increasing coordinates, " _
-                    & "the next three parentheses [ ] indicate the range of each of the three coordinates, " _
-                    & "the higher the range, the longer the rendering time; " _
-                    & "the color parameter is used to color the vector according to its length, the number indicating approximately the length of the largest vector, " _
-                    & "the color is distributed between red (smaller vector) and violet (larger vector)." _
-                    & "The last parenthesis [ ] indicates the origin of the coordinates, where vector distributions begin." _
-                    & Chr(10) & Chr(10) & "Please enclose only numeric values between semicolons, do not modify the structure of this string, except if you are an expert in MS Excel." _
-                    & Chr(10) & Chr(10) & "To return to single vector mode, clear the contents of this cell." _
-                    & Chr(10) & Chr(10) & "Right-click to remove this comment."
+                      'Definir NLine, intervalo de cambio de las variables
+                        Atemp = InStr(ActiveSheet.Cells(m + 4, n + 1).Value, "c[") + 2
+                        Btemp = InStr(Atemp, ActiveSheet.Cells(m + 4, n + 1).Value, "]", 1)
+                        Ctemp = Btemp - Atemp
+                        NLine = Mid(ActiveSheet.Cells(m + 4, n + 1).Value, Atemp, Ctemp) 'valor de NLine
+                      'Definir NLine2, intervalo de cambio de las variables
+                        Atemp = InStr(ActiveSheet.Cells(m + 4, n + 1).Value, "c2[") + 3
+                        Btemp = InStr(Atemp, ActiveSheet.Cells(m + 4, n + 1).Value, "]", 1)
+                        Ctemp = Btemp - Atemp
+                        NLine2 = Mid(ActiveSheet.Cells(m + 4, n + 1).Value, Atemp, Ctemp) 'valor de NLine
+                      'Definir NLine3, intervalo de cambio de las variables
+                        Atemp = InStr(ActiveSheet.Cells(m + 4, n + 1).Value, "c3[") + 3
+                        Btemp = InStr(Atemp, ActiveSheet.Cells(m + 4, n + 1).Value, "]", 1)
+                        Ctemp = Btemp - Atemp
+                        NLine3 = Mid(ActiveSheet.Cells(m + 4, n + 1).Value, Atemp, Ctemp) 'valor de NLine
+                    'Definir el rango de rho
+                        Atemp = InStr(ActiveSheet.Cells(m + 4, n + 1).Value, "rho=") + 5
+                        Btemp = InStr(Atemp, ActiveSheet.Cells(m + 4, n + 1).Value, ";", 1)
+                        Ctemp = Btemp - Atemp
+                        Nline0x = Mid(ActiveSheet.Cells(m + 4, n + 1).Value, Atemp, Ctemp) 'valor inicial de rho
+                        Atemp = InStr(Btemp, ActiveSheet.Cells(m + 4, n + 1).Value, "]")
+                        Ctemp = Atemp - Btemp
+                        Nlinex = Mid(ActiveSheet.Cells(m + 4, n + 1).Value, Btemp + 1, Ctemp - 1) ' valor final de r
+                    'Definir el rango de phi
+                        Atemp = InStr(ActiveSheet.Cells(m + 4, n + 1).Value, "phi=") + 5
+                        Btemp = InStr(Atemp, ActiveSheet.Cells(m + 4, n + 1).Value, ";", 1)
+                        Ctemp = Btemp - Atemp
+                        Nline0y = Mid(ActiveSheet.Cells(m + 4, n + 1).Value, Atemp, Ctemp) 'valor inicial de phi
+                        Atemp = InStr(Btemp, ActiveSheet.Cells(m + 4, n + 1).Value, "]")
+                        Ctemp = Atemp - Btemp
+                        Nliney = Mid(ActiveSheet.Cells(m + 4, n + 1).Value, Btemp + 1, Ctemp - 1) ' valor final de phi
+                    'Definir el rango de z
+                        Atemp = InStr(ActiveSheet.Cells(m + 4, n + 1).Value, "z=") + 3
+                        Btemp = InStr(Atemp, ActiveSheet.Cells(m + 4, n + 1).Value, ";", 1)
+                        Ctemp = Btemp - Atemp
+                        Nline0z = Mid(ActiveSheet.Cells(m + 4, n + 1).Value, Atemp, Ctemp) 'valor inicial de phi
+                        Atemp = InStr(Btemp, ActiveSheet.Cells(m + 4, n + 1).Value, "]")
+                        Ctemp = Atemp - Btemp
+                        Nlinez = Mid(ActiveSheet.Cells(m + 4, n + 1).Value, Btemp + 1, Ctemp - 1) ' valor final de phi
+                      'Definir el tiempo de demora para mostrar un vector
+                        Atemp = InStr(ActiveSheet.Cells(m + 4, n + 1).Value, "tfactor=") + 8
+                        Btemp = InStr(Atemp, ActiveSheet.Cells(m + 4, n + 1).Value, "s", 1)
+                        Ctemp = Btemp - Atemp
+                        tfactor = Mid(ActiveSheet.Cells(m + 4, n + 1).Value, Atemp, Ctemp) 'valor de tfactor
+        
+                     'Verificar la cantidad de vectores
+                         Bulk = (WorksheetFunction.RoundDown((Nlinex - Nline0x + 1) / (NLine + 1), 0) + 1) _
+                        * (WorksheetFunction.RoundDown((Nliney - Nline0y + 1) / (NLine2 + 1), 0) + 1) _
+                        * (WorksheetFunction.RoundDown((Nlinez - Nline0z + 1) / (NLine3 + 1), 0) + 1)
+                        msg = "They will be more than " & Bulk & " vectors, and depending on the performance of your computer it will take more than " _
+                            & Round((Bulk * tfactor + 15) / 60, 1) & " minutes to render. Do you want to continue?"
+                        If Round((2 * Bulk * tfactor) / 60, 1) > 0.5 Then ' confirmacion del ususario cuando el tiempode renderiz. es mayor a medio minuto
+                            Response = MsgBox(msg, vbYesNo, "Confirmation")
+                            If Response = vbYes Then
+                            Else
+                                GoTo sig
+                            End If
+                        End If
+                      'Origen de coordenadas:
+                      'origen en x:
+                      On Error Resume Next ' 08-2024
+                        Atemp = InStr(ActiveSheet.Cells(m + 4, n + 1).Value, "origin[cart.]=") + 15
+                        Btemp = InStr(Atemp, ActiveSheet.Cells(m + 4, n + 1).Value, ";", 1)
+                        Ctemp = Btemp - Atemp
+                        x_0 = Mid(ActiveSheet.Cells(m + 4, n + 1).Value, Atemp, Ctemp)
+                      'origen en y
+                        Atemp = InStr(ActiveSheet.Cells(m + 4, n + 1).Value, "origin[cart.]=") + 16 + Ctemp
+                        Btemp = InStr(Atemp + 1, ActiveSheet.Cells(m + 4, n + 1).Value, ";", 1)
+                        Ctemp = Btemp - Atemp
+                        y_0 = Mid(ActiveSheet.Cells(m + 4, n + 1).Value, Atemp, Ctemp)
+                     'origen en z
+                        Atemp = InStr(Btemp + 1, ActiveSheet.Cells(m + 4, n + 1).Value, "]", 1)
+                        Ctemp = Atemp - Btemp
+                        z_0 = Mid(ActiveSheet.Cells(m + 4, n + 1).Value, Btemp + 1, Ctemp - 1)
+                        '/////////////////'medicion de tiempo de ejecucion del campo
+                            t = Timer
+                        '/////////////////
+                        'Display the field in the coordinate system (display it in cylindrical coordinates)
+                            For i = Nline0x To Nlinex Step NLine
+                                For j = Nline0y To Nliney Step NLine2
+                                    For k = Nline0z To Nlinez Step NLine3
+                                        ActiveSheet.Cells(m + 8, n - 1).Value = i * Cos(WorksheetFunction.Radians(j)) + x_0
+                                        ActiveSheet.Cells(m + 8, n).Value = i * Sin(WorksheetFunction.Radians(j)) + y_0
+                                        ActiveSheet.Cells(m + 8, n + 1).Value = k + z_0
+                                        Call VectorOutput(m, n, s, cod, Y_abs, Z_abs, xS, T_color) 'Put each vector in XYZ
+                                          If Cells(m + 10, n).Value > 0 And Cells(m + 11, n).Value > 0 Then
+                                                Call DataOutput(m, n)
+                                                DoEvents
+                                        End If
+                                        s = s + 1 ' siguiente vector clonado
+                                    Next k
+                                Next j
+                            Next i
+                Else
+                'Segment Field-07c. Begin of Cartesian coordinates.
+                If Left(ActiveSheet.Cells(m + 4, n + 1).Value, 1) = "=" Then GoTo sig
+                     If WorksheetFunction.Or(InStr(ActiveSheet.Cells(m + 4, n + 1).Value, "x=") = 0, InStr(ActiveSheet.Cells(m + 4, n + 1).Value, "y=") = 0, InStr(ActiveSheet.Cells(m + 4, n + 1).Value, "z=") = 0) Then
+                        If L / xS < 1 Then
+                            Nliney = Round(L / (xS), InStr(InStr(L / (xS), ","), L / (xS), "0", 0) + 1)
+                        Else
+                            Nliney = Round(L / (xS), 0)
+                        End If
+                        NLine = Nliney / 20
+                        NLine2 = Nliney / 20
+                        NLine3 = Nliney / 20
+                        Nline0x = 0
+                        Nline0y = -Nliney
+                        Nline0z = -Nliney
+                        Nlinex = 0
+                        Nlinez = Nliney
+                        
+                        ' Set origin by default and automatically according to the dimensions of the current vectors:
+                        'Collect current vector coordinate data:
+                        i = 0
+                        j = 1
+                        Do While ActiveSheet.Cells(m + 3 + i * 9, n - 1).Value <> ""
+                            If Cells(m + 5 + i * 9, n + 1).Value < 1 Then
+                                ReDim Preserve A(j + 5)
+                                A(j) = Cells(m + 7 + i * 9, n - 1).Value
+                            End If
+                            i = i + 1
+                            j = j + 1
+                        Loop
+                        Centerx = WorksheetFunction.Average(A)
+                        Erase A
+                        
+                        i = 0
+                        j = 1
+                        Do While ActiveSheet.Cells(m + 3 + i * 9, n - 1).Value <> ""
+                            If Cells(m + 5 + i * 9, n + 1).Value < 1 Then
+                                ReDim Preserve A(j + 5)
+                                A(j) = Cells(m + 7 + i * 9, n).Value
+                            End If
+                            i = i + 1
+                            j = j + 1
+                        Loop
+                        Centery = WorksheetFunction.Average(A)
+                        Erase A
+                        
+                        i = 0
+                        j = 1
+                        Do While ActiveSheet.Cells(m + 3 + i * 9, n - 1).Value <> ""
+                            If Cells(m + 5 + i * 9, n + 1).Value < 1 Then
+                                ReDim Preserve A(j + 5)
+                                A(j) = Cells(m + 7 + i * 9, n + 1).Value
+                            End If
+                            i = i + 1
+                            j = j + 1
+                        Loop
+                        Centerz = WorksheetFunction.Average(A)
+                        Erase A
+                        
+                        'Put parameters to display the field:
+                        ActiveSheet.Cells(m + 4, n + 1).FormulaR1C1 = "o[" & NLine & "]x=[" & Nline0x & ";" & Nlinex & "]o2[" & NLine2 & "]y=[" & Nline0y & ";" & Nliney & "]o3[" & NLine3 & "]z=[" & Nline0z & ";" & Nlinez & "]color=[" & Nliney * 2 & "]origin[cart.]=[" & Centerx & ";" & Centery & ";" & Centerz & "]tfactor=0,008s"
+                        ActiveSheet.Cells(m + 4, n + 1).AddComment
+                        ActiveSheet.Cells(m + 4, n + 1).Comment.Visible = False
+                        ActiveSheet.Cells(m + 4, n + 1).Comment.Shape.Width = 300
+                        ActiveSheet.Cells(m + 4, n + 1).Comment.Shape.Height = 300
+                        ActiveSheet.Cells(m + 4, n + 1).Comment.Text Text:="Field mode:" & Chr(10) & "1. For spherical coordinates, cell value = s" _
+                        & Chr(10) & "2. For cylindrical coordinates, cell value = c" _
+                        & Chr(10) & "3. For Cartesian coordinates, cell value = o" _
+                        & Chr(10) & Chr(10) & "Then set the parameters to the string that appeared in this cell." _
+                        & Chr(10) & "The first parenthesis [ ] indicates the step of increasing coordinates, " _
+                        & "the next three parentheses [ ] indicate the range of each of the three coordinates, " _
+                        & "the higher the range, the longer the rendering time; " _
+                        & "the color parameter is used to color the vector according to its length, the number indicating approximately the length of the largest vector, " _
+                        & "the color is distributed between red (smaller vector) and violet (larger vector)." _
+                        & "The last parenthesis [ ] indicates the origin of the coordinates, where vector distributions begin." _
+                        & Chr(10) & Chr(10) & "Please enclose only numeric values between semicolons, do not modify the structure of this string, except if you are an expert in MS Excel." _
+                        & Chr(10) & Chr(10) & "To return to single vector mode, clear the contents of this cell." _
+                        & Chr(10) & Chr(10) & "Right-click to remove this comment."
+                        ActiveSheet.Cells(m + 5, n).Value = "60*1" ' regulador de longitudes
+                    End If
+                    If InStr(ActiveSheet.Cells(m + 4, n + 1).Value, "y=") = 0 Then
+                        ActiveSheet.Cells(m + 4, n + 1).FormulaR1C1 = "o[2]x=[0;0]o2[2]y=[-10;10]o3[2]z=[-10;10]color=[8]origin[cart.]=[0;0;0]tfactor=0,008s"
+                    End If
+                    If InStr(ActiveSheet.Cells(m + 4, n + 1).Value, "z=") = 0 Then
+                        ActiveSheet.Cells(m + 4, n + 1).FormulaR1C1 = "o[2]x=[0;0]o2[2]y=[-10;10]o3[2]z=[-10;10]color=[8]origin[cart.]=[0;0;0]tfactor=0,008s"
+                    End If
                     
-                End If
-                If InStr(ActiveSheet.Cells(m + 4, n + 1).Value, "y=") = 0 Then
-                    ActiveSheet.Cells(m + 4, n + 1).FormulaR1C1 = "o[2]x=[0;0]o2[2]y=[-10;10]o3[2]z=[-10;10]color=[8]origin[cart.]=[0;0;0]tfactor=0,008s"
-                End If
-                If InStr(ActiveSheet.Cells(m + 4, n + 1).Value, "z=") = 0 Then
-                    ActiveSheet.Cells(m + 4, n + 1).FormulaR1C1 = "o[2]x=[0;0]o2[2]y=[-10;10]o3[2]z=[-10;10]color=[8]origin[cart.]=[0;0;0]tfactor=0,008s"
-                End If
-                
-                  'Definir NLine, intervalo de cambio de las variables
-                    Atemp = InStr(ActiveSheet.Cells(m + 4, n + 1).Value, "o[") + 2
-                    Btemp = InStr(Atemp, ActiveSheet.Cells(m + 4, n + 1).Value, "]", 1)
-                    Ctemp = Btemp - Atemp
-                    NLine = Mid(ActiveSheet.Cells(m + 4, n + 1).Value, Atemp, Ctemp) 'valor de NLine
-                 'Definir NLine2, intervalo de cambio de las variables
-                    Atemp = InStr(ActiveSheet.Cells(m + 4, n + 1).Value, "o2[") + 3
-                    Btemp = InStr(Atemp, ActiveSheet.Cells(m + 4, n + 1).Value, "]", 1)
-                    Ctemp = Btemp - Atemp
-                    NLine2 = Mid(ActiveSheet.Cells(m + 4, n + 1).Value, Atemp, Ctemp) 'valor de NLine
-                 'Definir NLine3, intervalo de cambio de las variables
-                    Atemp = InStr(ActiveSheet.Cells(m + 4, n + 1).Value, "o3[") + 3
-                    Btemp = InStr(Atemp, ActiveSheet.Cells(m + 4, n + 1).Value, "]", 1)
-                    Ctemp = Btemp - Atemp
-                    NLine3 = Mid(ActiveSheet.Cells(m + 4, n + 1).Value, Atemp, Ctemp) 'valor de NLine
-                'Definir el rango de x
-                    Atemp = InStr(ActiveSheet.Cells(m + 4, n + 1).Value, "x=") + 3
-                    Btemp = InStr(Atemp, ActiveSheet.Cells(m + 4, n + 1).Value, ";", 1)
-                    Ctemp = Btemp - Atemp
-                    Nline0x = Mid(ActiveSheet.Cells(m + 4, n + 1).Value, Atemp, Ctemp) 'valor inicial de x
-                    Atemp = InStr(Btemp, ActiveSheet.Cells(m + 4, n + 1).Value, "]")
-                    Ctemp = Atemp - Btemp
-                    Nlinex = Mid(ActiveSheet.Cells(m + 4, n + 1).Value, Btemp + 1, Ctemp - 1) ' valor final de x
-                'Definir el rango de y
-                    Atemp = InStr(ActiveSheet.Cells(m + 4, n + 1).Value, "y=") + 3
-                    Btemp = InStr(Atemp, ActiveSheet.Cells(m + 4, n + 1).Value, ";", 1)
-                    Ctemp = Btemp - Atemp
-                    Nline0y = Mid(ActiveSheet.Cells(m + 4, n + 1).Value, Atemp, Ctemp) 'valor inicial de y
-                    Atemp = InStr(Btemp, ActiveSheet.Cells(m + 4, n + 1).Value, "]")
-                    Ctemp = Atemp - Btemp
-                    Nliney = Mid(ActiveSheet.Cells(m + 4, n + 1).Value, Btemp + 1, Ctemp - 1) ' valor final de y
-                'Definir el rango de z
-                    Atemp = InStr(ActiveSheet.Cells(m + 4, n + 1).Value, "z=") + 3
-                    Btemp = InStr(Atemp, ActiveSheet.Cells(m + 4, n + 1).Value, ";", 1)
-                    Ctemp = Btemp - Atemp
-                    Nline0z = Mid(ActiveSheet.Cells(m + 4, n + 1).Value, Atemp, Ctemp) 'valor inicial de z
-                    Atemp = InStr(Btemp, ActiveSheet.Cells(m + 4, n + 1).Value, "]")
-                    Ctemp = Atemp - Btemp
-                    Nlinez = Mid(ActiveSheet.Cells(m + 4, n + 1).Value, Btemp + 1, Ctemp - 1) ' valor final de z
-                'Definir el tiempo de demora para mostrar un vector
-                    Atemp = InStr(ActiveSheet.Cells(m + 4, n + 1).Value, "tfactor=") + 8
-                    Btemp = InStr(Atemp, ActiveSheet.Cells(m + 4, n + 1).Value, "s", 1)
-                    Ctemp = Btemp - Atemp
-                    tfactor = Mid(ActiveSheet.Cells(m + 4, n + 1).Value, Atemp, Ctemp) 'valor de tfactor
-                 'Verificar la cantidad de vectores
-                     Bulk = (WorksheetFunction.RoundDown((Nlinex - Nline0x + 1) / (NLine + 1), 0) + 1) _
-                    * (WorksheetFunction.RoundDown((Nliney - Nline0y + 1) / (NLine2 + 1), 0) + 1) _
-                    * (WorksheetFunction.RoundDown((Nlinez - Nline0z + 1) / (NLine3 + 1), 0) + 1)
-                    msg = "They will be more than " & Bulk & " vectors, and depending on the performance of your computer it will take more than " _
-                        & Round((Bulk * tfactor + 15) / 60, 1) & " minutes to render. Do you want to continue?"
-                    If Round((Bulk * tfactor + 15) / 60, 1) > 0.5 Then ' confirmacion del ususario cuando el tiempode renderiz. es mayor a medio minuto
-                        Response = MsgBox(msg, vbYesNo, "Confirmation")
-                        If Response = vbYes Then
-                        Else
-                            GoTo sig
+                      'Definir NLine, intervalo de cambio de las variables
+                        Atemp = InStr(ActiveSheet.Cells(m + 4, n + 1).Value, "o[") + 2
+                        Btemp = InStr(Atemp, ActiveSheet.Cells(m + 4, n + 1).Value, "]", 1)
+                        Ctemp = Btemp - Atemp
+                        NLine = Mid(ActiveSheet.Cells(m + 4, n + 1).Value, Atemp, Ctemp) 'valor de NLine
+                     'Definir NLine2, intervalo de cambio de las variables
+                        Atemp = InStr(ActiveSheet.Cells(m + 4, n + 1).Value, "o2[") + 3
+                        Btemp = InStr(Atemp, ActiveSheet.Cells(m + 4, n + 1).Value, "]", 1)
+                        Ctemp = Btemp - Atemp
+                        NLine2 = Mid(ActiveSheet.Cells(m + 4, n + 1).Value, Atemp, Ctemp) 'valor de NLine
+                     'Definir NLine3, intervalo de cambio de las variables
+                        Atemp = InStr(ActiveSheet.Cells(m + 4, n + 1).Value, "o3[") + 3
+                        Btemp = InStr(Atemp, ActiveSheet.Cells(m + 4, n + 1).Value, "]", 1)
+                        Ctemp = Btemp - Atemp
+                        NLine3 = Mid(ActiveSheet.Cells(m + 4, n + 1).Value, Atemp, Ctemp) 'valor de NLine
+                    'Definir el rango de x
+                        Atemp = InStr(ActiveSheet.Cells(m + 4, n + 1).Value, "x=") + 3
+                        Btemp = InStr(Atemp, ActiveSheet.Cells(m + 4, n + 1).Value, ";", 1)
+                        Ctemp = Btemp - Atemp
+                        Nline0x = Mid(ActiveSheet.Cells(m + 4, n + 1).Value, Atemp, Ctemp) 'valor inicial de x
+                        Atemp = InStr(Btemp, ActiveSheet.Cells(m + 4, n + 1).Value, "]")
+                        Ctemp = Atemp - Btemp
+                        Nlinex = Mid(ActiveSheet.Cells(m + 4, n + 1).Value, Btemp + 1, Ctemp - 1) ' valor final de x
+                    'Definir el rango de y
+                        Atemp = InStr(ActiveSheet.Cells(m + 4, n + 1).Value, "y=") + 3
+                        Btemp = InStr(Atemp, ActiveSheet.Cells(m + 4, n + 1).Value, ";", 1)
+                        Ctemp = Btemp - Atemp
+                        Nline0y = Mid(ActiveSheet.Cells(m + 4, n + 1).Value, Atemp, Ctemp) 'valor inicial de y
+                        Atemp = InStr(Btemp, ActiveSheet.Cells(m + 4, n + 1).Value, "]")
+                        Ctemp = Atemp - Btemp
+                        Nliney = Mid(ActiveSheet.Cells(m + 4, n + 1).Value, Btemp + 1, Ctemp - 1) ' valor final de y
+                    'Definir el rango de z
+                        Atemp = InStr(ActiveSheet.Cells(m + 4, n + 1).Value, "z=") + 3
+                        Btemp = InStr(Atemp, ActiveSheet.Cells(m + 4, n + 1).Value, ";", 1)
+                        Ctemp = Btemp - Atemp
+                        Nline0z = Mid(ActiveSheet.Cells(m + 4, n + 1).Value, Atemp, Ctemp) 'valor inicial de z
+                        Atemp = InStr(Btemp, ActiveSheet.Cells(m + 4, n + 1).Value, "]")
+                        Ctemp = Atemp - Btemp
+                        Nlinez = Mid(ActiveSheet.Cells(m + 4, n + 1).Value, Btemp + 1, Ctemp - 1) ' valor final de z
+                    'Definir el tiempo de demora para mostrar un vector
+                        Atemp = InStr(ActiveSheet.Cells(m + 4, n + 1).Value, "tfactor=") + 8
+                        Btemp = InStr(Atemp, ActiveSheet.Cells(m + 4, n + 1).Value, "s", 1)
+                        Ctemp = Btemp - Atemp
+                        tfactor = Mid(ActiveSheet.Cells(m + 4, n + 1).Value, Atemp, Ctemp) 'valor de tfactor
+                     'Verificar la cantidad de vectores
+                         Bulk = (WorksheetFunction.RoundDown((Nlinex - Nline0x + 1) / (NLine + 1), 0) + 1) _
+                        * (WorksheetFunction.RoundDown((Nliney - Nline0y + 1) / (NLine2 + 1), 0) + 1) _
+                        * (WorksheetFunction.RoundDown((Nlinez - Nline0z + 1) / (NLine3 + 1), 0) + 1)
+                        msg = "They will be more than " & Bulk & " vectors, and depending on the performance of your computer it will take more than " _
+                            & Round((Bulk * tfactor + 15) / 60, 1) & " minutes to render. Do you want to continue?"
+                        If Round((Bulk * tfactor + 15) / 60, 1) > 0.5 Then ' confirmacion del ususario cuando el tiempode renderiz. es mayor a medio minuto
+                            Response = MsgBox(msg, vbYesNo, "Confirmation")
+                            If Response = vbYes Then
+                            Else
+                                GoTo sig
+                            End If
                         End If
-                    End If
-                  'Origen de coordenadas:
-                   On Error Resume Next ' 08-2024
-                  'origen en x:
-                    Atemp = InStr(ActiveSheet.Cells(m + 4, n + 1).Value, "origin[cart.]=") + 15
-                    Btemp = InStr(Atemp, ActiveSheet.Cells(m + 4, n + 1).Value, ";", 1)
-                    Ctemp = Btemp - Atemp
-                    x_0 = Mid(ActiveSheet.Cells(m + 4, n + 1).Value, Atemp, Ctemp)
-                  'origen en y
-                    Atemp = InStr(ActiveSheet.Cells(m + 4, n + 1).Value, "origin[cart.]=") + 16 + Ctemp
-                    Btemp = InStr(Atemp + 1, ActiveSheet.Cells(m + 4, n + 1).Value, ";", 1)
-                    Ctemp = Btemp - Atemp
-                    y_0 = Mid(ActiveSheet.Cells(m + 4, n + 1).Value, Atemp, Ctemp)
-                 'origen en z
-                    Atemp = InStr(Btemp + 1, ActiveSheet.Cells(m + 4, n + 1).Value, "]", 1)
-                    Ctemp = Atemp - Btemp
-                    z_0 = Mid(ActiveSheet.Cells(m + 4, n + 1).Value, Btemp + 1, Ctemp - 1)
-                    '/////////////////'medicion de tiempo de ejecucion del campo
-                        T = Timer
-                    '/////////////////
-                    'salida de coordenadas cartesianas
-                        For i = Nline0x To Nlinex
-                            For j = Nline0y To Nliney
-                                For k = Nline0z To Nlinez
-                                    ActiveSheet.Cells(m + 8, n - 1).Value = i + x_0
-                                    ActiveSheet.Cells(m + 8, n).Value = j + y_0
-                                    ActiveSheet.Cells(m + 8, n + 1).Value = k + z_0
-                                    Call VectorOutput(m, n, s, cod, Y_abs, Z_abs, xS, T_color)
-                                    If Cells(m + 10, n).Value > 0 And Cells(m + 11, n).Value > 0 Then ' May 2023. Trasladado  a un procedimiento y agregado adicionalmente al modo campo
-                                            Call DataOutput(m, n)
-                                            DoEvents
-                                    End If
-                                    s = s + 1 ' siguiente vector clonado
-                                    k = k + NLine3
-                                Next k
-                                j = j + NLine2
-                            Next j
-                            i = i + NLine
-                        Next i
-                        End If 'Termina analisis de coordenadas cilindricas y cartesianas
-                    End If 'termina analisis de todas las coordenadas
-                    '//////////Registro del tiempo de duracion de renderizacion del campo
-                    ActiveSheet.Cells(m + 4, n + 1).Formula = Replace(ActiveSheet.Cells(m + 4, n + 1).Formula, "tfactor=" & tfactor, "tfactor=" & (Timer - T) / s, 1, 1)
+                      'Origin:
+                      On Error Resume Next ' 08-2024
+                      'origen en x:
+                        Atemp = InStr(ActiveSheet.Cells(m + 4, n + 1).Value, "origin[cart.]=") + 15
+                        Btemp = InStr(Atemp, ActiveSheet.Cells(m + 4, n + 1).Value, ";", 1)
+                        Ctemp = Btemp - Atemp
+                        x_0 = Mid(ActiveSheet.Cells(m + 4, n + 1).Value, Atemp, Ctemp)
+                      'origen en y
+                        Atemp = InStr(ActiveSheet.Cells(m + 4, n + 1).Value, "origin[cart.]=") + 16 + Ctemp
+                        Btemp = InStr(Atemp + 1, ActiveSheet.Cells(m + 4, n + 1).Value, ";", 1)
+                        Ctemp = Btemp - Atemp
+                        y_0 = Mid(ActiveSheet.Cells(m + 4, n + 1).Value, Atemp, Ctemp)
+                     'origen en z
+                        Atemp = InStr(Btemp + 1, ActiveSheet.Cells(m + 4, n + 1).Value, "]", 1)
+                        Ctemp = Atemp - Btemp
+                        z_0 = Mid(ActiveSheet.Cells(m + 4, n + 1).Value, Btemp + 1, Ctemp - 1)
+                        '/////////////////'measurement of time
+                            t = Timer
+                        '/////////////////
+                        ''Display the field in the coordinate system (display it in Cartesian coordinates)
+                            For i = Nline0x To Nlinex Step NLine
+                                For j = Nline0y To Nliney Step NLine2
+                                    For k = Nline0z To Nlinez Step NLine3
+                                        ActiveSheet.Cells(m + 8, n - 1).Value = i + x_0
+                                        ActiveSheet.Cells(m + 8, n).Value = j + y_0
+                                        ActiveSheet.Cells(m + 8, n + 1).Value = k + z_0
+                                        Call VectorOutput(m, n, s, cod, Y_abs, Z_abs, xS, T_color) 'Put each vector in XYZ
+                                        If Cells(m + 10, n).Value > 0 And Cells(m + 11, n).Value > 0 Then '
+                                                Call DataOutput(m, n)
+                                                DoEvents
+                                        End If
+                                        s = s + 1 ' next vector
+                                    Next k
+                                Next j
+                            Next i
+                            End If ' Ending of cylindrical and spherical coord.
+                        End If 'End of coordinates
+                        '//////////Records the total time it took Excel to place all the vectors of the field into the spreadsheet.
+                        ActiveSheet.Cells(m + 4, n + 1).Formula = Replace(ActiveSheet.Cells(m + 4, n + 1).Formula, "tfactor=" & tfactor, "tfactor=" & (Timer - t) / s, 1, 1)
 sig:
-'Segment Field-08. Termina la opcion de campo y sigue caso de unico vector
-        Else
-            s = 1
-            Call VectorOutput(m, n, s, cod, Y_abs, Z_abs, xS, T_color)
-        End If
+    'Segment Field-08. Here the option to show field ends and the option to show a single vector begins
+            Else
+                s = 1
+                Call VectorOutput(m, n, s, cod, Y_abs, Z_abs, xS, T_color)
+            End If
                 
-'Segment Field-09. Registrar s
+'Segment field-09. Fix s (vector inside a field)
         Cells(m + 5, n - 1).Value = s
         End If
-        m = m + 9 ' siguiente vector
-        
+        m = m + 9 ' Next vector of the spreadsheet in the first 3 columns.
     Loop
+    
 End Sub
 Sub Rotate()
     '© 2022 A Becerra. ScienSolar.com
+    'Procedure to update spreadsheet
     Application.ScreenUpdating = False
-    't = Timer
+    Dim t As Single ' para medir el tiempo 1/100 s quitar el comentario
+    t = Timer
     Dim fila As Range
     Dim m As Integer
     Dim n As Integer
@@ -1496,11 +1651,12 @@ Sub Rotate()
 
     Call XYZ(m, n)
     Call Field(m, n)
-    
     Application.ScreenUpdating = True
+    Cells(m + 2, n).Value = "t = " & Timer - t & " s."  ' muestra el tiempo que dura el codigo en ejecutarse. Quitar el comentario
 End Sub
 
-Sub CreateLabel(ByVal L, T, W, h As Single, T_color As Double, name, label As Variant)
+Sub CreateLabel(ByVal L, t, W, h As Single, T_color As Double, name, label As Variant)
+'Procedure to create labels of the vectors
 '© 2022 A Becerra. ScienSolar.com
     On Error Resume Next
     If Left(label, 3) = "(Eq" Then
@@ -1508,13 +1664,12 @@ Sub CreateLabel(ByVal L, T, W, h As Single, T_color As Double, name, label As Va
          ActiveSheet.Paste
          With ActiveSheet.Shapes(label)
             .Left = L
-            .Top = T
+            .Top = t
             .TextFrame2.TextRange.Characters.Font.Fill.ForeColor.RGB = T_color
-            Range("G7").Activate
-            Exit Sub
         End With
+        ActiveSheet.Buttons("AutoSc").Select
     Else
-        ActiveSheet.Shapes.AddTextbox(msoTextOrientationHorizontal, L, T, 100, h).name = "Cuadro" & name
+        ActiveSheet.Shapes.AddTextbox(msoTextOrientationHorizontal, L, t, 100, h).name = "Cuadro" & name
         With ActiveSheet.Shapes("Cuadro" & name)
                 With .TextFrame2.TextRange.Characters
                     .Text = label
@@ -1531,11 +1686,12 @@ Sub CreateLabel(ByVal L, T, W, h As Single, T_color As Double, name, label As Va
         ActiveSheet.Shapes("Cuadro" & name).TextFrame2.WordWrap = msoTrue  'modif may 2023
     End If
 End Sub
-Sub InitVector(ByVal m, n As Integer) ' Procedimiento para incluir vectores
+Sub InitVector(ByVal m, n As Integer)
+' Procedure to add vectors to the spreadsheet. Specifically adding 9 rows to the first 3 columns to set up a vector
     '© 2022 A Becerra. ScienSolar.com
-    Application.ScreenUpdating = False ' Deshabilitar actualizacion de la hoja
+    Application.ScreenUpdating = False
     
-'Segment InitVector-02. Definir variables mediante la declaracion Dim
+'Segment InitVector-02. Define variables
     Dim Vname As String
     Dim lista As Range
     Dim Vcolor As Variant
@@ -1548,8 +1704,8 @@ Sub InitVector(ByVal m, n As Integer) ' Procedimiento para incluir vectores
     
     m1 = m
     n1 = n
-    Vname = Cells(m + 1, n + 1).Value   ' nombre del vector
-    Vcolor = Cells(m + 1, n + 1).Interior.Color   ' color del fondo
+    Vname = Cells(m + 1, n + 1).Value   ' Name of the vector
+    Vcolor = Cells(m + 1, n + 1).Interior.Color   ' Color of the vector
     VecType = Cells(m + 1, n - 1).Value
     If VecType < 2 Then
         Vname = InputBox("Enter a letter or short name for the vector:", "Vector", Vname)
@@ -1564,14 +1720,14 @@ Sub InitVector(ByVal m, n As Integer) ' Procedimiento para incluir vectores
         .Color = Selection.Interior.Color
     End With
     
-'Segment InitVector-02a. Definir lenguaje. Created in 03.2024
+'Segment InitVector-02a. Set language of the control panel
     Set lista = Sheets("CONFIG").Cells.Find(What:="LENGUAJE")
     m2 = lista.Row
     n2 = lista.Offset(0, -1).Column
     Set lista = Nothing
     Lang = WorksheetFunction.VLookup(ActiveSheet.Cells(m - 1, n + 18).Value, Sheets("CONFIG").Range(Cells(m2, n2).Address(0, 0) & ":" & Cells(m2 + 14, n2 + 2).Address(0, 0)), 3, False)
      
-'Segment InitVector-01. Verificar cuantos vectores hay en al hoja actualmente.
+'Segment InitVector-01. Count the current number of vectors in the spreadsheet
     i = 0
     flag = False
     Do While Cells(m + 4 + 9 * i, n - 1).Value <> ""
@@ -1581,7 +1737,7 @@ Sub InitVector(ByVal m, n As Integer) ' Procedimiento para incluir vectores
         i = i + 1
     Loop
      
-'Segment InitVector-03. Definir variables y valores predeterminados para el nuevo vector.
+'Segment InitVector-03. Define vector parameters
     m = m + i * 9
     Cells(m + 1, n).Select
     PatronW = ActiveSheet.Cells(m + 3, n - 1).Width
@@ -1589,7 +1745,7 @@ Sub InitVector(ByVal m, n As Integer) ' Procedimiento para incluir vectores
     PatronT = ActiveSheet.Cells(m + 3, n - 1).Top
      If flag = True Then GoTo NoVector
 
-'Segment InitVector-03. Restringir valores para las celdas de datos
+'Segment InitVector-03. Restrict values for data table cells
     Range(Cells(m + 10, n), Cells(m + 11, n)).Validation.Delete
     Range(Cells(m + 10, n), Cells(m + 11, n)).Validation.Add Type:=xlValidateWholeNumber, AlertStyle:=xlValidAlertStop, _
         Operator:=xlGreaterEqual, Formula1:="0"
@@ -1597,7 +1753,7 @@ Sub InitVector(ByVal m, n As Integer) ' Procedimiento para incluir vectores
     Range(Cells(m + 10, n), Cells(m + 11, n)).Validation.InputMessage = "Enter the row and column number to generate " & " coordinates data during the simulation." & "The number ""0"" indicates that no data will be generated. Make sure that  " & "the cells do not intersect already occupied cells.  "
     Range(Cells(m + 10, n), Cells(m + 11, n)).Validation.ErrorMessage = "For rows or columns, you can only enter a positive integer."
     
-'Segment InitVector-04. Dar formato a la celda del nombre del vector.
+'Segment InitVector-04. Set format
     ActiveSheet.Cells(m + 3, n).Select
     With Selection
         .Value = Vname
@@ -1606,7 +1762,7 @@ Sub InitVector(ByVal m, n As Integer) ' Procedimiento para incluir vectores
         .VerticalAlignment = xlBottom
     End With
 
-'Segment InitVector-05. Introducir boton de configuracion. Updated05-2023
+'Segment InitVector-05. Put the first button in cell A6
     ActiveSheet.Buttons.Add(PatronW * (n - 2), PatronT, PatronW / 3, PatronH).Select
     Selection.name = "Conf_" & Cells(m + 3, n - 1).Row
     Selection.OnAction = "VectorForm"
@@ -1624,7 +1780,7 @@ Sub InitVector(ByVal m, n As Integer) ' Procedimiento para incluir vectores
         .ColorIndex = 1
     End With
     
-'Segment InitVector-06. Introducir boton de expansion del menu.
+'Segment InitVector-06. Put the second button in cell A6
     ActiveSheet.Buttons.Add(PatronW * (n - 4 / 3), PatronT, PatronW / 3, PatronH).Select
     Selection.name = Cells(m + 3, n - 1).Row
     Selection.OnAction = "ShowHideVecConf"
@@ -1643,7 +1799,7 @@ Sub InitVector(ByVal m, n As Integer) ' Procedimiento para incluir vectores
     End With
     ActiveSheet.Cells(m + 3, n - 1).Select
     
-'Segment InitVector-06a. Valores iniciales de parametros del vector, formato de las celdas.
+'Segment InitVector-06a. Set parameters by default
     ActiveSheet.Cells(m + 3, n - 1).Value = i + 1 ' numero del vector
     ActiveSheet.Cells(m + 4, n - 1).Value = "1" ' menu desplegado
     ActiveSheet.Cells(m + 4, n).Value = "183" ' tipo de vector (forma)
@@ -1652,18 +1808,12 @@ Sub InitVector(ByVal m, n As Integer) ' Procedimiento para incluir vectores
     ActiveSheet.Cells(m + 5, n + 1).Value = "0.3" ' transparencia
     ActiveSheet.Cells(m + 5, n + 1).NumberFormat = """transp.:   "" 0.0 "
     ActiveSheet.Cells(m + 5, n - 1).Value = 1 ' memoria de la cantidad de vectores campo
-'    ActiveSheet.Cells(m + 7, n - 1).NumberFormat = """ox"" = """"0.0""""" '
-'    ActiveSheet.Cells(m + 7, n).NumberFormat = """oy"" = """"0.0""""" '
-'    ActiveSheet.Cells(m + 7, n + 1).NumberFormat = """oz"" = """"0.0""""" '
     ActiveSheet.Cells(m + 7, n - 1).Value = "0" 'componente x inicial
     ActiveSheet.Cells(m + 7, n).Value = "0" 'componente y inicial
     ActiveSheet.Cells(m + 7, n + 1).Value = "0" 'componente z inicial
     ActiveSheet.Cells(m + 9, n - 1).Value = "2" ' valor x del vector
     ActiveSheet.Cells(m + 9, n).Value = "2" ' valor y del vector
     ActiveSheet.Cells(m + 9, n + 1).Value = 2 * (i + 1) ' valor z del vector"
-'    ActiveSheet.Cells(m + 9, n - 1).NumberFormat = """x"" = """"0.0""""" '
-'    ActiveSheet.Cells(m + 9, n).NumberFormat = """y"" = """"0.0""""" '
-'    ActiveSheet.Cells(m + 9, n + 1).NumberFormat = """z"" = """"0.0""""" '
     ActiveSheet.Cells(m + 10, n - 1).Value = 1 ' cola del vector
     ActiveSheet.Cells(m + 10, n - 1).NumberFormat = """tail:   "" 0 "
     ActiveSheet.Cells(m + 10, n).Value = "0"
@@ -1684,7 +1834,7 @@ Sub InitVector(ByVal m, n As Integer) ' Procedimiento para incluir vectores
     ActiveSheet.Cells(m + 7, n).FormulaR1C1 = "=R[-7]C+R[-9]C"
     ActiveSheet.Cells(m + 7, n + 1).FormulaR1C1 = "=R[-7]C+R[-9]C"
     
-'Segment InitVector-07. Dar formato al panel de control del vector
+'Segment InitVector-07. Control panel format
     Range(Cells(m + 3, n - 1), Cells(m + 11, n + 1)).Select
     With Selection.Borders(xlEdgeLeft)
         .LineStyle = xlContinuous
@@ -1799,7 +1949,7 @@ Sub InitVector(ByVal m, n As Integer) ' Procedimiento para incluir vectores
         .ThemeColor = xlThemeColorDark1
         .TintAndShade = 0
     End With
-    Cells(m + 3, n + 1).Select ' Color variable para cada vector.
+    Cells(m + 3, n + 1).Select ' Color for each vector (different color).
     With Selection.Interior
         .Pattern = xlSolid
         .PatternColorIndex = xlAutomatic
@@ -1811,7 +1961,7 @@ Sub InitVector(ByVal m, n As Integer) ' Procedimiento para incluir vectores
     Cells(m1 + 1, n1 + 1).Value = "A" & Cells(m + 3, n - 1).Value + 1
 NoVector:
 
-'Segment InitVector-08. Acudir a la funcion de cada proyecto para personalizar los datos y formulas del vector.
+'Segment InitVector-08.Download projects from the project list
     Lang = "_" & Lang
     If VecType = 2 Then Lang = ""
     If VecType = 15 Then Lang = ""
@@ -1822,7 +1972,7 @@ NoVector:
         Application.Run strMacro, VecType, m, n, m1, n1
     End If
 
-    Application.ScreenUpdating = True ' habilitar actualizacion de la hoja.
+    Application.ScreenUpdating = True
 End Sub
     Sub AddNewVector()
     '© 2022 A Becerra. ScienSolar.com
@@ -1839,9 +1989,9 @@ End Sub
     Call InitVector(m, n)
     End Sub
 Sub VectorOutput(m, n, s, cod As Integer, Y_abs, Z_abs, xS As Single, T_color As Double)
-150    '© 2022 A Becerra. ScienSolar.com
-'Segment VectorOutput-01. Parametros de los vectores y de las etiquetas
-        
+'© 2022 A Becerra. ScienSolar.com
+'Procedure to Display a single vector in XYZ
+'Segment VectorOutput-01. Vector parameters variables
     Dim T_top
     Dim T_left
     Dim T_name
@@ -1852,30 +2002,26 @@ Sub VectorOutput(m, n, s, cod As Integer, Y_abs, Z_abs, xS As Single, T_color As
     Dim Lo_height As Single
     Dim HeightColor As Variant
     Dim sh As Object
-    Dim Module As Long
-
+    Dim Module As Double
     T_name = ActiveSheet.Cells(m + 3, n).Value & ActiveSheet.Cells(m + 3, n - 1).Value
     T_label = ActiveSheet.Cells(m + 3, n).Value
-    Lox = ActiveSheet.Cells(m + 7, n - 1).Value * xS  'componente del vector inicial. Obs. : no es la componente de L (ejes) sino de un vector arbitrario
-    Loy = ActiveSheet.Cells(m + 7, n).Value * xS 'componente del vector inicial
-    Loz = ActiveSheet.Cells(m + 7, n + 1).Value * xS 'componente del vector inicial
-    Lx = ActiveSheet.Cells(m + 9, n - 1).Value * xS 'componente del vector. Obs. : no es la componente los ejes L (ejes) sino de un vector arbitrario
-    Ly = ActiveSheet.Cells(m + 9, n).Value * xS  'componente del vector
-    Lz = ActiveSheet.Cells(m + 9, n + 1).Value * xS 'componente del vector
-'    Module = L
-'    On Error Resume Next
-    Module = Sqr((Lx / xS) ^ 2 + (Ly / xS) ^ 2 + (Lz / xS) ^ 2)
+    Lox = ActiveSheet.Cells(m + 7, n - 1).Value * xS  'Position of the vector in X. Obs. :it is not the component of L (axes) but of an arbitrary vector
+    Loy = ActiveSheet.Cells(m + 7, n).Value * xS 'Position of the vector in Y. Obs. :it is not the component of L (axes) but of an arbitrary vector
+    Loz = ActiveSheet.Cells(m + 7, n + 1).Value * xS 'Position of the vector in X. Obs. :it is not the component of L (axes) but of an arbitrary vector
+    Lx = ActiveSheet.Cells(m + 9, n - 1).Value * xS 'Compponent in X of the vector
+    Ly = ActiveSheet.Cells(m + 9, n).Value * xS 'Compponent in Y of the vector
+    Lz = ActiveSheet.Cells(m + 9, n + 1).Value * xS ''Compponent in Z of the vector
+    Module = Sqr((Lx / xS) ^ 2 + (Ly / xS) ^ 2 + (Lz / xS) ^ 2) ' Module of the vector
     
-'Segment VectorOutput-02. Limitar el modulo de los vectores y establecer ancho y alto de la forma. Updated 04 2024.
-    
+'Segment VectorOutput-02. If the size of the vector exceeds the size of the axes, then regulate its length with the help of a function and  parameters entered by the user (>15)
     If Cells(m + 5, n).Value > 15 Then
-        Dim L_ref As Single ' max en porcentaje del vector
-        Dim L_tau As Single ' agudizacion del cambio de la funcion.
+        Dim L_ref As Single ' Max lenght of the vector(first parameter)
+        Dim L_tau As Single ' How the lenght of the vectors changes.
         L_ref = Left(Cells(m + 5, n).Value, InStr(1, Cells(m + 5, n).Value, "*", 0) - 1) - 14
         L_tau = L_ref * Mid(Cells(m + 5, n).Value, InStr(1, Cells(m + 5, n).Value, "*", 0) + 1)
-        Lx = L_ref * (1 - 1 / Exp(Abs(Lx / L_tau))) * Lx / Module
-        Ly = L_ref * (1 - 1 / Exp(Abs(Ly / L_tau))) * Ly / Module
-        Lz = L_ref * (1 - 1 / Exp(Abs(Lz / L_tau))) * Lz / Module
+        Lx = L_ref * (1 - 1 / Exp(Abs(Lx / L_tau))) * Lx / Module / xS ' updated 07-2024, added / xS in order to big scales to work properly.
+        Ly = L_ref * (1 - 1 / Exp(Abs(Ly / L_tau))) * Ly / Module / xS
+        Lz = L_ref * (1 - 1 / Exp(Abs(Lz / L_tau))) * Lz / Module / xS
     End If
     If Sqr(Lx ^ 2 + Ly ^ 2 + Lz ^ 2) > 1.5 * L Then
         Lx = 1.2 * Lx * L / Module
@@ -1883,29 +2029,28 @@ Sub VectorOutput(m, n, s, cod As Integer, Y_abs, Z_abs, xS As Single, T_color As
         Lz = 1.2 * Lz * L / Module
         ActiveSheet.Range("K6").Value = "SOME VECTORS WERE  U N D E R S C A L E D !"
     End If
+    L_width = Cos(A) * (Lx * Sin(C) + Ly * Cos(C)) - Sin(A) * (-Sin(B) * (Lx * Cos(C) - Ly * Sin(C)) + Lz * Cos(B))
+    L_height = Sin(A) * (Lx * Sin(C) + Ly * Cos(C)) + Cos(A) * (-Sin(B) * (Lx * Cos(C) - Ly * Sin(C)) + Lz * Cos(B))
+    Lo_width = Cos(A) * (Lox * Sin(C) + Loy * Cos(C)) - Sin(A) * (-Sin(B) * (Lox * Cos(C) - Loy * Sin(C)) + Loz * Cos(B))
+    Lo_height = Sin(A) * (Lox * Sin(C) + Loy * Cos(C)) + Cos(A) * (-Sin(B) * (Lox * Cos(C) - Loy * Sin(C)) + Loz * Cos(B))
         
-    L_width = Cos(A) * (Lx * Sin(C) + Ly * Cos(C)) - Sin(A) * (-Sin(B) * (Lx * Cos(C) - Ly * Sin(C)) + Lz * Cos(B)) 'ActiveSheet.Cells(m + 28, n).Value
-    L_height = Sin(A) * (Lx * Sin(C) + Ly * Cos(C)) + Cos(A) * (-Sin(B) * (Lx * Cos(C) - Ly * Sin(C)) + Lz * Cos(B)) 'ActiveSheet.Cells(m + 27, n).Value
-    Lo_width = Cos(A) * (Lox * Sin(C) + Loy * Cos(C)) - Sin(A) * (-Sin(B) * (Lox * Cos(C) - Loy * Sin(C)) + Loz * Cos(B)) 'ActiveSheet.Cells(m + 28, n).Value
-    Lo_height = Sin(A) * (Lox * Sin(C) + Loy * Cos(C)) + Cos(A) * (-Sin(B) * (Lox * Cos(C) - Loy * Sin(C)) + Loz * Cos(B)) 'ActiveSheet.Cells(m + 27, n).Value
-        
-'Segment VectorOutput-03. Almacenamiento de datos para graficar trayectoria.
-    If Cells(m + 3, n - 1).Value = Sheets("CONFIG").Range("V6").Value Then  ' Verifica el actual es el vector a graficar
+'Segment VectorOutput-03. Data storage to graph trajectory.
+    If Cells(m + 3, n - 1).Value = Sheets("CONFIG").Range("V6").Value Then  ' Verify that the current is the vector to be graphed
         Sheets("CONFIG").Range("V6").Offset(1, -1).Value = "DATOS DE LA FORMA LIBRE - puntos horizontales y verticales"
         Z = 1
         Do While Sheets("CONFIG").Cells(6 + Z, 21).Value <> ""
             Z = Z + 1
         Loop
-        Sheets("CONFIG").Cells(6 + Z, 21).Value = Lo_width + L_width 'celda en donde se almacena la coordenada y de cada punto de la forma libre
-        Sheets("CONFIG").Cells(6 + Z, 22).Value = -Lo_height - L_height 'celda en donde se almacena la coordenada z de cada punto
-        ' deja de graficar despu_s del valor establecido de pasos
+        Sheets("CONFIG").Cells(6 + Z, 21).Value = Lo_width + L_width 'Cell where the y coordinate of each point of the free form is stored
+        Sheets("CONFIG").Cells(6 + Z, 22).Value = -Lo_height - L_height 'Cell where the z coordinate of each point is stored
+       'Stops plotting after set value of steps
         If Z - 2 > Sheets("CONFIG").Range("T5") Then
             Sheets("CONFIG").Columns("U:V").ClearContents
-            ActiveSheet.Range(ActiveSheet.Buttons("ResetGraph").TopLeftCell.Offset(1, 1).Address).Value = 2 ' no borra la gr_fica ya dibujada
+            ActiveSheet.Range(ActiveSheet.Buttons("ResetGraph").TopLeftCell.Offset(1, 1).Address).Value = 2 'it does not erase the graph already drawn
         End If
     End If
         
-'Segment VectorOutput-04. Selecci‹n de la forma de acuerdo a cod.
+'Segment VectorOutput-04. Selection of the shape according to cod.
     If cod < 0 Then
         cod = -cod
         L_width = Cells(m + 9, n) * xS
@@ -1914,7 +2059,7 @@ Sub VectorOutput(m, n, s, cod As Integer, Y_abs, Z_abs, xS As Single, T_color As
         Lo_height = Cells(m + 7, n + 1) * xS
     End If
         
-'Segment VectorOutput-05. Caso gr_fica. Dibujar una forma libre con los puntos recopilados en Segment VectorOutput-03.
+'Segment VectorOutput-05. Graphic case. Draw a freeform with the points collected in Segment VectorOutput-03.
     If cod = 186 Then
         With ActiveSheet.Shapes.BuildFreeform(msoEditingAuto, Y_abs + Sheets("CONFIG").Cells(8, 21).Value, Z_abs + Sheets("CONFIG").Cells(8, 22).Value)
             i = 1
@@ -1926,8 +2071,8 @@ Sub VectorOutput(m, n, s, cod As Integer, Y_abs, Z_abs, xS As Single, T_color As
         End With
     Else ' if not 186
         
-'Segment VectorOutput-05_01 integrar un objeto 3D. V 1_2. Para integrar un objeto 3D ingresar codigo 200. Modificado Ene 2024 v. 1.41
-        If cod = 200 Or cod = 201 Then ' codigo para los objetos 3D. El nombre del objeto debe estar en la casilla del nombre del vector y el objeto debe estar en la hoja 3DModels
+'Segment VectorOutput-06 Integrate a 3D object. To integrate a 3D object enter code 200.
+        If cod = 200 Or cod = 201 Then 'Number for 3D objects. The name of the 3D object must be in the vector name cell and the object must be in the 3D Models spreadsheet.
             Dim name3D As String
             name3D = Cells(m + 3, n).Value
             If Cells(m + 3, n + 1) <> "" And Cells(m + 3, n + 1).Value <> name3D Then
@@ -1948,23 +2093,23 @@ Sub VectorOutput(m, n, s, cod As Integer, Y_abs, Z_abs, xS As Single, T_color As
                 End If
             End If
             With ActiveSheet.Shapes(name3D)
-                If .Type = 30 Or .Type = 13 Then ' 30 for Mac 13 for Win. solo para objetos 3D, Updated 02.2024
-                    If Left(Application.Version, 2) < 16 Then ' alertar sobre versiones deExcel antiguas
+                If .Type = 30 Or .Type = 13 Then ' 30 for Mac 13 for Win. Only for 3D objects
+                    If Left(Application.Version, 2) < 16 Then ' Warning about old Excel vrsions
                         Range("N10").Value = "(Your version of Excel may not support 3D models. Please, update to 2019 or later!!)"
                     End If
-                    .Width = -1 ' para eludir error de posic.
+                    .Width = -1 ' To fix error
                     If Cells(m + 5, n).Value > 0 Then
                         .Width = Cells(m + 5, n) * xS
                         .Height = Cells(m + 5, n) * xS
                         Cells(m + 5, n + 1).Value = Cells(m + 5, n).Value
                     End If
-                Else ' otros objetos
+                Else ' Other objects
                     Cells(m + 3, n + 1).Value = ""
-                    If .Type = 17 Then ' colorear formulas. Updated 02.2024
+                    If .Type = 17 Then ' To color formulas.
                         .TextFrame2.TextRange.Font.Fill.ForeColor.RGB = Cells(m + 3, n + 1).Interior.Color
                     End If
                 End If
-                If cod = 201 Then 'fijar en la zona de texto
+                If cod = 201 Then 'Freeze size in text area
                     .Left = Y_abs + ActiveSheet.Cells(m + 7, n).Value
                     .Top = Z_abs - ActiveSheet.Cells(m + 7, n + 1).Value
                 Else
@@ -1976,32 +2121,30 @@ Sub VectorOutput(m, n, s, cod As Integer, Y_abs, Z_abs, xS As Single, T_color As
                 End If
             End With
             'If s = 1 Then
-                'Selection.name = ActiveSheet.Cells(m + 3, n) 'comentar para obtenr historia Comentado 02-2024
+                'Selection.name = ActiveSheet.Cells(m + 3, n) 'Comment to get story
             'End If
             ActiveSheet.Cells(m + 5, n).Value = 0
             ActiveSheet.Cells(5, 9).Select
-        Else ' cod no es 200 ni 201
+        Else ' neither 200 nor 201
             Set sh = ActiveSheet.Shapes.AddShape(cod, Y_abs, Z_abs, 20, 40) 'otras formas
             sh.name = "campo0"
         End If
     End If ' end if 186
         
-'Segment VectorOutput-07. Apariencia del vector.
-    'Gradiente de color de acuerdo a la longitud del vector.
+'Segment VectorOutput-07. Vector appearance.
     HeightColor = Cells(m + 3, n + 1).Interior.Color
     If ActiveSheet.Cells(m + 4, n + 1).Value <> "" Then ' updated 05-2023
         Atemp = InStr(ActiveSheet.Cells(m + 4, n + 1).Value, "color=") + 7 ' updated 05-2023
         Btemp = InStr(Atemp, ActiveSheet.Cells(m + 4, n + 1).Value, "]", 1)
         Ctemp = Btemp - Atemp ' May 2023
-        RedCod = Format((HeightColor Mod 256), "00") 'color actual de la celda
-        GreenCod = Format(((HeightColor \ 256) Mod 256), "00") 'color actual de la celda
-        BlueCod = Format((HeightColor \ 65536), "00") 'color actual de la celda
-        ' color de acuerdo a la magnitud del vector:
-        'Module = Sqr((Lx / xS) ^ 2 + (Ly / xS) ^ 2 + (Lz / xS) ^ 2)
+        RedCod = Format((HeightColor Mod 256), "00") 'Current color
+        GreenCod = Format(((HeightColor \ 256) Mod 256), "00") 'Current color
+        BlueCod = Format((HeightColor \ 65536), "00") 'Current color
+       ' Color according to the magnitude of the vector:
         Lmax = Mid(ActiveSheet.Cells(m + 4, n + 1).Value, Atemp, Ctemp)
-        If Lmax = "0" Then ' updated 09-202. Color original
+        If Lmax = "0" Then ' Leave current color
             HeightColor = Cells(m + 3, n + 1).Interior.Color
-        Else ' gradiente de color.
+        Else ' Gradient
             If Module < Lmax / 4 Then
                 HeightColor = RGB(255, _
                 Abs(Left(Round(Module * 255 / (Lmax / 4), 0), 3)), _
@@ -2025,42 +2168,42 @@ Sub VectorOutput(m, n, s, cod As Integer, Y_abs, Z_abs, xS As Single, T_color As
         End If
     End If
         
-'Segment VectorOutput-06. Caso de un punto. establecer dimensiones = 1.
+'Segment VectorOutput-08. If it is not a vector but a point. set dimensions = 1.
     If cod = 146 Or cod = 9 Then ' updated 04.2024
         L_width = 1
         L_height = 1
     End If
         
-    'propiedades del vector
+    'Vector properties
     On Error Resume Next ' no todas las propiedades aplican para todas las formas
     With ActiveSheet.Shapes.Range(Array("campo0")) ' apariencia del vector
-            .Line.BeginArrowheadStyle = Cells(m + 10, n - 1).Value
-            .Line.EndArrowheadStyle = Cells(m + 11, n - 1).Value
-            .Line.ForeColor.RGB = HeightColor
-            .Line.Transparency = Cells(m + 5, n + 1).Value
-            .Line.DashStyle = Cells(m + 5, n).Value
-            .Line.Weight = Cells(m + 11, n + 1).Value
-            
-            ' propiedades complementarias de otras formas. 03-2024
-             If cod < 183 Then
-                .TextFrame2.TextRange.Characters.Text = Cells(m + 6, n - 1).Value
-                .Fill.ForeColor.RGB = HeightColor ' color de relleno
-                '.TextFrame2.TextRange.Font.Fill.ForeColor.RGB = Cells(m + 3, n + 1).Font.Color
-                .TextFrame2.TextRange.Font.Size = Cells(m + 3, n + 1).Value
-                .ShapeRange.TextFrame2.WordWrap = msoTrue
-                .ShapeRange.TextFrame2.AutoSize = msoAutoSizeShapeToFitText
-                .Fill.Transparency = Cells(m + 5, n + 1).Value
-                ' posicion de la cabeza de la flecha para las formas 109-114, se indica en fila =Cells(m + 6, n) y columna=Cells(m + 6, n + 1), texto =Cells(m + 6, n - 1)
-                .Adjustments.Item(4) = -(Y_abs - (Cells(m + 6, n + 1).Value - 0.5) * 65 + Cells(m + 7, n).Value * xS) / (Cells(m + 9, n).Value * xS) ' posiscion de la flecha, si aplica
-                .Adjustments.Item(3) = 1 - (Z_abs - Cells(m + 6, n).Value * 15 - Cells(m + 7, n + 1).Value * xS) / (Cells(m + 9, n + 1).Value * xS) 'posiscion de la flecha, si aplica
-             End If
+        .Line.BeginArrowheadStyle = Cells(m + 10, n - 1).Value
+        .Line.EndArrowheadStyle = Cells(m + 11, n - 1).Value
+        .Line.ForeColor.RGB = HeightColor
+        .Line.Transparency = Cells(m + 5, n + 1).Value
+        .Line.DashStyle = Cells(m + 5, n).Value
+        .Line.Weight = Cells(m + 11, n + 1).Value
+        
+        'Complementary properties of other forms.
+         If cod < 183 Then
+            .TextFrame2.TextRange.Characters.Text = Cells(m + 6, n - 1).Value
+            .Fill.ForeColor.RGB = HeightColor ' color de relleno
+            '.TextFrame2.TextRange.Font.Fill.ForeColor.RGB = Cells(m + 3, n + 1).Font.Color. Uncomment to color frame
+            .TextFrame2.TextRange.Font.Size = Cells(m + 3, n + 1).Value
+            .ShapeRange.TextFrame2.WordWrap = msoTrue
+            .ShapeRange.TextFrame2.AutoSize = msoAutoSizeShapeToFitText
+            .Fill.Transparency = Cells(m + 5, n + 1).Value
+            ' The position of the arrow head for shapes 109-114 is indicated in row =Cells(m + 6, n) and column =Cells(m + 6, n + 1), text =Cells(m + 6, n - 1)
+            .Adjustments.Item(4) = -(Y_abs - (Cells(m + 6, n + 1).Value - 0.5) * 65 + Cells(m + 7, n).Value * xS) / (Cells(m + 9, n).Value * xS) ' arrow position, if applicable
+            .Adjustments.Item(3) = 1 - (Z_abs - Cells(m + 6, n).Value * 15 - Cells(m + 7, n + 1).Value * xS) / (Cells(m + 9, n + 1).Value * xS) 'arrow position, if applicable
+         End If
     End With
         
-'Segment VectorOutput-08. Renombrar el vector y establecer posicion de la forma.
+'Segment VectorOutput-09. Rename the vector and set position of the shape.
     With ActiveSheet.Shapes("campo0")
-            .name = "campo" & Cells(m + 3, n - 1).Value & "_" & s ' Updated Dec 2023
-            If cod > 183 Then  ' Caso de una forma libre
-                'no hacer nada para una forma libre (grafica)
+            .name = "campo" & Cells(m + 3, n - 1).Value & "_" & s
+            If cod > 183 Then  ' Free form case
+                'do nothing for a free form (graphic)
             Else
                 .Width = Abs(L_width)
                 .Height = Abs(L_height)
@@ -2080,15 +2223,14 @@ Sub VectorOutput(m, n, s, cod As Integer, Y_abs, Z_abs, xS As Single, T_color As
                 Else
                     T_top = .Top + L_height / 2
                 End If
-            End If ' termina if cod > 183
+            End If ' End of cod > 183
     End With
     
-'Segment VectorOutput-09. Crear la etiqueta del vector.
+'Segment VectorOutput-10. Create the vector label.
     If T_label <> "" Then
-        If s = 1 And cod <> 200 Then  'updated 03 2024
+        If s = 1 And cod <> 200 Then
             Call CreateLabel(T_left, T_top, Cells(m + 5, n + 1).Value, 20, T_color, T_name, T_label)
         End If
     End If
     Set sh = Nothing
 End Sub
-
