@@ -1,8 +1,8 @@
 '////////////////////////////////////  ((((((()))))))  \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
 
-'  ScienSolar v 1.5 MAIN MODULE 2. Updated 06-2024
+'  ScienSolar v 1.51 MAIN MODULE 2. Updated 09-2024
 ' ScienSolar package for modeling physics and mathematics in MS Excel (tested on MS Excel 2013-2019 for Windows and Mac).
-' The package is distributed in five text files and must be integrated into an Excel file.
+' The package is distributed in 8 text files and must be integrated into an Excel file.
 ' This package is protected by copyright law. © PhD Ariel R. Becerra B., 2022.
 ' By downloading the package you agree to the terms and conditions under the license GNU General Public License v.3.0 (https://www.gnu.org/licenses/gpl-3.0.html).
 ' You may use the ScienSolar package for free only under the terms of this license.
@@ -522,7 +522,7 @@ Sub NewSheet()
     Range("B5").FormulaR1C1 = "=HLOOKUP(R2C17,R9C5:R31C12,R[8]C[1])"
     Range("B32").FormulaR1C1 = "(LISTA)"
     Range("B33").FormulaR1C1 = "=HLOOKUP(R2C17,R33C5:R150C11,RC[1])"
-    Range("B34").FormulaR1C1 = "- - - "
+    Range("B34").FormulaR1C1 = "=HLOOKUP(R2C17,R33C5:R150C11,RC[1])"
     Range("B35").FormulaR1C1 = "=HLOOKUP(R2C17,R33C5:R150C11,RC[1])"
     Range("B36").FormulaR1C1 = "=HLOOKUP(R2C17,R33C5:R150C11,RC[1])"
     Range("B37").FormulaR1C1 = "=HLOOKUP(R2C17,R33C5:R150C11,RC[1])"
@@ -575,6 +575,7 @@ Sub NewSheet()
     Range("C29").FormulaR1C1 = "21"
     Range("C32").FormulaR1C1 = "No, of list"
     Range("C33").FormulaR1C1 = "1"
+    Range("C34").FormulaR1C1 = "2"
     Range("C35").FormulaR1C1 = "3"
     Range("C36").FormulaR1C1 = "4"
     Range("C37").FormulaR1C1 = "5"
@@ -610,7 +611,6 @@ Sub NewSheet()
     Range("D6").FormulaR1C1 = "=HLOOKUP(R2C17,R9C5:R31C12,R[14]C[-1])"
     Range("D10").FormulaR1C1 = "Note: Please do not change the labels LISTA and INICIO, they are necessary for the correct running of the program."
     Range("D11").FormulaR1C1 = "Obs: por favor no cambie los nombres LISTA e INICIO, pues son necesarios para el correcto funcionamiento del programa."
-    Range("D34").FormulaR1C1 = "Verified translation"
     Range("E3").FormulaR1C1 = "850"
     Range("E4").FormulaR1C1 = "400"
     Range("E5").FormulaR1C1 = "20"
@@ -639,7 +639,7 @@ Sub NewSheet()
     Range("E29").FormulaR1C1 = "Reset"
     Range("E32").FormulaR1C1 = "=R3C17"
     Range("E33").FormulaR1C1 = "1"
-    Range("E34").FormulaR1C1 = "0"
+    Range("E34").FormulaR1C1 = "(DO) Partial Differential Operators"
     Range("E35").FormulaR1C1 = "Vector Addition"
     Range("E36").FormulaR1C1 = "Vector Coordinates"
     Range("E37").FormulaR1C1 = "Cross Product"
@@ -696,7 +696,7 @@ Sub NewSheet()
     Range("F29").FormulaR1C1 = "Restablecer"
     Range("F32").FormulaR1C1 = "=R4C17"
     Range("F33").FormulaR1C1 = "2"
-    Range("F34").FormulaR1C1 = "1"
+    Range("F34").FormulaR1C1 = "(DO) Opradores diferenciales parciales"
     Range("F35").FormulaR1C1 = "Suma de vectores"
     Range("F36").FormulaR1C1 = "Coordenadas de vectores"
     Range("F37").FormulaR1C1 = "Producto cruz"
@@ -885,7 +885,7 @@ Sub CleanSheet()
 End Sub
 Sub About()
 
-    MsgBox "Version 1.5 -  06-2024 " & Chr(13) & Chr(10) & "© Ariel R. Becerra B., 2022" _
+    MsgBox "Version 1.51 -  09-2024 " & Chr(13) & Chr(10) & "© Ariel R. Becerra B., 2022" _
     & Chr(13) & "www.sciensolar.com" & Chr(13) _
     & "arik@fisica.ru" _
     & Chr(13) & Chr(13) & "By downloading the package you agree to the terms and conditions under the license" _
@@ -1344,7 +1344,7 @@ Sub VectorForm()
             .PatternTintAndShade = 0
         End With
     Else
-        If Cells(r.Row + 8, r.Column + 2).Value = 2 Then
+        If Cells(r.Row + 8, r.Column + 2).Value > 1 Then
             Cells(r.Row + 8, r.Column + 2).Value = 1
             Cells(r.Row + 7, r.Column + 2).Value = 1
             Cells(r.Row + 2, r.Column).Value = 10000
@@ -1505,9 +1505,9 @@ split:
         Print #oFile, "   ' This is the code of your new project. "
         Print #oFile, "   ' Steps to embed the code to ScienSolar: "
         Print #oFile, "   ' Note 1: The number " & i & " in the name of this function must match the one in the list of the CONFIG sheet for this project. If not, please correct it."
-        Print #oFile, "   ' Note 2: This code will be integrated into the main code to automate the download of the project. "
-        Print #oFile, "   ' Note 3: The formulas and cell values generated here correspond only to the first 30 columns from INICIO to the right in the sheet. All your formulas and values are recommended to be written in these columns. "
-        Print #oFile, "   ' Step 1. Go to the CONFIG sheet and add a short name and the number of your new project to the last row in the projects list. "
+        Print #oFile, "   ' Note 2: This code will be integrated into the main code (into the VBA editor) to automate the download of the project. "
+        Print #oFile, "   ' Note 3: The formulas and cell values generated here correspond only to the first 30 columns in the sheet. All your formulas and values are recommended to be written in these columns. "
+        Print #oFile, "   ' Step 1. Go to the CONFIG sheet (at the end of column C) and add the number of your new project to the last row in the projects list, and a short name in the corresponding langage column. "
         Print #oFile, "   ' Step 2. Make sure that the list of projects in CONFIG sheet has the correct ascending numbering. "
         Print #oFile, "   ' Step 4. Open the VBA editor (Alt + F11 in Windows or Fn + Option + F11 in macOS). To avoid mistakes, make sure you only have one workbook open."
         Print #oFile, "   ' Step 5. On the left, in the project explorer, select a non full module (or add a new one)."
@@ -1569,7 +1569,7 @@ split:
             If Cells(m + 4, n).Value = 186 Then ' si es una grafica, llamar al proyecto 15.
                 Print #oFile, "      Call Project_15(15, m, n, m1, n1)"
             End If 'Else
-            If Cells(m + 6, n + 2).Value = "Delta =" Then ' si es un modulo de derivadas llamar al proyecto 34.
+            If Cells(m + 6, n + 2).Value = "Delta =" Then ' si es un modulo de derivadas llamar al proyecto No 2.
                 Print #oFile, "      Call Project_2(2, m, n, m1, n1)"
             End If
             For i = 3 To 11 ' numero de filas de cada vector
@@ -1737,7 +1737,7 @@ splitPC:
         oFile.writeline "   ' Note 1: The number " & i & " in the name of this function must match the one in the list of the CONFIG sheet for this project. If not, please correct it."
         oFile.writeline "   ' Note 2: This code will be integrated into the main code to automate the download of the project. "
         oFile.writeline "   ' Note 3: The formulas and cell values generated here correspond only to the first 30 columns from INICIO to the right in the sheet. All your formulas and values are recommended to be written in these columns. "
-        oFile.writeline "   ' Step 1. Go to the CONFIG sheet and add a short name and the number of your new project to the last row in the projects list. "
+        oFile.writeline "   ' Step 1. Go to the CONFIG sheet (at the end of column C) and add the number of your new project to the last row in the projects list, and a short name in the corresponding langage column."
         oFile.writeline "   ' Step 2. Make sure that the list of projects in CONFIG sheet has the correct ascending numbering. "
         oFile.writeline "   ' Step 4. Open the VBA editor ( (Alt + F11 in Windows or Fn + Option + F11 in macOS). To avoid mistakes, make sure you only have one workbook open."
         oFile.writeline "   ' Step 5. On the left, in the project explorer, select a non full module (or add a new one)."
@@ -2331,7 +2331,11 @@ Sub PutEq()  ' Copy equations from 3DModels sheet to activesheet
     If ActiveSheet.Buttons(Application.Caller).TopLeftCell.Column = 29 Then
         ActiveSheet.Buttons(Application.Caller).TopLeftCell.Offset(-1, -5).Activate
     Else
-        ActiveSheet.Buttons(Application.Caller).TopLeftCell.Offset(0, 1).Activate
+        If EqN = "Info" Then
+              ActiveSheet.Buttons(Application.Caller).TopLeftCell.Offset(1, 2).Activate
+        Else
+            ActiveSheet.Buttons(Application.Caller).TopLeftCell.Offset(0, 1).Activate
+        End If
     End If
     
     If CheckExists(EqN) = False Then
@@ -2383,7 +2387,7 @@ Sub AddObject() ' Agregar /eliminar objetos nuevos a proyectos (compuestos de un
 
     Application.ScreenUpdating = False
     Dim fila As Range
-    Dim m, n, a, i, BeginRow, EndRow, LastRow, RowQty, ObjQty As Integer
+    Dim m, n, A, i, BeginRow, EndRow, LastRow, RowQty, ObjQty As Integer
     Dim flag As Boolean
     Set fila = ActiveSheet.Cells.Find(What:="INICIO")
     m = fila.Offset(1, 0).Row
@@ -2566,3 +2570,6 @@ msg:
      End If
     Rotate
 End Sub
+
+
+
