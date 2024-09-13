@@ -2564,7 +2564,7 @@ Sub Project_7_ES(ByVal VecType, m, n, m1, n1 As Integer) ' 07_Rotacion de un vec
             Cells(m + 11, n + 0).FormulaR1C1 = "0"
             Cells(m + 11, n + 1).FormulaR1C1 = "1"
             Cells(m + 11, n + 4).FormulaR1C1 = "=IF(R[-1]C[-4]>0,""<--  use these cells."","""")"
-            Cells(m + 11, n + 21).FormulaR1C1 = "y en C50=8 para aumentar el tamao de la part" & ChrW(237) & "cula, C35=1, para ocultar el radio. Oprima Ejecutar y podr" & ChrW(225) & " "
+            Cells(m + 11, n + 21).FormulaR1C1 = "y en C50=8 para aumentar el tama–o de la part" & ChrW(237) & "cula, C35=1, para ocultar el radio. Oprima Ejecutar y podr" & ChrW(225) & " "
             Cells(m + 3, n + 1).Interior.Color = "12611584"
             Cells(m + 3, n + 1).Font.Size = "11"
             Cells(m + 3, n + 1).Font.name = "Calibri"
@@ -4279,22 +4279,22 @@ Sub Project_9_EN(ByVal VecType, m, n, m1, n1 As Integer) ' 09_Tangential rotatio
 End Sub
 Sub Project_10_ES(ByVal VecType, m, n, m1, n1 As Integer) ' 10_Coordenadas cilindricas_ES
 
-   ' Updated: 26/03/24
+   ' Updated: 5/09/24
    ' Created by: Ariel R. Becerra (21/11/23)
    ' Modified by: _________________
    ' This is the code of your new project.
    ' Steps to embed the code to ScienSolar:
    ' Note 1: The number 10 in the name of this function must match the one in the list of the CONFIG sheet for this project. If not, please correct it.
-   ' Note 2: This code will be integrated into the main code to automate the download of the project.
-   ' Note 3: The formulas and cell values generated here correspond only to the first 30 columns from INICIO to the right in the sheet. All your formulas and values are recommended to be written in these columns.
-   ' Step 1. Go to the CONFIG sheet and add a short name and the number of your new project to the last row in the projects list.
+   ' Note 2: This code will be integrated into the main code (into the VBA editor) to automate the download of the project.
+   ' Note 3: The formulas and cell values generated here correspond only to the first 30 columns in the sheet. All your formulas and values are recommended to be written in these columns.
+   ' Step 1. Go to the CONFIG sheet (at the end of column C) and add the number of your new project to the last row in the projects list, and a short name in the corresponding langage column.
    ' Step 2. Make sure that the list of projects in CONFIG sheet has the correct ascending numbering.
    ' Step 4. Open the VBA editor (Alt + F11 in Windows or Fn + Option + F11 in macOS). To avoid mistakes, make sure you only have one workbook open.
    ' Step 5. On the left, in the project explorer, select a non full module (or add a new one).
    ' Step 6. Select all the code in this file, copy and paste it at the end of the existing code in the module (or in the new one).
    ' Step 7. To load the project and to check it in a new sheet, go to the CONFIG sheet and click the New Sheet button, then select the project from the list and click the +Vector button.
    ' Step 8. Click any XYZ button to get the project in the coordinate system. Enjoy it!
-   ' Visit  www.sciensolar.com for news and updates of ? ScienSolar.
+   ' Visit  www.sciensolar.com for news and updates of © ScienSolar.
   
   
             Cells(m1 - 1, n1 + 2).FormulaR1C1 = "1"
@@ -4309,6 +4309,7 @@ Sub Project_10_ES(ByVal VecType, m, n, m1, n1 As Integer) ' 10_Coordenadas cilin
             Cells(m1 + 1, n1 + 5).FormulaR1C1 = "0"
             Cells(m1 + 1, n1 + 6).FormulaR1C1 = "=CONFIG!R4C8"
             Cells(m1 + 1, n1 + 7).FormulaR1C1 = "=CONFIG!R4C9"
+            Cells(m1 + 2, n1 + 0).FormulaR1C1 = "t = 0,109375 s."
             Cells(m1 + 2, n1 + 2).FormulaR1C1 = "=CONFIG!R5C4"
             Cells(m1 + 2, n1 + 3).FormulaR1C1 = "60"
             Cells(m1 + 2, n1 + 4).FormulaR1C1 = "y"
@@ -4345,6 +4346,7 @@ Sub Project_10_ES(ByVal VecType, m, n, m1, n1 As Integer) ' 10_Coordenadas cilin
 "     " & Chr(10) & _
 "     " & Chr(10) & _
 "     "
+       On Error Resume Next
        Cells(m1, n1 + 9).Comment.Text Text:=HELPtxt
 
 
@@ -4380,7 +4382,7 @@ Sub Project_10_ES(ByVal VecType, m, n, m1, n1 As Integer) ' 10_Coordenadas cilin
             Cells(m + 9, n + 0).FormulaR1C1 = "=SIN(RADIANS(R[24]C[2]))"
             Cells(m + 9, n + 1).FormulaR1C1 = "0"
             Cells(m + 9, n + 2).FormulaR1C1 = "rho ="
-            Cells(m + 9, n + 3).FormulaR1C1 = "3"
+            Cells(m + 9, n + 3).FormulaR1C1 = "2"
             Cells(m + 9, n + 4).FormulaR1C1 = "x ="
             Cells(m + 9, n + 5).FormulaR1C1 = "=R[23]C[-3]*RC[-6]"
             Cells(m + 9, n + 21).FormulaR1C1 = "encontrarse en la hoja 3DModels)."
@@ -4433,7 +4435,7 @@ Sub Project_10_ES(ByVal VecType, m, n, m1, n1 As Integer) ' 10_Coordenadas cilin
             Cells(m + 7, n + 21).FormulaR1C1 = "proyectos SIMETR" & ChrW(205) & "A CIL" & ChrW(205) & "NDRICA y SIMETR" & ChrW(205) & "A ESF" & ChrW(201) & "RICA."
             Cells(m + 8, n + 2).FormulaR1C1 = "y ="
             Cells(m + 8, n + 4).FormulaR1C1 = "phi ="
-            Cells(m + 8, n + 5).FormulaR1C1 = "=IF(R[-1]C[-2]="""",R[-7]C[-2],DEGREES(IF(AND(R[-1]C[-2]>0,RC[-2]<0),2*PI()+ASIN(RC[-2]/R[-1]C),IF(AND(R[-1]C[-2]<0,RC[-2]>0),ACOS(R[-1]C[-2]/R[-1]C),IF(AND(R[-1]C[-2]<0,RC[-2]<0),ATAN(RC[-2]/R[-1]C[-2])+PI(),IF(R[-1]C[-2]=0,ATAN(RC[-2]/0.000000001),ATAN(RC[-2]/R[-1]C[-2])))))))"
+            Cells(m + 8, n + 5).FormulaR1C1 = "=IF(R[-1]C[-2]="""",R[-7]C[-2],DEGREES(IF(AND(R[-1]C[-2]>0,RC[-2]<0),2*PI()+ASIN(RC[-2]/R[-1]C),IF(AND(R[-1]C[-2]<=0,RC[-2]>=0),ACOS(R[-1]C[-2]/R[-1]C),IF(AND(R[-1]C[-2]<0,RC[-2]<0),ATAN(RC[-2]/R[-1]C[-2])+PI(),IF(R[-1]C[-2]=0,2*PI()-ACOS(R[-1]C[-2]/R[-1]C),ATAN(RC[-2]/R[-1]C[-2])))))))"
             Cells(m + 9, n + -1).FormulaR1C1 = "=-SIN(RADIANS(R[15]C[3]))"
             Cells(m + 9, n + 0).FormulaR1C1 = "=COS(RADIANS(R[15]C[2]))"
             Cells(m + 9, n + 1).FormulaR1C1 = "0"
@@ -4803,24 +4805,24 @@ Sub Project_10_ES(ByVal VecType, m, n, m1, n1 As Integer) ' 10_Coordenadas cilin
        Call PutEqBut
       End If ' actualizar hoja
 End Sub
-Sub Project_10_EN(ByVal VecType, m, n, m1, n1 As Integer) ' 10_Cylindrical coordinates_EN
+Sub Project_10_EN(ByVal VecType, m, n, m1, n1 As Integer) ' 10_Cylindrical Coordinates_EN
 
-   ' Updated: 26/03/24
+   ' Updated: 5/09/24
    ' Created by: Ariel R. Becerra (21/11/23)
    ' Modified by: _________________
    ' This is the code of your new project.
    ' Steps to embed the code to ScienSolar:
    ' Note 1: The number 10 in the name of this function must match the one in the list of the CONFIG sheet for this project. If not, please correct it.
-   ' Note 2: This code will be integrated into the main code to automate the download of the project.
-   ' Note 3: The formulas and cell values generated here correspond only to the first 30 columns from INICIO to the right in the sheet. All your formulas and values are recommended to be written in these columns.
-   ' Step 1. Go to the CONFIG sheet and add a short name and the number of your new project to the last row in the projects list.
+   ' Note 2: This code will be integrated into the main code (into the VBA editor) to automate the download of the project.
+   ' Note 3: The formulas and cell values generated here correspond only to the first 30 columns in the sheet. All your formulas and values are recommended to be written in these columns.
+   ' Step 1. Go to the CONFIG sheet (at the end of column C) and add the number of your new project to the last row in the projects list, and a short name in the corresponding langage column.
    ' Step 2. Make sure that the list of projects in CONFIG sheet has the correct ascending numbering.
    ' Step 4. Open the VBA editor (Alt + F11 in Windows or Fn + Option + F11 in macOS). To avoid mistakes, make sure you only have one workbook open.
    ' Step 5. On the left, in the project explorer, select a non full module (or add a new one).
    ' Step 6. Select all the code in this file, copy and paste it at the end of the existing code in the module (or in the new one).
    ' Step 7. To load the project and to check it in a new sheet, go to the CONFIG sheet and click the New Sheet button, then select the project from the list and click the +Vector button.
    ' Step 8. Click any XYZ button to get the project in the coordinate system. Enjoy it!
-   ' Visit  www.sciensolar.com for news and updates of ? ScienSolar.
+   ' Visit  www.sciensolar.com for news and updates of © ScienSolar.
   
   
             Cells(m1 - 1, n1 + 2).FormulaR1C1 = "1"
@@ -4835,6 +4837,7 @@ Sub Project_10_EN(ByVal VecType, m, n, m1, n1 As Integer) ' 10_Cylindrical coord
             Cells(m1 + 1, n1 + 5).FormulaR1C1 = "0"
             Cells(m1 + 1, n1 + 6).FormulaR1C1 = "=CONFIG!R4C8"
             Cells(m1 + 1, n1 + 7).FormulaR1C1 = "=CONFIG!R4C9"
+            Cells(m1 + 2, n1 + 0).FormulaR1C1 = "t = 0,1015625 s."
             Cells(m1 + 2, n1 + 2).FormulaR1C1 = "=CONFIG!R5C4"
             Cells(m1 + 2, n1 + 3).FormulaR1C1 = "60"
             Cells(m1 + 2, n1 + 4).FormulaR1C1 = "y"
@@ -4860,6 +4863,7 @@ Sub Project_10_EN(ByVal VecType, m, n, m1, n1 As Integer) ' 10_Cylindrical coord
 "     " & Chr(10) & _
 "     " & Chr(10) & _
 "     "
+       On Error Resume Next
        Cells(m1, n1 + 9).Comment.Text Text:=HELPtxt
 
 
@@ -4946,7 +4950,7 @@ Sub Project_10_EN(ByVal VecType, m, n, m1, n1 As Integer) ' 10_Cylindrical coord
             Cells(m + 7, n + 5).FormulaR1C1 = "=IF(RC[-2]="""",R[-7]C[-2],SQRT(RC[-2]^2+R[1]C[-2]^2))"
             Cells(m + 8, n + 2).FormulaR1C1 = "y ="
             Cells(m + 8, n + 4).FormulaR1C1 = "phi ="
-            Cells(m + 8, n + 5).FormulaR1C1 = "=IF(R[-1]C[-2]="""",R[-7]C[-2],DEGREES(IF(AND(R[-1]C[-2]>0,RC[-2]<0),2*PI()+ASIN(RC[-2]/R[-1]C),IF(AND(R[-1]C[-2]<0,RC[-2]>0),ACOS(R[-1]C[-2]/R[-1]C),IF(AND(R[-1]C[-2]<0,RC[-2]<0),ATAN(RC[-2]/R[-1]C[-2])+PI(),IF(R[-1]C[-2]=0,ATAN(RC[-2]/0.000000001),ATAN(RC[-2]/R[-1]C[-2])))))))"
+            Cells(m + 8, n + 5).FormulaR1C1 = "=IF(R[-1]C[-2]="""",R[-7]C[-2],DEGREES(IF(AND(R[-1]C[-2]>0,RC[-2]<0),2*PI()+ASIN(RC[-2]/R[-1]C),IF(AND(R[-1]C[-2]<=0,RC[-2]>=0),ACOS(R[-1]C[-2]/R[-1]C),IF(AND(R[-1]C[-2]<0,RC[-2]<0),ATAN(RC[-2]/R[-1]C[-2])+PI(),IF(R[-1]C[-2]=0,2*PI()-ACOS(R[-1]C[-2]/R[-1]C),ATAN(RC[-2]/R[-1]C[-2])))))))"
             Cells(m + 8, n + 21).FormulaR1C1 = "The cylindrical coordinate system is an orthogonal system that has three unit vectors"
             Cells(m + 9, n + -1).FormulaR1C1 = "=-SIN(RADIANS(R[15]C[3]))"
             Cells(m + 9, n + 0).FormulaR1C1 = "=COS(RADIANS(R[15]C[2]))"
@@ -4963,6 +4967,7 @@ Sub Project_10_EN(ByVal VecType, m, n, m1, n1 As Integer) ' 10_Cylindrical coord
             Cells(m + 11, n + -1).FormulaR1C1 = "3"
             Cells(m + 11, n + 0).FormulaR1C1 = "0"
             Cells(m + 11, n + 1).FormulaR1C1 = "1"
+            Cells(m + 11, n + 4).FormulaR1C1 = "=IF(R[-1]C[-4]>0,""<--  use these cells."","""")"
             Cells(m + 3, n + 1).Interior.Color = "12611584"
             Cells(m + 3, n + 1).Font.Size = "11"
             Cells(m + 3, n + 1).Font.name = "Calibri"
@@ -5004,6 +5009,7 @@ Sub Project_10_EN(ByVal VecType, m, n, m1, n1 As Integer) ' 10_Cylindrical coord
             Cells(m + 11, n + -1).FormulaR1C1 = "3"
             Cells(m + 11, n + 0).FormulaR1C1 = "0"
             Cells(m + 11, n + 1).FormulaR1C1 = "1"
+            Cells(m + 11, n + 4).FormulaR1C1 = "=IF(R[-1]C[-4]>0,""<--  use these cells."","""")"
             Cells(m + 11, n + 21).FormulaR1C1 = "Use cells E12, E13 and E14 to enter the values of the cylindrical coordinates of a point respectively "
             Cells(m + 3, n + 1).Interior.Color = "12611584"
             Cells(m + 3, n + 1).Font.Size = "11"
