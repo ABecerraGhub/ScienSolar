@@ -221,7 +221,7 @@ Sub NewSheet()
     Range("AF126").Value = "NÚMERO DE FILA para el inicio de una tabla de salida de datos durante la ejecución de un modelo. El número de columnas que tendrá la tabla es 9 con" _
                                        & " las coordenadas iniciales, finales y dos celdas más para fórmulas adicionales. El número de filas depende de la resolución de toma de datos del problema en particular. " _
                                        & "Para ver cómo funciona esta celda oprima New Sheet (Nueva hoja) seleccione el proyecto MOVIMIENTO PARABÓLICO de la lista y oprima +VECTOR, " _
-                                       & "luego, para el vector velocidad coloque B40=25, B41=7, D41=a y E41=b; oprima Ejecutar (Run). Aparecerá, a partir de la celda indicada, una tabla con los datos de la simulación. La tabla se" _
+                                       & "luego, para el vector velocidad coloque B40=30, B41=10, D41=a y E41=b; oprima Ejecutar (Run). Aparecerá, a partir de la celda indicada, una tabla con los datos de la simulación. La tabla se" _
                                        & "puede borrar simplemente seleccionando las respectivas celdas y oprimiendo SUPRIMIR en el teclado. En lugar de las letras a y b se pueden introducir otras funciones. " _
                                        & "El valor 0 para esta celda deshabilita esta función. Solo se aceptan valores numéricos positivos. Los datos pueden ser usados para otros estudios en Excel u otros programas de análisis de datos. "
      Range("AF127").Value = "NÚMERO DE COLUMNA para el inicio de una tabla de salida de datos durante la ejecución de un modelo. El número de columnas que tendrá la tabla es 9 con" _
@@ -260,7 +260,7 @@ Sub NewSheet()
     Range("AE126").Value = "ROW NUMBER for the start of a data output table during the execution of a model. The number of columns the table will have is 9 with" _
                                        & " the initial and final coordinates and two more cells for additional formulas. The number of rows depends on the data collection resolution of the particular problem. " _
                                        & "To see how this cell works press New Sheet, select the PARABOLIC MOTION project from the list and press +VECTOR, " _
-                                       & "then, for the velocity vector, place B40=25, B41=7, D41=a and E41=b; press Run. A table with the simulation data will appear from the indicated cell. The table " _
+                                       & "then, for the velocity vector, place B40=30, B41=10, D41=a and E41=b; press Run. A table with the simulation data will appear from the indicated cell. The table " _
                                        & "can be deleted simply by selecting the respective cells and pressing DELETE on the keyboard. Other functions can be entered instead of the letters a and b. " _
                                        & "The value 0 for this cell disables this function. Only positive numerical values are accepted. The data can be used for other studies in Excel or other data analysis programs."
      Range("AE127").Value = "COLUMN NUMBER for the start of a data output table during the execution of a model. The number of columns the table will have is 9 with" _
@@ -549,8 +549,11 @@ Sub NewSheet()
     Range("B58").FormulaR1C1 = "=HLOOKUP(R2C17,R33C5:R150C11,RC[1])"
     Range("B59").FormulaR1C1 = "=HLOOKUP(R2C17,R33C5:R150C11,RC[1])"
     Range("B60").FormulaR1C1 = "=HLOOKUP(R2C17,R33C5:R150C11,RC[1])"
-    'Range("B61").FormulaR1C1 = "=HLOOKUP(R2C17,R33C5:R150C11,RC[1])"
-    'Range("B62").FormulaR1C1 = "=HLOOKUP(R2C17,R33C5:R150C11,RC[1])"
+    Range("B61").FormulaR1C1 = "=HLOOKUP(R2C17,R33C5:R150C11,RC[1])"
+    Range("B62").FormulaR1C1 = "=HLOOKUP(R2C17,R33C5:R150C11,RC[1])"
+    Range("B63").FormulaR1C1 = "=HLOOKUP(R2C17,R33C5:R150C11,RC[1])"
+    Range("B64").FormulaR1C1 = "=HLOOKUP(R2C17,R33C5:R150C11,RC[1])"
+    Range("B65").FormulaR1C1 = "=HLOOKUP(R2C17,R33C5:R150C11,RC[1])"
     Range("C2").FormulaR1C1 = "=HLOOKUP(R2C17,R9C5:R31C12,R[12]C)"
     Range("C3").FormulaR1C1 = "=HLOOKUP(R2C17,R9C5:R31C12,R[12]C)"
     Range("C10").FormulaR1C1 = "Verified translation"
@@ -602,8 +605,11 @@ Sub NewSheet()
     Range("C58").FormulaR1C1 = "26"
     Range("C59").FormulaR1C1 = "27"
     Range("C60").FormulaR1C1 = "28"
-    'Range("C61").FormulaR1C1 = "29"
-    'Range("C62").FormulaR1C1 = "30"
+    Range("C61").FormulaR1C1 = "29"
+    Range("C62").FormulaR1C1 = "30"
+    Range("C63").FormulaR1C1 = "31"
+    Range("C64").FormulaR1C1 = "32"
+    Range("C65").FormulaR1C1 = "33"
     Range("D2").FormulaR1C1 = "=HLOOKUP(R2C17,R9C5:R31C12,R[14]C[-1])"
     Range("D3").FormulaR1C1 = "=HLOOKUP(R2C17,R9C5:R31C12,R[14]C[-1])"
     Range("D4").FormulaR1C1 = "=HLOOKUP(R2C17,R9C5:R31C12,R[14]C[-1])"
@@ -666,8 +672,11 @@ Sub NewSheet()
     Range("E58").FormulaR1C1 = "Magnetic Force"
     Range("E59").FormulaR1C1 = "Loop in a Magnetic Field"
     Range("E60").FormulaR1C1 = "Biot-Savart Law"
-    'Range("E61").FormulaR1C1 = "RC Circuit"
-    'Range("E62").FormulaR1C1 = "Poynting Vector"
+    Range("E61").FormulaR1C1 = "Charge distributions"
+    Range("E62").FormulaR1C1 = "Electric Field of nuclear particles"
+    Range("E63").FormulaR1C1 = "Plane wave"
+    Range("E64").FormulaR1C1 = "Toroid"
+    Range("E65").FormulaR1C1 = "Example of D. O."
     Range("F2").FormulaR1C1 = "=HLOOKUP(R2C17,R9C5:R31C12,R[19]C[-3])"
     Range("F4").FormulaR1C1 = "x"
     Range("F5").FormulaR1C1 = "y"
@@ -703,7 +712,7 @@ Sub NewSheet()
     Range("F38").FormulaR1C1 = "Vector unitario"
     Range("F39").FormulaR1C1 = "Rotaci" & ChrW(243) & "n de un vector"
     Range("F40").FormulaR1C1 = "Rotaci" & ChrW(243) & "n compuesta"
-    Range("F41").FormulaR1C1 = "Rotci" & ChrW(243) & "n tangencial"
+    Range("F41").FormulaR1C1 = "Rotaci" & ChrW(243) & "n tangencial"
     Range("F42").FormulaR1C1 = "Coordenadas cil" & ChrW(237) & "ndricas"
     Range("F43").FormulaR1C1 = "Coordenadas esf" & ChrW(233) & "ricas"
     Range("F44").FormulaR1C1 = "Simetr" & ChrW(237) & "a plana"
@@ -723,8 +732,11 @@ Sub NewSheet()
     Range("F58").FormulaR1C1 = "Fuerza magn" & ChrW(233) & "tica"
     Range("F59").FormulaR1C1 = "Espira en un campo magn" & ChrW(233) & "tico"
     Range("F60").FormulaR1C1 = "Ley de Biot - Savart"
-    'Range("F61").FormulaR1C1 = "Circuito RC"
-    'Range("F62").FormulaR1C1 = "Vector de Poynting"
+    Range("F61").FormulaR1C1 = "Distribuciones de carga"
+    Range("F62").FormulaR1C1 = "Campo E de part" & ChrW(237) & "culas"
+    Range("F63").FormulaR1C1 = "Onda plana"
+    Range("F64").FormulaR1C1 = "Toroide"
+    Range("F65").FormulaR1C1 = "Ejemplos de O. D."
     Range("G4").FormulaR1C1 = "0"
     Range("G5").FormulaR1C1 = "15"
     Range("G6").FormulaR1C1 = "15"
