@@ -43,7 +43,7 @@ Sub Init()
 ' Segment Init-01. Command to avoid updating the sheet during execution.
         Application.ScreenUpdating = False
         ActiveWindow.DisplayGridlines = False
-        Call CheckIfProjectExists
+        ' Call CheckIfProjectExists
         
 'Segment Init-02. Define coordinates relative to INICIO. The variables m and n relative to the initial position of the control board are introduced.
         Dim fila As Range ' This name will be a reference in the CONFIG sheet
